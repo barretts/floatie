@@ -1,0 +1,9 @@
+{
+  "status": "deployed; awaiting compilation and live inference",
+  "source_sha256": {
+    "ggml\\src\\ggml-cuda\\moe-hybrid.cu": "6239E012DB24EEA876FF74ACF3FF528C15655906B1FCD4D432A06644B9C3F8F8",
+    "ggml\\src\\ggml-cpu\\moe.cpp": "8D806D616518DF3A34CFC5326D9F03F86B6D8311C0113B8C935CBEECE22CD2FE"
+  },
+  "change": "Revert slower singleton CPU path; add VRAM-checked direct reads from two alternating full-layer prefill buffers.",
+  "backup": "E:\\poolside\\backups\\before-dual-layer-prefill-20261011-000809"
+}

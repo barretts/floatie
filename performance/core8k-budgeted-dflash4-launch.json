@@ -1,0 +1,14 @@
+{
+  "profiler_pid": 32212,
+  "stdout": "E:\\poolside\\logs\\core8k-budgeted-dflash4-20261010-231553.stdout.log",
+  "stderr": "E:\\poolside\\logs\\core8k-budgeted-dflash4-20261010-231553.stderr.log",
+  "report_base": "E:\\poolside\\logs\\core8k-budgeted-dflash4-20261010-231553",
+  "context": 8192,
+  "expert_cache_mib": 6144,
+  "batch": 8192,
+  "draft_max": 4,
+  "draft_kv": "q8_0",
+  "gpu_misses_per_token": 0,
+  "profiling_overhead_expected": true,
+  "previous_trace_launcher_failure": "Nsight cannot resolve the packaged pwsh execution alias; launch through the full Windows PowerShell executable."
+}

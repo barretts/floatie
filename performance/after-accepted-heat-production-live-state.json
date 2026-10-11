@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-10-11T08:44:05.5466558-05:00",
+  "healthy": "ok",
+  "api_model_ids": [
+    "laguna-s-2.1-iq3-s"
+  ],
+  "servers": [
+    {
+      "ProcessId": 13424,
+      "ExecutablePath": "E:\\poolside\\build\\bin\\llama-server.exe"
+    }
+  ],
+  "free_ram_gib": 67.4826431274414
+}

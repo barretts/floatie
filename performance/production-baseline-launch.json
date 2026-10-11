@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-11T02:08:41.0698148-05:00",
+  "wrapper_pid": 3700,
+  "stdout": "E:\\poolside\\logs\\core8k-production-baseline-20261011-020841.stdout.log",
+  "stderr": "E:\\poolside\\logs\\core8k-production-baseline-20261011-020841.stderr.log",
+  "settings": "8192 context; 6144 MiB base cache; 8192 batch; DFlash4 q8; phase memory; profiling disabled; pinned; adaptive; GPU misses0",
+  "source_sha256": "1E32271CBACD3ACABA0E174989F1578D0C14F9819EBD60E5CADC36BB8FA29B32",
+  "cuda_dll_sha256": "183E597489E0C44BB6F719BF3C5A948B7A25DB1A1D041A5CDC4A3A7383A33633"
+}

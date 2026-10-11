@@ -1,0 +1,10 @@
+{
+  "wrapper_pid": 14096,
+  "stdout": "E:\\poolside\\logs\\core8k-dflash4-q8-20261010-230719.stdout.log",
+  "stderr": "E:\\poolside\\logs\\core8k-dflash4-q8-20261010-230719.stderr.log",
+  "context": 8192,
+  "expert_cache_mib": 6144,
+  "batch": 8192,
+  "draft_max": 4,
+  "draft_kv": "q8_0"
+}

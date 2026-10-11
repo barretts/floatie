@@ -1,0 +1,20 @@
+{
+  "as_of": "2026-10-11T05:26:12.9971738-05:00",
+  "receipt": "core8k-caller-placement-dflash4-q8-cache6144.json",
+  "timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 10583.695,
+    "prompt_per_token_ms": 1.312462177579365,
+    "prompt_per_second": 761.9267184097804,
+    "predicted_n": 80,
+    "predicted_ms": 5418.22,
+    "predicted_per_token_ms": 67.72775,
+    "predicted_per_second": 14.764996622507024,
+    "draft_n": 100,
+    "draft_n_accepted": 53
+  },
+  "checkpoint_order_correct": true,
+  "raw_placement_line": "0.38.098.379 I CUDA hybrid MoE CPU placement: samples=1504 worker_core_samples=2 reserved_core_samples=349 caller_thread_id=27940 other_thread_samples=0 worker_affinity_successes=15 worker_affinity_failures=0",
+  "interpretation": "Worker affinity success=15 and failure=0 is valid. Caller counters only used primary logical-processor masks and missed sibling processors. They do not establish physical-core contention. Corrected measurement pending."
+}

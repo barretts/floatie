@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-10-11T02:35:49.2242240-05:00",
+  "stopped_native_pid": 28876,
+  "wrapper_pid": 15988,
+  "stdout_log": "E:\\poolside\\logs\\core8k-after-transfer-timeline-20261011-023549.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-after-transfer-timeline-20261011-023549.stderr.log",
+  "source_sha256": "1E32271CBACD3ACABA0E174989F1578D0C14F9819EBD60E5CADC36BB8FA29B32",
+  "cuda_dll_sha256": "183E597489E0C44BB6F719BF3C5A948B7A25DB1A1D041A5CDC4A3A7383A33633",
+  "archived_timeline_source": "candidates/moe-hybrid-transfer-timeline.cu",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "profile": false,
+  "timeline": false,
+  "pin_experts": true,
+  "adaptive_cache": true
+}

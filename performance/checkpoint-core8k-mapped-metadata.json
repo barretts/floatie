@@ -1,0 +1,155 @@
+{
+  "as_of": "2026-10-11T07:52:18.622110+00:00",
+  "workload": {
+    "configured_context": 8192,
+    "prompt_tokens": 8064,
+    "output_tokens": 80,
+    "cache_prompt": false,
+    "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c"
+  },
+  "latest_receipt": "core8k-mapped-metadata-production-dflash4-q8-cache6144.json",
+  "latest_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 13520.228,
+    "prompt_per_token_ms": 1.6766155753968253,
+    "prompt_per_second": 596.4396458402921,
+    "predicted_n": 80,
+    "predicted_ms": 6645.14,
+    "predicted_per_token_ms": 83.06425,
+    "predicted_per_second": 12.03887352260449,
+    "draft_n": 101,
+    "draft_n_accepted": 53
+  },
+  "checkpoint_order_correct": true,
+  "runtime": {
+    "native_pid": 3804,
+    "wrapper_pid": 23048,
+    "server_executable": "E:\\poolside\\build\\bin\\llama-server.exe",
+    "source_sha256": "4F60BFA230234EFFDE39DE446D0E4084C7C423E94174E7C660194AB58AEC8A25",
+    "cuda_dll_sha256": "8EE1145FA70BC1AB8F518840AC3990CD903BEAACA2CA336C5463877F85BA4724",
+    "launch_receipt": "mapped-metadata-production-launch.json",
+    "profiling_enabled": false,
+    "timeline_enabled": false,
+    "api": {
+      "health": {
+        "status": "ok"
+      },
+      "model_ids": [
+        "laguna-s-2.1-iq3-s"
+      ]
+    }
+  },
+  "source_integrity": [
+    {
+      "file": "ggml/include/ggml.h",
+      "staged_sha256": "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+      "deployed_sha256": "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml.c",
+      "staged_sha256": "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+      "deployed_sha256": "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/CMakeLists.txt",
+      "staged_sha256": "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+      "deployed_sha256": "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/moe.cpp",
+      "staged_sha256": "8D806D616518DF3A34CFC5326D9F03F86B6D8311C0113B8C935CBEECE22CD2FE",
+      "deployed_sha256": "8D806D616518DF3A34CFC5326D9F03F86B6D8311C0113B8C935CBEECE22CD2FE",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/moe-iq.cpp",
+      "staged_sha256": "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+      "deployed_sha256": "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/moe-iq.h",
+      "staged_sha256": "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+      "deployed_sha256": "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/ggml-cuda.cu",
+      "staged_sha256": "1238A6B91AB4860BD353918DA31888334E7E58453C4FB6209D2EE068012CD8C5",
+      "deployed_sha256": "1238A6B91AB4860BD353918DA31888334E7E58453C4FB6209D2EE068012CD8C5",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/moe-hybrid.cu",
+      "staged_sha256": "4F60BFA230234EFFDE39DE446D0E4084C7C423E94174E7C660194AB58AEC8A25",
+      "deployed_sha256": "4F60BFA230234EFFDE39DE446D0E4084C7C423E94174E7C660194AB58AEC8A25",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/moe-hybrid.cuh",
+      "staged_sha256": "C1053A8F1EBF17D58E71B9D490179CEF9011A7D4CB0968E8A535A5387D027BC5",
+      "deployed_sha256": "C1053A8F1EBF17D58E71B9D490179CEF9011A7D4CB0968E8A535A5387D027BC5",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/mmq.cu",
+      "staged_sha256": "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+      "deployed_sha256": "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-alloc.c",
+      "staged_sha256": "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+      "deployed_sha256": "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-backend.cpp",
+      "staged_sha256": "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+      "deployed_sha256": "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+      "match": true
+    },
+    {
+      "file": "src/llama-graph.cpp",
+      "staged_sha256": "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+      "deployed_sha256": "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+      "match": true
+    },
+    {
+      "file": "src/models/dflash.cpp",
+      "staged_sha256": "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+      "deployed_sha256": "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+      "match": true
+    },
+    {
+      "file": "common/speculative.cpp",
+      "staged_sha256": "4D3BE7625EB35D8C2FD2BE849E1FFED056D6D9B5A89AF6240DD54AFD855F0B8B",
+      "deployed_sha256": "4D3BE7625EB35D8C2FD2BE849E1FFED056D6D9B5A89AF6240DD54AFD855F0B8B",
+      "match": true
+    }
+  ],
+  "retained_change": "Mapped routing metadata staging for bulk prefill",
+  "comparison": "mapped-metadata-comparison.json",
+  "previous_baseline": "core8k-production-baseline-dflash4-q8-cache6144.json",
+  "next_action": "Measure GPU attention and other non-expert operators separately, along with prefill preparation and draft feature injection, to account for the remaining prefill cost. Decode remains about 12 tok/s; preserve the 8k gate and work on CPU expert execution and GPU/CPU handoffs after identifying their limiting costs.",
+  "measured_costs": {
+    "profiled_prefill_pipeline_span_ms": 9660.932,
+    "profiled_weight_copy_interval_ms": 6767.416000000003,
+    "profiled_expert_interval_ms": 4094.7169999999937,
+    "profiled_overlap_ms": 1986.3359999999986,
+    "profiled_prefill_ms": 13909.15,
+    "outside_profiled_pipeline_ms": 4248.217999999999
+  },
+  "pending_clock_measurement": "User UAC availability answer pending; no direct GPU clock hold applied.",
+  "completion": {
+    "prefill_target_tps": 900,
+    "generation_target_tps": 30,
+    "targets_met": false,
+    "current_128k_performance_verified": false
+  },
+  "stability": "User reported app windows closed while desktop stayed visible. Prior event logs did not identify the cause. This continuation stopped only explicitly verified Laguna native server processes."
+}

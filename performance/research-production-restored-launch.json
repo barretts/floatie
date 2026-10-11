@@ -1,0 +1,72 @@
+{
+  "timestamp": "2026-10-11T13:38:24.8365288-05:00",
+  "launch_status": "started",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "moe_threads": 16,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "pin_experts": true,
+  "adaptive_cache": true,
+  "profile": false,
+  "readback_span": false,
+  "timeline": false,
+  "decode_cache_fit": "candidate source removed and flag cleared",
+  "budgeted_admission": "engine default enabled",
+  "wrapper_pid": 24192,
+  "stdout_log": "E:\\poolside\\logs\\research-production-restored-20261011-133824.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\research-production-restored-20261011-133824.stderr.log",
+  "source_sha256": "AF3E081FB5C00FA2135AE0858895074F2937D17FB69FAB89D6B70E5271246A5B",
+  "binaries": [
+    {
+      "file": "cublas64_12.dll",
+      "sha256": "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142"
+    },
+    {
+      "file": "cublasLt64_12.dll",
+      "sha256": "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49"
+    },
+    {
+      "file": "cudart64_12.dll",
+      "sha256": "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746"
+    },
+    {
+      "file": "ggml-base.dll",
+      "sha256": "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA"
+    },
+    {
+      "file": "ggml-cpu.dll",
+      "sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E"
+    },
+    {
+      "file": "ggml-cuda.dll",
+      "sha256": "465D152C90671D4CF70D9DCFD0B99A5135B7DB7D71691CFADBFEC45B68006EC2"
+    },
+    {
+      "file": "ggml.dll",
+      "sha256": "47DD2E6AE7538D27DC4F94C4EC5569EBEA4E78579D72A34BEF1F8468A798DBA2"
+    },
+    {
+      "file": "llama-common.dll",
+      "sha256": "4CE650D500D57370A8DBDA23C04CC022EA6F3019ED08B7CE33915F655475B5DD"
+    },
+    {
+      "file": "llama-server-impl.dll",
+      "sha256": "515F3B1C23DC1F91C61BFA3A3E364F5400F651FA679DF080E22A162E10EB4160"
+    },
+    {
+      "file": "llama-server.exe",
+      "sha256": "56A839707A3EF9DCA966905221357F71EF4A37DBCF54574CD32F432E4B834A7E"
+    },
+    {
+      "file": "llama.dll",
+      "sha256": "03AF4A1A15ABEA96C088BDB06622EFDFE905ED853B4855A2A7CBDB5658DCF718"
+    },
+    {
+      "file": "mtmd.dll",
+      "sha256": "53AA3EB603D218828CE5E3F393559471092133080900B1CACDE645614650B3B1"
+    }
+  ]
+}

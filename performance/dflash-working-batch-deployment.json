@@ -1,0 +1,5 @@
+{
+  "backup": "E:\\poolside\\backups\\before-dflash-working-batch-20261010-230611",
+  "source_sha256": "4D3BE7625EB35D8C2FD2BE849E1FFED056D6D9B5A89AF6240DD54AFD855F0B8B",
+  "reason": "Bound DFlash working batch to 512 while preserving target prefill batch and chunked feature injection."
+}

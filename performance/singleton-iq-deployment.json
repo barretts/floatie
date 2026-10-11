@@ -1,0 +1,9 @@
+{
+  "source_sha256": {
+    "ggml\\src\\ggml-cuda\\moe-hybrid.cu": "3912C284C5787EF81C13CCA2160BB321C9C2D77CA13828FCF1937FA36FB3BD9A",
+    "ggml\\src\\ggml-cpu\\moe.cpp": "C8590F000A8B3673EDCD6288DF0AFED088B5F2E7E7E071A66E9FDAC991C11071"
+  },
+  "backup": "E:\\poolside\\backups\\before-singleton-iq-20261011-000400",
+  "change": "Use IQ CPU kernels for singleton groups; handle an empty bulk miss list safely.",
+  "status": "deployed; awaiting compilation and live inference"
+}

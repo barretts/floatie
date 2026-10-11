@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-11T01:27:00.7214232-05:00",
+  "wrapper_pid": 22288,
+  "stdout": "E:\\poolside\\logs\\core8k-compact-decode-slots-20261011-012700.stdout.log",
+  "stderr": "E:\\poolside\\logs\\core8k-compact-decode-slots-20261011-012700.stderr.log",
+  "settings": "8192 context; 6144 MiB base cache; 8192 batch; DFlash4 q8; phase memory; profile; pinned; adaptive; GPU misses0",
+  "source_sha256": "5DB0AB2C6A088B9882854DECE293D9B74AF81D08895BF43C10042B87C6F9D0CB",
+  "cuda_dll_sha256": "644A2C3147DEA8823C4941EAB98D443B385251157901340B9A1B8F775A8870B7"
+}

@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-10-11T07:20:34.6442649-05:00",
+  "stopped_native_pids": [
+    15128
+  ],
+  "wrapper_pid": 32952,
+  "stdout_log": "E:\\poolside\\logs\\core8k-iq2-weight-cache-off-20261011-072034.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-iq2-weight-cache-off-20261011-072034.stderr.log",
+  "cpu_dll_sha256": "EF661CCB7580D49B0FBE56AE45746AB9C8FD6D1B1F09372498C10C98ADF0C47D",
+  "cuda_dll_sha256": "13DA3D114EBFFA25F9FA9D925A78813D734C137418ACCD628283BF081DB2EF8C",
+  "llama_dll_sha256": "DA7599E05FBE2EEEA7C01429A0B483D8A5091439B3BAF68D6E9DF675B189B1B7",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "pin_experts": true,
+  "adaptive_cache": true,
+  "profile": true,
+  "readback_span": true,
+  "timeline": false,
+  "predecode_iq2": false,
+  "free_ram_reserve_gib": 24
+}

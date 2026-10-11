@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-10-11T03:10:34.3331832-05:00",
+  "wrapper_pid": 32108,
+  "stdout_log": "E:\\poolside\\logs\\core8k-mask-lower-bound-20261011-031034.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-mask-lower-bound-20261011-031034.stderr.log",
+  "source_sha256": "25D9DA6EAAEE6E51EAAC67DD1F617E5C749914811503114F090C34B97C33D6AE",
+  "cuda_dll_sha256": "62EBE1C83CFAC8F757FBED05E24B4C7F2480C55CC40CED01BD27BFC04EE64FA5",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "profile": true,
+  "timeline": true,
+  "attention_timing": true,
+  "pin_experts": true,
+  "adaptive_cache": true
+}

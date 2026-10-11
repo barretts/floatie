@@ -1,0 +1,2840 @@
+{
+  "project": "Floatie",
+  "documented_on": "2026-10-11",
+  "scope": "Documentation-only retrospective of assigned middle performance attempts; no execution, builds, deployment, or process control performed. Performance goal remains paused.",
+  "target": {
+    "model": "Laguna S 2.1 existing Q3",
+    "local_api": true,
+    "prefill_tps": 900,
+    "generation_tps": 30,
+    "gate_context": 8192,
+    "eventual_context": 131072,
+    "targets_achieved": false
+  },
+  "common_workload": {
+    "request": "checkpoint-request-8064.json",
+    "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+    "prompt_tokens": 8064,
+    "requested_output_tokens": 80,
+    "context": 8192,
+    "cache_prompt": false,
+    "expected_codes": [
+      "COBALT-17",
+      "MAPLE-42",
+      "VIOLET-89"
+    ],
+    "draft_max": 4,
+    "draft_kv": "q 8_0",
+    "base_cache_mib": 6144,
+    "batch": 8192,
+    "moe_threads": 16,
+    "pin_experts": true,
+    "adaptive_cache": true,
+    "gpu_misses_per_token": 0
+  },
+  "attempts": [
+    {
+      "id": "internal-timings",
+      "name": "Internal event profiling / unavailable Nsight trace",
+      "mechanism": "Optional CUDA event spans plus CPU phase counters after Nsight Systems could not initialize its Windows tracing provider.",
+      "status": "diagnostic; no optimization claim",
+      "run_receipts": [
+        "core8k-internal-timings-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "internal-timings-deployment.json",
+        "core8k-internal-timings-launch.json"
+      ],
+      "findings": [
+        "Nsight Systems required Windows administrator privileges for ReflexStatsTraceLoggingProvider; no Nsight trace was produced. Existing internal events were used instead.",
+        "First 16 decode batches: CPU fused 2137.64 ms, GPU cached 282.39 ms, entry wait 215.25 ms, readback wait 777.03 ms; 25,521 CPU expert jobs / 35,720 selections. Prefill copy interval 8848.56 ms, streamed expert interval 4836.38 ms."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [],
+      "caveats": [
+        "Intervals overlap; these numbers are not serial addends or a production speed comparison."
+      ]
+    },
+    {
+      "id": "gpu-spans-initial",
+      "name": "Initial CUDA graph spans",
+      "mechanism": "Attempted replay of GPU-only spans around hybrid CPU expert operations.",
+      "status": "superseded; original graph warmup did not establish useful replay",
+      "run_receipts": [
+        "core8k-gpu-spans-dflash4-q8-cache6144.json",
+        "core8k-gpu-spans-debug-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "gpu-spans-deployment.json",
+        "core8k-gpu-spans-launch.json",
+        "gpu-spans-debug-launch.json"
+      ],
+      "findings": [
+        "Debug log repeatedly reports CUDA graph warmup reset. Saved rates were 468.07 / 13.72 and debug 482.45 / 13.71 tok/s. Those runs are observations, not evidence of a graph speedup.",
+        "Later hybrid-span-graphs is a separate implementation with captured/replayed counters and controlled on/off comparisons."
+      ],
+      "retained_evidence": [
+        "core-engine/ggml/src/ggml-cuda/ggml-cuda.cu rejects whole graphs containing CPU dispatch/readback."
+      ],
+      "rollback_or_cleanup_evidence": [],
+      "caveats": [
+        "No contemporaneous same-binary on/off control or dedicated original-spans rollback receipt identified.",
+        "Profile/debug modes and graph warmup can change timing."
+      ]
+    },
+    {
+      "id": "singleton-iq",
+      "name": "Custom IQ kernel for singleton groups",
+      "mechanism": "Extend grouped AVX 2 IQ 2/IQ 3/IQ 4 kernels to one activation row instead of the established single-row vector dot.",
+      "status": "rejected and restored",
+      "run_receipts": [
+        "core8k-singleton-iq-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "singleton-iq-deployment.json",
+        "singleton-iq-launch.json",
+        "dual-layer-prefill-deployment.json"
+      ],
+      "findings": [
+        "503.31 prefill / 12.57 generation tok/s. First-16 gate/up 1285.87 ms and down 693.54 ms across 21,004 jobs. Deployment for dual-layer prefill explicitly says revert slower singleton CPU path."
+      ],
+      "retained_evidence": [
+        "core-engine/ggml/src/ggml-cpu/moe.cpp: custom compute_group requires group.count > 1; singleton retains matrix.row."
+      ],
+      "rollback_or_cleanup_evidence": [
+        "dual-layer-prefill-deployment.json"
+      ],
+      "caveats": [
+        "No isolated same-binary singleton-disabled control found; later runs also changed cache capacity and prefill mechanics. Do not infer an isolated regression percentage."
+      ]
+    },
+    {
+      "id": "one-readback-wait",
+      "name": "Replace host event wait by stream dependency",
+      "mechanism": "Replace per-layer host event wait with stream dependency before required IDs/input readback, preserving metadata lifetime.",
+      "status": "rejected; measured host event wait restored",
+      "run_receipts": [
+        "core8k-one-readback-wait-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "one-readback-wait-deployment.json",
+        "one-readback-wait-launch.json",
+        "fused-bulk-gate-up-deployment.json"
+      ],
+      "findings": [
+        "493.98 prefill / 12.05 generation. Decode entry wait becomes 0 but readback wait is 1621.64 ms; CPU fused 1679.08 ms. Prefill readback 10832.62 ms. Removing one reported wait did not prove reduced total dependency cost."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [
+        "fused-bulk-gate-up-deployment.json explicitly restores measured host event wait."
+      ],
+      "caveats": [
+        "No matched on/off comparison receipt found. Fused-bulk successor changes a separate mechanism."
+      ]
+    },
+    {
+      "id": "cache-capacity-diagnostic",
+      "name": "Actual frequencies / retrospective capacity",
+      "mechanism": "Collect expert frequencies to distinguish cache policy loss from finite capacity; simulate fixed and unequal capacities using already observed routing.",
+      "status": "diagnostic; optional counters disabled in normal serving",
+      "run_receipts": [
+        "core8k-cache-capacity-profile-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "cache-capacity-profile-deployment.json",
+        "cache-capacity-profile-launch.json",
+        "core8k-cache-decision-evidence.json",
+        "checkpoint-core8k-production-baseline.json",
+        "production-baseline-deployment.json"
+      ],
+      "findings": [
+        "Observed 35,720 selections; actual hits 17,056 (47.75%); best fixed-capacity hindsight 24,606 (68.89%); greedy globally allocated capacity 24,779 (69.37%) at 8192 MiB. Unequal allocation adds about 0.48 percentage points over fixed hindsight.",
+        "This profile ran 511.53 / 11.60 tok/s; it is not a speed improvement. Retrospective best hits are not future predictions."
+      ],
+      "retained_evidence": [
+        "production-baseline-deployment.json restores baseline admission/decode, retaining optional diagnostics disabled in production."
+      ],
+      "rollback_or_cleanup_evidence": [],
+      "caveats": [
+        "Do not use past-window routing as an oracle or claim an attainable future 69% hit rate. Compact decode slot packing and cost-aware admission have distinct receipts covered elsewhere."
+      ]
+    },
+    {
+      "id": "transfer-timeline",
+      "name": "Prefill transfer/compute timeline",
+      "mechanism": "Timestamp weight-copy and expert-compute intervals on their streams and compute interval unions/overlap.",
+      "status": "diagnostic; detailed timeline archived and disabled",
+      "run_receipts": [
+        "core8k-transfer-timeline-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "transfer-timeline-deployment.json",
+        "transfer-timeline-launch.json",
+        "core8k-transfer-timeline-analysis.json",
+        "checkpoint-core8k-after-transfer-timeline.json"
+      ],
+      "findings": [
+        "Prefill span 11546.474 ms; copy union 6768.128 ms; expert union 4070.433 ms; overlap only 81.824 ms. Located a pipeline serialization issue rather than proving an SSD issue.",
+        "503.31 / 12.49 tok/s with tracing."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [
+        "checkpoint-core8k-after-transfer-timeline.json restores normal source/binary; timeline source archived as candidates/moe-hybrid-transfer-timeline.cu."
+      ],
+      "caveats": [
+        "Intervals include queue gaps and exclude other GPU operations. Union does not equal exact SM busy time."
+      ]
+    },
+    {
+      "id": "mapped-metadata",
+      "name": "Mapped prefill routing metadata",
+      "mechanism": "Stage routing IDs/entries with a kernel reading existing pinned host arrays, avoiding small H 2 D metadata copies behind lookahead weight uploads; ordinary-copy fallback without unified addressing.",
+      "status": "retained",
+      "run_receipts": [
+        "core8k-mapped-metadata-dflash4-q8-cache6144.json",
+        "core8k-mapped-metadata-production-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "mapped-metadata-deployment.json",
+        "mapped-metadata-launch.json",
+        "mapped-metadata-production-launch.json",
+        "mapped-metadata-comparison.json",
+        "core8k-mapped-metadata-analysis.json",
+        "checkpoint-core8k-mapped-metadata.json",
+        "core8k-production-baseline-dflash4-q8-cache6144.json"
+      ],
+      "findings": [
+        "Unprofiled sequential controls: 509.66 / 12.22 before, 596.44 / 12.04 after; prefill +17.03%, generation -1.44% observed.",
+        "Profiled transfer/expert overlap grows 81.824 to 1986.336 ms while copy union stays about 6768 ms; pipeline span 11546.474 to 9660.932 ms. Profiled candidate rate 579.76 / 11.75."
+      ],
+      "retained_evidence": [
+        "mapped-metadata-comparison.json retained=true.",
+        "core-engine/ggml/src/ggml-cuda/moe-hybrid.cu has mapped_metadata / stage_prefill_metadata and copy fallback.",
+        "checkpoint-core8k-span-evaluation.json lists retained CPU-result handoff and prefill pipeline."
+      ],
+      "rollback_or_cleanup_evidence": [],
+      "caveats": [
+        "Cold server runs; same request/parameters, different builds and draft acceptance. One production observation per configuration with clocks unlocked. No isolated generation gain."
+      ]
+    },
+    {
+      "id": "attention-timeline",
+      "name": "Target attention timeline",
+      "mechanism": "Timestamp target attention by head count to locate slow sliding-window work.",
+      "status": "diagnostic",
+      "run_receipts": [
+        "core8k-attention-timeline-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "attention-timeline-deployment.json",
+        "attention-timeline-launch.json",
+        "core8k-attention-timeline-analysis.json"
+      ],
+      "findings": [
+        "12 full-attention calls (48 heads) total 369.218 ms; 36 sliding-window calls (72 heads) total 2042.002 ms, mean 56.722 ms. All target attention total 2411.220 ms.",
+        "582.01 / 12.20 tok/s with timeline."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [],
+      "caveats": [
+        "Contains KV conversion and queue gaps; excludes draft feature injection. No causal speedup claimed."
+      ]
+    },
+    {
+      "id": "mask-lower-bound",
+      "name": "Prefill attention lower mask bounds",
+      "mechanism": "Find first unmasked tiles and skip exact fully masked ranges in stream-K sliding-window attention, preserving mask/window/positions/KV.",
+      "status": "retained",
+      "run_receipts": [
+        "core8k-mask-lower-bound-dflash4-q8-cache6144.json",
+        "core8k-mask-lower-bound-production-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "mask-lower-bound-deployment.json",
+        "mask-lower-bound-launch.json",
+        "mask-lower-bound-production-launch.json",
+        "mask-lower-bound-comparison.json",
+        "core8k-mask-lower-bound-analysis.json",
+        "checkpoint-core8k-mask-lower-bound.json"
+      ],
+      "findings": [
+        "Normal sequential measurement: 596.44 / 12.04 to 674.28 / 12.51 tok/s; +13.05% prefill and +3.89% generation observed.",
+        "Profiled sliding-window attention 2042.002 to 412.767 ms; total attention 2411.220 to 794.062 ms. Profiled candidate 648.09 / 11.52."
+      ],
+      "retained_evidence": [
+        "checkpoint-core8k-span-evaluation.json lists Flash-attention prefill and decode mask bounds.",
+        "core-engine/ggml/src/ggml-cuda/fattn-common.cuh carries prefill mask lower/upper bound logic."
+      ],
+      "rollback_or_cleanup_evidence": [],
+      "caveats": [
+        "Different builds, draft acceptance and clocks; generation delta is not an isolated causal measurement. One 8 k request only."
+      ]
+    },
+    {
+      "id": "cpu-wait-profile",
+      "name": "GPU wait for CPU / DFlash cost",
+      "mechanism": "Measure GPU interval after cached GPU experts finish until CPU expert results, alongside draft timing.",
+      "status": "diagnostic",
+      "run_receipts": [
+        "core8k-cpu-wait-timing-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "cpu-wait-timing-deployment.json",
+        "cpu-wait-timing-launch.json",
+        "core8k-cpu-wait-analysis.json"
+      ],
+      "findings": [
+        "First 16 verification batches / 752 layer calls / 76 target evaluations per layer: CPU fused 1672.09 ms; GPU waiting for CPU 1001.18 ms; cached GPU 668.57 ms; readback 1343.38 ms; entry 240.63 ms; host prepare 358.91 ms.",
+        "25 draft rounds total 359.409 ms, 5.32% of total generation time; draft prefill feature injection 584.22 ms for 892 rows, 7168 rows skipped.",
+        "717.15 / 11.83 tok/s. Cache already has per-target-token exponential recency."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [],
+      "caveats": [
+        "First-16 target counters do not cover all 25 draft rounds; counters overlap. This is diagnostic, not optimization."
+      ]
+    },
+    {
+      "id": "cpu-doorbell",
+      "name": "Bounded mapped CPU completion/results",
+      "mechanism": "Mapped pinned CPU results with GPU completion poll capped at 10 ms per block; unfinished blocks handled by second reduction launch after CPU completion.",
+      "status": "retained; default enabled",
+      "run_receipts": [
+        "core8k-cpu-doorbell-control-dflash4-q8-cache6144.json",
+        "core8k-cpu-doorbell-dflash4-q8-cache6144.json",
+        "core8k-cpu-doorbell-production-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "cpu-doorbell-deployment.json",
+        "cpu-doorbell-control-launch.json",
+        "cpu-doorbell-launch.json",
+        "cpu-doorbell-comparison.json",
+        "cpu-doorbell-default-deployment.json",
+        "cpu-doorbell-production-comparison.json",
+        "checkpoint-core8k-cpu-doorbell.json"
+      ],
+      "findings": [
+        "Same-source/binary profiled + DebugGpu control: 737.23 / 11.83 off versus 719.20 / 13.08 on; generation +10.56%, 646.282 ms saved. Actual generated 80-token arrays and draft 100/53 match.",
+        "Coarse decode-loaded telemetry median SM 1335 to 1530 MHz, memory 8751 MHz both; more P 2 samples. These samples are not exact per-token intervals.",
+        "Production bundled follow-up (also DFlash window trimming): 674.28 / 12.51 to 718.08 / 14.03. Bundle deltas are not solely handoff effect."
+      ],
+      "retained_evidence": [
+        "cpu-doorbell-default-deployment.json enables default.",
+        "core-engine/ggml/src/ggml-cuda/moe-hybrid.cu sets GGML_CUDA_MOE_CPU_DOORBELL default1 if unified addressing.",
+        "checkpoint-core8k-span-evaluation.json retained mapped CPU-result handoff."
+      ],
+      "rollback_or_cleanup_evidence": [],
+      "caveats": [
+        "One run per condition, clocks unlocked, cache trajectories differ even with matching tokens. Full API and 128 k unverified."
+      ]
+    },
+    {
+      "id": "mask-timing",
+      "name": "CPU attention mask construction measurement",
+      "mechanism": "Measure large-batch mask fill with existing profiling to distinguish CPU preparation from GPU attention.",
+      "status": "diagnostic; source instrumentation archived",
+      "run_receipts": [
+        "core8k-mask-timing-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "mask-timing-deployment.json",
+        "mask-timing-launch.json",
+        "contiguous-mask-comparison.json"
+      ],
+      "findings": [
+        "Two mask fills: 268.059 ms full attention + 268.174 ms SWA = 536.233 ms. Prompt bulk graph evaluates 8060 of request 8064 tokens.",
+        "720.57 / 14.19 tok/s; measurement led to contiguous range fill."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [
+        "candidates/llama-kv-cache-mask-timing.cpp preserves instrumentation; contiguous-mask successor contains optional profile path."
+      ],
+      "caveats": [
+        "No improvement implied by adding counters."
+      ]
+    },
+    {
+      "id": "contiguous-mask",
+      "name": "Exact contiguous prefill mask range fill",
+      "mechanism": "After checking single-sequence contiguous KV positions and empty padding, use exact causal/window bounds and fill contiguous ranges; retain generic path for other layouts.",
+      "status": "retained",
+      "run_receipts": [
+        "core8k-contiguous-mask-dflash4-q8-cache6144.json",
+        "core8k-contiguous-mask-production-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "contiguous-mask-deployment.json",
+        "contiguous-mask-launch.json",
+        "contiguous-mask-production-launch.json",
+        "contiguous-mask-comparison.json",
+        "contiguous-mask-production-comparison.json",
+        "checkpoint-core8k-contiguous-mask.json"
+      ],
+      "findings": [
+        "Profiled fill 536.233 to 27.114 ms, reduction 94.94%; prefill 720.57 to 754.45 tok/s (+4.70%); generation 14.19 to 13.69.",
+        "Normal follow-up 718.08/14.03 to 775.16/14.49. Range-fill applies only to prefill; do not attribute generation delta to it."
+      ],
+      "retained_evidence": [
+        "contiguous-mask-comparison.json only contiguous implementation changed.",
+        "checkpoint-core8k-span-evaluation.json lists retained contiguous prefill construction.",
+        "core-engine/src/llama-kv-cache.cpp contains contiguous path."
+      ],
+      "rollback_or_cleanup_evidence": [],
+      "caveats": [
+        "Mask control and candidate draft counts 96/55 versus 96/54; production 96/55 versus 93/54. Actual outputs differ. Clocks unlocked.",
+        "SWA allocator already supports compact sizing min(base cells,window+ubatch), padded 256 unless swa_full; never claim always full 128 k allocation."
+      ]
+    },
+    {
+      "id": "input-publication",
+      "name": "Mapped GPU-to-CPU input publication",
+      "mechanism": "Publish activations/routing to mapped host arrays to avoid separate entry/readback handoff waits.",
+      "status": "rejected and restored",
+      "run_receipts": [
+        "core8k-input-publication-dflash4-q8-cache6144.json",
+        "core8k-input-publication-control-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "input-publication-deployment.json",
+        "input-publication-launch.json",
+        "input-publication-control-launch.json",
+        "input-publication-comparison.json",
+        "input-publication-revert.json"
+      ],
+      "findings": [
+        "On 750.90/15.04 versusoff 773.78/14.28 tok/s. Apparent generation rise accompanies 88/57 versus 93/54 draft/accepted and different output arrays.",
+        "Equal 752 calls and 76 target evals/layer: on combined entry+readback 1175.48 ms versusoff 1171.74 ms; CPU 1765.59 versus 1628.72 ms; prepare 307.23 versus 267.91 ms. No isolated gain."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [
+        "input-publication-revert.json records matching restored C/E source hash and original CUDA DLL; candidate archived candidates/moe-hybrid-input-publication.cu."
+      ],
+      "caveats": [
+        "One run per mode, clocks/cache trajectories differ. GPU-to-CPU waiting includes preceding attention/dense GPU work."
+      ]
+    },
+    {
+      "id": "launch-readback-span",
+      "name": "Host launch / GPU readback span profiling",
+      "mechanism": "Measure host work inside/outside hybrid dispatch and GPU between-MoE/readback/attention intervals; optional profile-only with no new stream synchronization.",
+      "status": "diagnostic; optional counters retained inactive in normal serving",
+      "run_receipts": [
+        "core8k-launch-span-profile-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "launch-profile-deployment.json",
+        "launch-span-profile-launch.json",
+        "launch-span-profile-analysis.json"
+      ],
+      "findings": [
+        "First 16 verification batches:752 hybrid nodes,76 target evals/layer,23,776 ordinary dispatches,12,112 fused nodes. Host insidehybrid 3201.74 ms; outside 433.18 ms. CPU 1695.32 ms, GPU attention 609.37 ms, between-MoE 1149.14 ms.",
+        "755.45/13.42 tok/s. This directed attention-bounds and graph-section investigation."
+      ],
+      "retained_evidence": [
+        "core-engine/ggml/src/ggml-cuda/ggml-cuda.cu and moe-hybrid.cu guard readback spans on profile+GGML_CUDA_MOE_PROFILE_READBACK_SPAN."
+      ],
+      "rollback_or_cleanup_evidence": [],
+      "caveats": [
+        "Outside-hybrid includes bookkeeping/fusion, not just kernel launches. Attention overlaps between-MoE span; CPU/GPU overlap."
+      ]
+    },
+    {
+      "id": "decode-bounds",
+      "name": "Stream-K small-batch decode mask bounds",
+      "mechanism": "Exact masked-tile bounds for small batches, ignore padded query rows and skip only negative infinity; vector attention 1/2-query path unchanged.",
+      "status": "retained; default enabled",
+      "run_receipts": [
+        "core8k-decode-bounds-dflash4-q8-cache6144.json",
+        "core8k-decode-bounds-control-dflash4-q8-cache6144.json",
+        "core8k-decode-bounds-production-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "decode-bounds-deployment.json",
+        "decode-bounds-launch.json",
+        "decode-bounds-control-launch.json",
+        "decode-bounds-comparison.json",
+        "decode-bounds-default-deployment.json",
+        "decode-bounds-production-comparison.json",
+        "checkpoint-core8k-decode-bounds.json"
+      ],
+      "findings": [
+        "Same CUDA binary: on 755.09/14.63 versusoff 779.30/13.79. First 16 attention 607.97?222.12 ms (-63.47%), readback 962.27?555.75 ms, between-MoE 1127.62?769.72 ms at equal 752 calls/76 evals.",
+        "Output arrays differ; accepted 53 each but draft 97 vs 100. CPU 1758.43 on vs 1611.18 off. Observed+6.04% generation is not isolated causality.",
+        "Normal follow-up 775.16/14.49 to 749.28/14.60 (+0.79% generation), different binaries/acceptance."
+      ],
+      "retained_evidence": [
+        "decode-bounds-default-deployment.json explicit default; GGML_CUDA_FATTN_DECODE_BOUNDS=0 override.",
+        "core-engine/ggml/src/ggml-cuda/fattn-common.cuh default enabled.",
+        "checkpoint-core8k-span-evaluation.json retained Flash-attention decode bounds."
+      ],
+      "rollback_or_cleanup_evidence": [],
+      "caveats": [
+        "One fresh-server run per mode; clocks unlocked. Profile adds overhead. Preceding launch-span baseline had identical outputs but predates padded-query guard; it is not same-binary control."
+      ]
+    },
+    {
+      "id": "caller-placement-primary",
+      "name": "Caller placement first sampler",
+      "mechanism": "Sample caller on primary logical-processor masks before gate/up and after down, record worker pin status.",
+      "status": "diagnostic; interpretation corrected",
+      "run_receipts": [
+        "core8k-caller-placement-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "caller-placement-deployment.json",
+        "caller-placement-launch.json",
+        "caller-placement-primary-sampler-analysis.json"
+      ],
+      "findings": [
+        "15 worker affinity successes, 0 failures are valid. Raw 1504 samples:2 worker,349 reserved; totals miss sibling logical processors so physical contention cannot be inferred.",
+        "761.93/14.76 tok/s."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [
+        "Original primary-only sampler archived candidates/moe-caller-primary-sampling.cpp; replaced by corrected sibling masks."
+      ],
+      "caveats": [
+        "Incomplete physical-core samples and no time weighting."
+      ]
+    },
+    {
+      "id": "caller-placement-sibling",
+      "name": "Caller placement corrected sampler",
+      "mechanism": "Count both logical siblings for physical-core sampling without changing worker affinity/numerical work.",
+      "status": "diagnostic; corrected optional counters retained",
+      "run_receipts": [
+        "core8k-caller-sibling-sampling-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "caller-sibling-sampling-deployment.json",
+        "caller-sibling-sampling-launch.json",
+        "caller-sibling-sampling-analysis.json"
+      ],
+      "findings": [
+        "1504 samples: 924 worker cores, 580 reserved (61.44% worker); 15 worker affinity successes, 0 failures.758.85/14.37 tok/s.",
+        "Sample boundaries suggest possible caller overlap, leading to scoped affinity comparison; no time-weighted contention conclusion."
+      ],
+      "retained_evidence": [
+        "core-engine/ggml/src/ggml-cpu/moe.cpp and caller-affinity-rollback.json retain corrected placement source."
+      ],
+      "rollback_or_cleanup_evidence": [],
+      "caveats": [
+        "Sampling records placement at two boundaries, not elapsed CPU contention."
+      ]
+    },
+    {
+      "id": "caller-affinity",
+      "name": "Scoped caller pin to reserved physical core",
+      "mechanism": "Pin caller to reserved physical core only during CPU expert phases; restore prior affinity on normal/exception return.",
+      "status": "rejected and restored",
+      "run_receipts": [
+        "core8k-caller-affinity-dflash4-q8-cache6144.json",
+        "core8k-caller-affinity-off-dflash4-q8-cache6144.json",
+        "core8k-after-caller-evaluation-production-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "caller-affinity-deployment.json",
+        "caller-affinity-launch.json",
+        "caller-affinity-off-launch.json",
+        "caller-affinity-comparison.json",
+        "caller-affinity-rollback.json",
+        "checkpoint-core8k-caller-evaluation.json"
+      ],
+      "findings": [
+        "Same CPU/CUDA binaries: on 762.33/15.35 versusoff 778.58/15.58; generation -1.44% observed. CPU fused 1707.52 on versus 1595.58 off. All 1504 enabled caller samples reserved but no improvement.",
+        "Restored normal engine 780.38/16.09 is a state validation measurement, not an affinity gain."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [
+        "caller-affinity-rollback.json restores CPU source/binary; candidates/moe-caller-affinity-rejected.cpp."
+      ],
+      "caveats": [
+        "Different outputs and 95/54 vs 100/53 draft/accepted; disabled unbound placement varies between launches; samples are not time weighted."
+      ]
+    },
+    {
+      "id": "hybrid-span-graphs-build-fix",
+      "name": "CUDA graph slice build attempt",
+      "mechanism": "GPU-only graph replay between CPU expert calls; first used internal ggml_graph_view then local slice preserving parent dependency counts.",
+      "status": "first build failed; repaired before measured candidate",
+      "run_receipts": [],
+      "artifacts": [
+        "hybrid-span-graphs-first-build-failed.json",
+        "hybrid-span-graphs-deployment.json"
+      ],
+      "findings": [
+        "Windows link failure: ggml_graph_view is internal/nonexported. Archived unexported-view candidate. Build exit-1 produced no speed measurement. Local graph slice subsequently compiled."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [
+        "candidates/ggml-cuda-hybrid-span-graphs-unexported-view.cu preserves failed source."
+      ],
+      "caveats": [
+        "A failed build has no throughput result."
+      ]
+    },
+    {
+      "id": "hybrid-span-graphs",
+      "name": "GPU-only section graph capture/replay",
+      "mechanism": "Reuse graph warmup/property checks/dependency counts and direct fallback for GPU-only spans around CPU experts.",
+      "status": "rejected and rolled back",
+      "run_receipts": [
+        "core8k-hybrid-span-graphs-dflash4-q8-cache6144.json",
+        "core8k-hybrid-span-graphs-off-dflash4-q8-cache6144.json",
+        "core8k-hybrid-span-graphs-production-dflash4-q8-cache6144.json",
+        "core8k-hybrid-span-graphs-off-production-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "hybrid-span-graphs-profile-comparison.json",
+        "hybrid-span-graphs-production-comparison.json",
+        "hybrid-span-graphs-rollback.json",
+        "checkpoint-core8k-span-evaluation.json"
+      ],
+      "findings": [
+        "Same binaries, profile: on 763.89/15.07 vs off 779.10/15.57. Ordinary dispatch 23,776?5944 (-75%); host outsidehybrid 401.45?250.11 ms (-37.70%);576 replayed spans,48 captures. CPU 1781.26 on vs 1611.02 off; no total gain.",
+        "Same binaries unprofiled: on 778.30/15.67 vs off 779.18/16.07 (-2.52% generation observed).",
+        "Attention event timing excludes captured/replayed operations; apparent 48.1 ms versus 216.09 ms is missing coverage, not faster attention."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [
+        "hybrid-span-graphs-rollback.json restores original CUDA source/binary; candidates/ggml-cuda-hybrid-span-graphs-rejected.cu.",
+        "checkpoint-core8k-span-evaluation.json restored production, profileoff/readbackoff, candidate removed."
+      ],
+      "caveats": [
+        "Outputs/draft acceptance/placement/cachemisses differ bothpairs. Faster host dispatch alone does not prove higher throughput."
+      ]
+    },
+    {
+      "id": "phase-drain",
+      "name": "CPU worker phase drain timings",
+      "mechanism": "Measure per-phase wall time, longest worker drain and union/span of active workers without changing jobs/kernels.",
+      "status": "diagnostic; temporary per-worker timers removed",
+      "run_receipts": [
+        "core8k-phase-drain-profile-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "phase-drain-profile-deployment.json",
+        "phase-drain-profile-launch.json",
+        "phase-drain-profile-analysis.json",
+        "paired-gate-up-rollback.json"
+      ],
+      "findings": [
+        "Wall across gate/up, down quantization and down: 1697.30 ms; active drain span 1692.84 ms, outside 4.46 ms (0.263%). Gate/up 1033.78 wall,1031.77 span; down 643.64 wall,642.41 span.764.10/15.86 tok/s.",
+        "Wakeup/phase-boundary gap is too small in this measurement to be the primary target. Active drain includes atomics, dots, decoding, activation math andmemory stalls."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [
+        "paired-gate-up-rollback.json removes temporary per-worker instrumentation, source restored4D86859..."
+      ],
+      "caveats": [
+        "Parallel longest/union intervals are not independent latency addends; varying callerplacement/acceptance."
+      ]
+    },
+    {
+      "id": "paired-gate-up-initial",
+      "name": "Paired IQ 2 gate/up first kernel",
+      "mechanism": "Compute gate and up together to share quantized activation loads/sign work without changing selected experts/weights.",
+      "status": "rejected first form; register rewrite tried",
+      "run_receipts": [
+        "core8k-paired-gate-up-dflash4-q8-cache6144.json",
+        "core8k-paired-gate-up-off-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "paired-gate-up-deployment.json",
+        "paired-gate-up-initial-comparison.json",
+        "candidates/initial-paired-gate-up-moe.cpp",
+        "candidates/initial-paired-gate-up-moe-iq.cpp",
+        "candidates/paired-gate-up-initial.asm"
+      ],
+      "findings": [
+        "Same binaries on 752.03/15.64 vs off 780.07/16.94; -7.66% generation observed. Gate/up 1032.74 on vs 929.85 off; CPU 1761.39 vs 1627.09 ms.",
+        "Assembly spills accumulators/scales to stack; activation reads folded separately intoXORs, so intended sharing was not realized."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [
+        "Initial source preserved then superseded by registers candidate; paired-gate-up-rollback.json restores both."
+      ],
+      "caveats": [
+        "Outputs and 92/55 vs 92/56 acceptance differ; caller worker overlap also differs. Not an isolated kernel speed percentage."
+      ]
+    },
+    {
+      "id": "paired-gate-up-registers",
+      "name": "Paired IQ 2 gate/up register-lifetime rewrite",
+      "mechanism": "Shorten live ranges / explicitly reuse activation registers in paired gate/up AVX 2 calculation.",
+      "status": "rejected and restored",
+      "run_receipts": [
+        "core8k-paired-gate-up-registers-dflash4-q8-cache6144.json",
+        "core8k-paired-gate-up-registers-off-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "paired-gate-up-registers-deployment.json",
+        "paired-gate-up-registers-comparison.json",
+        "paired-gate-up-rollback.json",
+        "candidates/paired-gate-up-registers.asm",
+        "candidates/rejected-paired-gate-up-registers-moe-iq.cpp"
+      ],
+      "findings": [
+        "Assembly now reuses YMM 8/YMM 10 for both VPSIGNB and YMM 11/12 accumulators. Same binaries on 754.83/14.45 vs off 779.52/15.57; -7.18% generation observed.",
+        "Gate/up 1025.68 on vs 1005.28 off; CPU 1740.28 on vs 1701.03 off. Corrected register reuse didnot establish gain."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [
+        "paired-gate-up-rollback.json restores retained CPUthree sources/binary; source timestamps force candidate objects to recompile onnext incremental build."
+      ],
+      "caveats": [
+        "Output arrays,100/53 vs 96/54 draft/accepted, placement/cachetrajectories differ. Source preserves standard floatingpointorder but no standalone equivalence test was authored."
+      ]
+    },
+    {
+      "id": "iq2-expanded144",
+      "name": "Expanded exact IQ 2 CPU cache (144 bytes/block)",
+      "mechanism": "Decode IQ 2 grid/sign payload once at model load into expanded immutable CPU mirror; retain scale/quantized values and original GPU weights.",
+      "status": "rejected and six-file/binary rollback complete",
+      "run_receipts": [
+        "core8k-iq2-weight-cache-on-dflash4-q8-cache6144.json",
+        "core8k-iq2-weight-cache-off-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "iq2-weight-cache-deployment.json",
+        "iq2-weight-cache-comparison.json",
+        "iq2-weight-cache-memory.json",
+        "iq2-weight-cache-rollback.json",
+        "checkpoint-core8k-cache-evaluation.json"
+      ],
+      "findings": [
+        "Expanded block: 144 bytes versus original 82. Additional 38.8125 GiB for 92 tensors; preparation 17797.24 ms before requests; free RAM 28.55 GiB after request.",
+        "Same CPU/CUDA/llama binaries: on 742.72/13.13 vs off 783.67/16.85. First 16 scheduledweight payload 71190.84 vs 50577.87 MiB; gate/up 1412.88 vs 959.00 ms; CPU 2191.80 vs 1685.29 ms.18141 predecoded selections.",
+        "Removing lookups increased CPUphase cost and weight payload. This is distinct from later lossless 328-byte four-row R 4 packing."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [
+        "iq2-weight-cache-rollback.json restores all six sourcefiles plus original CPU/CUDA/llama/server binaries; rejected-iq2-cache-* archives.",
+        "checkpoint-core8k-cache-evaluation.json normal restoredsources/candidate removed."
+      ],
+      "caveats": [
+        "Outputs 100/53 vs 86/56 draft/accepted andcallerplacement differ. Scheduledbytes are not measured DRAM traffic; cannot isolate instruction vsbandwidth vsTLB causes."
+      ]
+    },
+    {
+      "id": "gpu-clock-lock",
+      "name": "Direct SM clock hold attempt",
+      "mechanism": "Request 2400..3120 MHz GPU clock lock using nvidia-smi.",
+      "status": "denied; no clock-held inference comparison",
+      "run_receipts": [],
+      "artifacts": [
+        "gpu-clock-hold-comparison.json"
+      ],
+      "findings": [
+        "Exit 4: current user does not have permission to change clocks. No successful clock hold / no performance comparison."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [],
+      "caveats": [
+        "Do not characterize any subsequent normal run as a clock-held run. No administrator helper launched by this documentation task."
+      ]
+    },
+    {
+      "id": "application-power",
+      "name": "Temporary per-application NVIDIA max-performance policy",
+      "mechanism": "Create an NVAPI application profile for the exact Laguna server path, set prefer maximum performance, read back, then measure the existing request.",
+      "status": "no convincing benefit; policy restored",
+      "run_receipts": [
+        "core8k-application-power-dflash4-q8-cache6144.json"
+      ],
+      "artifacts": [
+        "nvidia-power-profiles-before.json",
+        "laguna-power-profile-change.json",
+        "nvidia-power-profiles-applied.json",
+        "application-power-launch.json",
+        "application-power-gpu.csv",
+        "nvidia-power-profiles-restored.json",
+        "checkpoint-core8k-application-power.json"
+      ],
+      "findings": [
+        "Before: exact server application profile not found (-166); applied: power_value 1 readback; measurement 523.90/12.26 tok/s. Decode remained P 3 at roughly 900 MHz incheckpoint interpretation.",
+        "Restoration readback again found no exact application (-166) and no base power setting (-160), matching the absent profile before. This policy differs from a successful clock lock, which never occurred."
+      ],
+      "retained_evidence": [],
+      "rollback_or_cleanup_evidence": [
+        "nvidia-power-profiles-restored.json",
+        "checkpoint-core8k-application-power.json"
+      ],
+      "caveats": [
+        "No same-binary paired performance control established for policy; generation variation cannot isolate causal power effect. The cause of desktop application windows closing remains unexplained."
+      ]
+    }
+  ],
+  "measurements": {
+    "core8k-internal-timings-dflash4-q8-cache6144.json": {
+      "label": "core8k-internal-timings-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 18732.159,
+        "prompt_per_token_ms": 2.3229363839285715,
+        "prompt_per_second": 430.4896194827302,
+        "predicted_n": 80,
+        "predicted_ms": 6609.604,
+        "predicted_per_token_ms": 82.62005,
+        "predicted_per_second": 12.103599549988168,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "e 7177910 c 3 da 0 c 532 c 76017 b 992 bcdf 495821998 d 3 dfab 8 c 5 bade 165 e 6 d 57 abb",
+      "truncated": false,
+      "receipt_sha256": "500 f 5 f 1 c 2550728285942 e 259 da 2 f 5926377 e 167 f 38 d 4128 d 09 a 2067349560 f 8"
+    },
+    "core8k-gpu-spans-dflash4-q8-cache6144.json": {
+      "label": "core8k-gpu-spans-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 17228.069,
+        "prompt_per_token_ms": 2.136417286706349,
+        "prompt_per_second": 468.07335169135905,
+        "predicted_n": 80,
+        "predicted_ms": 5829.706,
+        "predicted_per_token_ms": 72.871325,
+        "predicted_per_second": 13.722818955192595,
+        "draft_n": 97,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "025 f 253132997 e 7 c 44 d 667413 feea 1 ea 71 f 26 ab 1872 b 6950 de 56 c 1 a 4 af 6196 fb",
+      "truncated": false,
+      "receipt_sha256": "5 e 76909711 c 87463 f 8 b 0 e 740 dd 073 a 3 d 4386 bcb 7962 f 9 bfd 4 ad 81 f 2 dfbad 59 cc"
+    },
+    "core8k-gpu-spans-debug-dflash4-q8-cache6144.json": {
+      "label": "core8k-gpu-spans-debug-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 16714.782,
+        "prompt_per_token_ms": 2.0727656249999997,
+        "prompt_per_second": 482.4472134904302,
+        "predicted_n": 80,
+        "predicted_ms": 5834.054,
+        "predicted_per_token_ms": 72.925675,
+        "predicted_per_second": 13.712591621537955,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "8 e 3 ee 59432 fc 59 d 00920 e 2225 c 220 a 7 e 96 ae 973 a 8164 c 9 c 1 a 7853 b 3 d 1 b 69928 b",
+      "truncated": false,
+      "receipt_sha256": "84 d 67 eeb 470 b 9 e 79 e 268 ef 673 c 92 b 789 d 67 a 3783 fb 4 d 8 f 8 f 21 b 0 ad 538 b 9 f 0258"
+    },
+    "core8k-singleton-iq-dflash4-q8-cache6144.json": {
+      "label": "core8k-singleton-iq-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 16021.951,
+        "prompt_per_token_ms": 1.9868490823412697,
+        "prompt_per_second": 503.309490835417,
+        "predicted_n": 80,
+        "predicted_ms": 6363.862,
+        "predicted_per_token_ms": 79.548275,
+        "predicted_per_second": 12.57098284029415,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "8 e 3 ee 59432 fc 59 d 00920 e 2225 c 220 a 7 e 96 ae 973 a 8164 c 9 c 1 a 7853 b 3 d 1 b 69928 b",
+      "truncated": false,
+      "receipt_sha256": "ef 82034 ec 8 a 2 ffb 31 c 57 a 51708016464061 b 0 ba 7 cd 8 f 58420 f 5 c 1 e 3 ad 7 df 4090"
+    },
+    "core8k-one-readback-wait-dflash4-q8-cache6144.json": {
+      "label": "core8k-one-readback-wait-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 16324.593,
+        "prompt_per_token_ms": 2.024379092261905,
+        "prompt_per_second": 493.9786247657139,
+        "predicted_n": 80,
+        "predicted_ms": 6641.489,
+        "predicted_per_token_ms": 83.01861249999999,
+        "predicted_per_second": 12.045491605873321,
+        "draft_n": 96,
+        "draft_n_accepted": 54
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "64844 f 81 b 537594 dfa 550 a 170733 a 957238 ccaafb 9 cb 41 af 100 d 02 b 9 d 473 c 9 fa",
+      "truncated": false,
+      "receipt_sha256": "ccaef 4 c 6 f 9 b 94 c 4 b 6646222 c 1 ad 749914654 f 4 bb 4 fcc 803 e 8 faca 1566 eaf 1 e 27"
+    },
+    "core8k-cache-capacity-profile-dflash4-q8-cache6144.json": {
+      "label": "core8k-cache-capacity-profile-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 15764.457,
+        "prompt_per_token_ms": 1.9549177827380952,
+        "prompt_per_second": 511.5304637514632,
+        "predicted_n": 80,
+        "predicted_ms": 6894.923,
+        "predicted_per_token_ms": 86.1865375,
+        "predicted_per_second": 11.602740161130153,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "8 e 3 ee 59432 fc 59 d 00920 e 2225 c 220 a 7 e 96 ae 973 a 8164 c 9 c 1 a 7853 b 3 d 1 b 69928 b",
+      "truncated": false,
+      "receipt_sha256": "3 f 13 af 20534 aeb 8 a 6 a 4730799 bb 68 cecd 57 db 746 f 26597 c 2 e 11 b 00 b 3 d 1 dbbafc"
+    },
+    "core8k-transfer-timeline-dflash4-q8-cache6144.json": {
+      "label": "core8k-transfer-timeline-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 16021.93,
+        "prompt_per_token_ms": 1.9868464781746031,
+        "prompt_per_second": 503.3101505249367,
+        "predicted_n": 80,
+        "predicted_ms": 6403.077,
+        "predicted_per_token_ms": 80.03846250000001,
+        "predicted_per_second": 12.493993122369137,
+        "draft_n": 92,
+        "draft_n_accepted": 55
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "3 c 1 b 9877 f 9 e 22 ceb 0 de 7 deb 778264 f 0 a 066 b 908624 aa 328 f 6285 b 9 ce 602 c 9 b 96",
+      "truncated": false,
+      "receipt_sha256": "6 a 808 cf 00 e 2433 e 0 e 7 d 25308838 eb 21 f 4 a 1 e 15 a 17 a 009 fcd 1 a 69817 b 0 cb 5 c 82 a"
+    },
+    "core8k-mapped-metadata-dflash4-q8-cache6144.json": {
+      "label": "core8k-mapped-metadata-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 13909.15,
+        "prompt_per_token_ms": 1.724844990079365,
+        "prompt_per_second": 579.7622428401448,
+        "predicted_n": 80,
+        "predicted_ms": 6808.682,
+        "predicted_per_token_ms": 85.108525,
+        "predicted_per_second": 11.749704274630538,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "8 e 3 ee 59432 fc 59 d 00920 e 2225 c 220 a 7 e 96 ae 973 a 8164 c 9 c 1 a 7853 b 3 d 1 b 69928 b",
+      "truncated": false,
+      "receipt_sha256": "3 e 0226533 dc 68 e 7 f 833323 b 9 a 0 e 7 b 7204 e 9 f 60 dec 67956 e 021 de 481 f 4 a 14 f 6 fb"
+    },
+    "core8k-mapped-metadata-production-dflash4-q8-cache6144.json": {
+      "label": "core8k-mapped-metadata-production-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 13520.228,
+        "prompt_per_token_ms": 1.6766155753968253,
+        "prompt_per_second": 596.4396458402921,
+        "predicted_n": 80,
+        "predicted_ms": 6645.14,
+        "predicted_per_token_ms": 83.06425,
+        "predicted_per_second": 12.03887352260449,
+        "draft_n": 101,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "3 a 034 d 163972 ae 6 d 7393 ec 1 e 39 a 69 fcc 684508 ec 5 f 95 b 57 b 35 ec 3 b 10 f 2779 af 1",
+      "truncated": false,
+      "receipt_sha256": "0 b 3 acc 01 a 08324113735 f 117382 fc 0 fc 67 c 51 eb 4 b 47 e 120 bf 05 e 30 ba 4702 c 9 ff"
+    },
+    "core8k-attention-timeline-dflash4-q8-cache6144.json": {
+      "label": "core8k-attention-timeline-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 13855.42,
+        "prompt_per_token_ms": 1.7181820436507937,
+        "prompt_per_second": 582.0105056360616,
+        "predicted_n": 80,
+        "predicted_ms": 6559.403,
+        "predicted_per_token_ms": 81.9925375,
+        "predicted_per_second": 12.196231882688105,
+        "draft_n": 96,
+        "draft_n_accepted": 55
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "b 3006 a 4 e 484 d 2 c 224 b 70 a 927 b 28 b 1 f 7 babb 5 a 39 bc 0 e 631 a 744 c 8864 d 7 a 3 a 7 c 8 d",
+      "truncated": false,
+      "receipt_sha256": "8580 ec 2416 ed 8 d 32685 c 3 f 3 cd 83 a 6 a 4 f 3 c 4 a 57521 f 0 bcfe 47 ed 1 b 60 b 9 b 7 ce 2 dd"
+    },
+    "core8k-mask-lower-bound-dflash4-q8-cache6144.json": {
+      "label": "core8k-mask-lower-bound-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 12442.738,
+        "prompt_per_token_ms": 1.5429982638888888,
+        "prompt_per_second": 648.0888691861871,
+        "predicted_n": 80,
+        "predicted_ms": 6944.334,
+        "predicted_per_token_ms": 86.804175,
+        "predicted_per_second": 11.520183216993882,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "e 7177910 c 3 da 0 c 532 c 76017 b 992 bcdf 495821998 d 3 dfab 8 c 5 bade 165 e 6 d 57 abb",
+      "truncated": false,
+      "receipt_sha256": "f 367 b 3 e 3343626373731 ceca 3 d 4 e 52523 f 0 a 7 be 976 ae 71 ccc 13 cc 38 f 467 f 4 ab 6"
+    },
+    "core8k-mask-lower-bound-production-dflash4-q8-cache6144.json": {
+      "label": "core8k-mask-lower-bound-production-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 11959.468,
+        "prompt_per_token_ms": 1.4830689484126984,
+        "prompt_per_second": 674.2774845837624,
+        "predicted_n": 80,
+        "predicted_ms": 6396.186,
+        "predicted_per_token_ms": 79.952325,
+        "predicted_per_second": 12.507453660665904,
+        "draft_n": 96,
+        "draft_n_accepted": 54
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "3 c 1 b 9877 f 9 e 22 ceb 0 de 7 deb 778264 f 0 a 066 b 908624 aa 328 f 6285 b 9 ce 602 c 9 b 96",
+      "truncated": false,
+      "receipt_sha256": "912 ed 236 d 8 b 02 abaf 339 e 8383 c 2 c 6 b 6 ff 3 e 43 ecc 76 d 2111 d 735 adcd 408 a 91 c 87"
+    },
+    "core8k-cpu-wait-timing-dflash4-q8-cache6144.json": {
+      "label": "core8k-cpu-wait-timing-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 11244.439,
+        "prompt_per_token_ms": 1.3943996775793652,
+        "prompt_per_second": 717.1544974364662,
+        "predicted_n": 80,
+        "predicted_ms": 6761.828,
+        "predicted_per_token_ms": 84.52285,
+        "predicted_per_second": 11.83112022370282,
+        "draft_n": 100,
+        "draft_n_accepted": 54
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "df 6 aa 00 b 793 d 4 c 50 cf 4958 c 75649 d 35891 abbc 1 e 4 af 680 d 754 bcc 0 d 865 f 17561",
+      "truncated": false,
+      "receipt_sha256": "d 075 b 7 d 69 caa 997716 e 4458 f 691395 a 8 ffa 15707 c 96 de 75 fa 144365 b 7 d 09 d 11 a"
+    },
+    "core8k-cpu-doorbell-control-dflash4-q8-cache6144.json": {
+      "label": "core8k-cpu-doorbell-control-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10938.204,
+        "prompt_per_token_ms": 1.356424107142857,
+        "prompt_per_second": 737.2325475004855,
+        "predicted_n": 80,
+        "predicted_ms": 6764.212,
+        "predicted_per_token_ms": 84.55265,
+        "predicted_per_second": 11.826950426745938,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "8 e 3 ee 59432 fc 59 d 00920 e 2225 c 220 a 7 e 96 ae 973 a 8164 c 9 c 1 a 7853 b 3 d 1 b 69928 b",
+      "truncated": false,
+      "receipt_sha256": "c 268 a 0342 f 5 a 4 dec 6 ee 2626908 c 468 be 06 db 2182 f 611 ff 1 ccec 34 ff 32523 a 389"
+    },
+    "core8k-cpu-doorbell-dflash4-q8-cache6144.json": {
+      "label": "core8k-cpu-doorbell-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 11212.398,
+        "prompt_per_token_ms": 1.3904263392857141,
+        "prompt_per_second": 719.2038670050779,
+        "predicted_n": 80,
+        "predicted_ms": 6117.93,
+        "predicted_per_token_ms": 76.474125,
+        "predicted_per_second": 13.07631829720183,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "8 e 3 ee 59432 fc 59 d 00920 e 2225 c 220 a 7 e 96 ae 973 a 8164 c 9 c 1 a 7853 b 3 d 1 b 69928 b",
+      "truncated": false,
+      "receipt_sha256": "e 74 b 1343 d 74 ad 816162 ca 7 dcb 7184908822067 d 8 dbcf 6 f 541 dd 26 ee 9 f 891 d 3 e 0"
+    },
+    "core8k-cpu-doorbell-production-dflash4-q8-cache6144.json": {
+      "label": "core8k-cpu-doorbell-production-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 11229.962,
+        "prompt_per_token_ms": 1.3926044146825396,
+        "prompt_per_second": 718.0790104187352,
+        "predicted_n": 80,
+        "predicted_ms": 5700.684,
+        "predicted_per_token_ms": 71.25855,
+        "predicted_per_second": 14.033403710852943,
+        "draft_n": 96,
+        "draft_n_accepted": 55
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "791 a 4 a 9235 b 5668 d 63 c 8 dfe 83 df 9951 e 34039 ab 97 a 06 d 9 cffd 1 fa 3 c 6 f 3197131",
+      "truncated": false,
+      "receipt_sha256": "e 8 f 51934246 a 6 ada 8 afba 89942 ec 17 a 51630887 c 60 ff 29 bdb 57 e 28805552 c 241"
+    },
+    "core8k-mask-timing-dflash4-q8-cache6144.json": {
+      "label": "core8k-mask-timing-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 11191.094,
+        "prompt_per_token_ms": 1.3877844742063492,
+        "prompt_per_second": 720.5729841961831,
+        "predicted_n": 80,
+        "predicted_ms": 5638.772,
+        "predicted_per_token_ms": 70.48465,
+        "predicted_per_second": 14.18748621153684,
+        "draft_n": 96,
+        "draft_n_accepted": 55
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "5 d 9 ee 3929 c 74912 f 2 dcedb 03 c 623 c 18 d 2 dc 90 db 69758 ccc 3 d 2 ca 1 ca 8 adbfa 2 f 1",
+      "truncated": false,
+      "receipt_sha256": "ad 601 a 41 b 2 de 8 a 8 c 79 c 21 e 9 dfe 59 c 1 c 40616 a 36 ea 21 b 45 def 992620 f 92 af 3 e 53"
+    },
+    "core8k-contiguous-mask-dflash4-q8-cache6144.json": {
+      "label": "core8k-contiguous-mask-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10688.636,
+        "prompt_per_token_ms": 1.3254756944444446,
+        "prompt_per_second": 754.4461239020582,
+        "predicted_n": 80,
+        "predicted_ms": 5844.84,
+        "predicted_per_token_ms": 73.0605,
+        "predicted_per_second": 13.687286563875144,
+        "draft_n": 96,
+        "draft_n_accepted": 54
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "e 7177910 c 3 da 0 c 532 c 76017 b 992 bcdf 495821998 d 3 dfab 8 c 5 bade 165 e 6 d 57 abb",
+      "truncated": false,
+      "receipt_sha256": "a 780 beffa 83 f 5568 be 25 d 660 b 92321 cdcec 5 a 340 ec 47 ab 5 bd 2 bcaf 17 e 6 eeed 97"
+    },
+    "core8k-contiguous-mask-production-dflash4-q8-cache6144.json": {
+      "label": "core8k-contiguous-mask-production-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10403.054,
+        "prompt_per_token_ms": 1.290061259920635,
+        "prompt_per_second": 775.1569875538471,
+        "predicted_n": 80,
+        "predicted_ms": 5522.063,
+        "predicted_per_token_ms": 69.0257875,
+        "predicted_per_second": 14.487339242598283,
+        "draft_n": 93,
+        "draft_n_accepted": 54
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "b 324 cd 47244 aa 0 e 226 c 11 fed 9429241 a 1 c 572 d 057 fb 0508 a 673 e 20098 ccb 2 ab 0",
+      "truncated": false,
+      "receipt_sha256": "0598 a 327 aaed 7 b 167 a 4 e 52 bb 6 cc 2 bfc 9 bb 6 fd 9904 ea 4 bd 63 c 9123 cd 039 a 25 e 76"
+    },
+    "core8k-input-publication-dflash4-q8-cache6144.json": {
+      "label": "core8k-input-publication-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10739.149,
+        "prompt_per_token_ms": 1.3317397073412698,
+        "prompt_per_second": 750.8974873148701,
+        "predicted_n": 80,
+        "predicted_ms": 5319.443,
+        "predicted_per_token_ms": 66.4930375,
+        "predicted_per_second": 15.03916857460452,
+        "draft_n": 88,
+        "draft_n_accepted": 57
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "df 6 aa 00 b 793 d 4 c 50 cf 4958 c 75649 d 35891 abbc 1 e 4 af 680 d 754 bcc 0 d 865 f 17561",
+      "truncated": false,
+      "receipt_sha256": "81 beadf 925 a 2 a 181 b 30 f 75 d 39 b 1 cb 343 c 1 f 4 ff 262 a 8 f 9 fcdc 5 b 8 edc 60 d 535 dde"
+    },
+    "core8k-input-publication-control-dflash4-q8-cache6144.json": {
+      "label": "core8k-input-publication-control-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10421.541,
+        "prompt_per_token_ms": 1.2923537946428572,
+        "prompt_per_second": 773.7819195836778,
+        "predicted_n": 80,
+        "predicted_ms": 5601.427,
+        "predicted_per_token_ms": 70.0178375,
+        "predicted_per_second": 14.282074906983524,
+        "draft_n": 93,
+        "draft_n_accepted": 54
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "b 324 cd 47244 aa 0 e 226 c 11 fed 9429241 a 1 c 572 d 057 fb 0508 a 673 e 20098 ccb 2 ab 0",
+      "truncated": false,
+      "receipt_sha256": "5 ae 7 f 62151 c 059 a 3 fc 2 f 7 e 2082328254 b 5 a 681518 ec 7 ddd 652 d 9 dc 488 f 4061 e 6"
+    },
+    "core8k-launch-span-profile-dflash4-q8-cache6144.json": {
+      "label": "core8k-launch-span-profile-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10674.485,
+        "prompt_per_token_ms": 1.3237208581349207,
+        "prompt_per_second": 755.4462814833689,
+        "predicted_n": 80,
+        "predicted_ms": 5962.895,
+        "predicted_per_token_ms": 74.53618750000001,
+        "predicted_per_second": 13.416301980833135,
+        "draft_n": 97,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "025 f 253132997 e 7 c 44 d 667413 feea 1 ea 71 f 26 ab 1872 b 6950 de 56 c 1 a 4 af 6196 fb",
+      "truncated": false,
+      "receipt_sha256": "3 a 974 b 18 e 38 f 1 d 7 a 006 a 98002 f 200 b 4 c 1 aa 401 ecb 8 b 7 a 903 db 287 e 12 cfbb 6 a 8 d"
+    },
+    "core8k-decode-bounds-dflash4-q8-cache6144.json": {
+      "label": "core8k-decode-bounds-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10679.518,
+        "prompt_per_token_ms": 1.3243449900793651,
+        "prompt_per_second": 755.0902578187518,
+        "predicted_n": 80,
+        "predicted_ms": 5468.818,
+        "predicted_per_token_ms": 68.360225,
+        "predicted_per_second": 14.628389534996412,
+        "draft_n": 97,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "025 f 253132997 e 7 c 44 d 667413 feea 1 ea 71 f 26 ab 1872 b 6950 de 56 c 1 a 4 af 6196 fb",
+      "truncated": false,
+      "receipt_sha256": "0265 e 1 b 8413 d 472 be 09 cc 69563 d 1 d 01 d 1 e 535 f 5 a 6841154 a 22405 e 1056 dc 99 a 1"
+    },
+    "core8k-decode-bounds-control-dflash4-q8-cache6144.json": {
+      "label": "core8k-decode-bounds-control-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10347.814,
+        "prompt_per_token_ms": 1.2832110615079366,
+        "prompt_per_second": 779.295027916041,
+        "predicted_n": 80,
+        "predicted_ms": 5799.362,
+        "predicted_per_token_ms": 72.492025,
+        "predicted_per_second": 13.794620856570086,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "8 e 3 ee 59432 fc 59 d 00920 e 2225 c 220 a 7 e 96 ae 973 a 8164 c 9 c 1 a 7853 b 3 d 1 b 69928 b",
+      "truncated": false,
+      "receipt_sha256": "11707 b 0 ff 9 e 0 da 6 cc 546 e 9 df 940 b 27 a 1107 bb 39975280 ce 25 cb 313053565 e 575"
+    },
+    "core8k-decode-bounds-production-dflash4-q8-cache6144.json": {
+      "label": "core8k-decode-bounds-production-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10762.35,
+        "prompt_per_token_ms": 1.3346168154761906,
+        "prompt_per_second": 749.2787355921337,
+        "predicted_n": 80,
+        "predicted_ms": 5478.732,
+        "predicted_per_token_ms": 68.48415,
+        "predicted_per_second": 14.601918838154521,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "e 7177910 c 3 da 0 c 532 c 76017 b 992 bcdf 495821998 d 3 dfab 8 c 5 bade 165 e 6 d 57 abb",
+      "truncated": false,
+      "receipt_sha256": "633413 c 9 ca 8 be 0227 c 810 b 88 a 910 e 8179 d 8 e 0 e 7 d 604200 a 0 e 222 f 8134 a 09 a 160"
+    },
+    "core8k-caller-placement-dflash4-q8-cache6144.json": {
+      "label": "core8k-caller-placement-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10583.695,
+        "prompt_per_token_ms": 1.312462177579365,
+        "prompt_per_second": 761.9267184097804,
+        "predicted_n": 80,
+        "predicted_ms": 5418.22,
+        "predicted_per_token_ms": 67.72775,
+        "predicted_per_second": 14.764996622507024,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "e 7177910 c 3 da 0 c 532 c 76017 b 992 bcdf 495821998 d 3 dfab 8 c 5 bade 165 e 6 d 57 abb",
+      "truncated": false,
+      "receipt_sha256": "a 2 bcfbd 6 c 3 f 5 e 9 d 34 a 3892 c 80590 bf 6 fd 230 b 6 a 3 f 9091 e 5 acb 03 b 861627 eef 01"
+    },
+    "core8k-caller-sibling-sampling-dflash4-q8-cache6144.json": {
+      "label": "core8k-caller-sibling-sampling-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10626.652,
+        "prompt_per_token_ms": 1.3177891865079365,
+        "prompt_per_second": 758.846718609022,
+        "predicted_n": 80,
+        "predicted_ms": 5567.58,
+        "predicted_per_token_ms": 69.59475,
+        "predicted_per_second": 14.368899952941854,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "e 7177910 c 3 da 0 c 532 c 76017 b 992 bcdf 495821998 d 3 dfab 8 c 5 bade 165 e 6 d 57 abb",
+      "truncated": false,
+      "receipt_sha256": "b 47 d 9 f 2492 c 1 ab 3 add 905 ef 3 c 15 e 1 e 190457 cc 5 c 99 f 5 fe 9 f 3 bd 85741 fa 4 e 7398"
+    },
+    "core8k-caller-affinity-dflash4-q8-cache6144.json": {
+      "label": "core8k-caller-affinity-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10578.04,
+        "prompt_per_token_ms": 1.3117609126984129,
+        "prompt_per_second": 762.3340429796067,
+        "predicted_n": 80,
+        "predicted_ms": 5210.937,
+        "predicted_per_token_ms": 65.1367125,
+        "predicted_per_second": 15.352325311167647,
+        "draft_n": 95,
+        "draft_n_accepted": 54
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "025 f 253132997 e 7 c 44 d 667413 feea 1 ea 71 f 26 ab 1872 b 6950 de 56 c 1 a 4 af 6196 fb",
+      "truncated": false,
+      "receipt_sha256": "77405 b 20 ede 1 e 8358 dce 486463 cbf 0 f 204 e 7 a 9338 a 3 bcda 0 f 46564 bec 8 b 4 bb 51"
+    },
+    "core8k-caller-affinity-off-dflash4-q8-cache6144.json": {
+      "label": "core8k-caller-affinity-off-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10357.366,
+        "prompt_per_token_ms": 1.2843955853174602,
+        "prompt_per_second": 778.5763291555015,
+        "predicted_n": 80,
+        "predicted_ms": 5135.924,
+        "predicted_per_token_ms": 64.19905,
+        "predicted_per_second": 15.576554481725198,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "8 e 3 ee 59432 fc 59 d 00920 e 2225 c 220 a 7 e 96 ae 973 a 8164 c 9 c 1 a 7853 b 3 d 1 b 69928 b",
+      "truncated": false,
+      "receipt_sha256": "e 4633 f 14 ee 7 b 0 acbf 18 bb 29 f 33264 deaf 8 c 2 c 9 fc 54 f 88 f 9 d 1844 cc 7 fb 7 f 395 ca"
+    },
+    "core8k-after-caller-evaluation-production-dflash4-q8-cache6144.json": {
+      "label": "core8k-after-caller-evaluation-production-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10333.44,
+        "prompt_per_token_ms": 1.2814285714285716,
+        "prompt_per_second": 780.3790412486064,
+        "predicted_n": 80,
+        "predicted_ms": 4970.691,
+        "predicted_per_token_ms": 62.1336375,
+        "predicted_per_second": 16.094341812838497,
+        "draft_n": 93,
+        "draft_n_accepted": 54
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "beb 44 a 941 a 7422 cd 2 dfa 5 a 709 e 5 f 2 ba 13 a 1 e 7886 ea 1831 c 078016 cd 4 ff 314238",
+      "truncated": false,
+      "receipt_sha256": "432 c 574 aef 245 bed 709 d 8977 e 6 bb 4 fcbdee 2151 cdf 3209 e 26 ab 22 eb 8 df 0 a 777 c"
+    },
+    "core8k-hybrid-span-graphs-dflash4-q8-cache6144.json": {
+      "label": "core8k-hybrid-span-graphs-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10556.529,
+        "prompt_per_token_ms": 1.3090933779761906,
+        "prompt_per_second": 763.8874482322741,
+        "predicted_n": 80,
+        "predicted_ms": 5307.08,
+        "predicted_per_token_ms": 66.3385,
+        "predicted_per_second": 15.074202763101368,
+        "draft_n": 96,
+        "draft_n_accepted": 54
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "3 c 1 b 9877 f 9 e 22 ceb 0 de 7 deb 778264 f 0 a 066 b 908624 aa 328 f 6285 b 9 ce 602 c 9 b 96",
+      "truncated": false,
+      "receipt_sha256": "20 dec 85 c 7 acade 945136 e 68 ae 3 cb 7825813 d 0 f 54 df 61 b 50 a 0 b 2 a 6 b 663 ea 09 bd 1"
+    },
+    "core8k-hybrid-span-graphs-off-dflash4-q8-cache6144.json": {
+      "label": "core8k-hybrid-span-graphs-off-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10350.441,
+        "prompt_per_token_ms": 1.283536830357143,
+        "prompt_per_second": 779.0972384654915,
+        "predicted_n": 80,
+        "predicted_ms": 5138.314,
+        "predicted_per_token_ms": 64.228925,
+        "predicted_per_second": 15.569309310408045,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "8 e 3 ee 59432 fc 59 d 00920 e 2225 c 220 a 7 e 96 ae 973 a 8164 c 9 c 1 a 7853 b 3 d 1 b 69928 b",
+      "truncated": false,
+      "receipt_sha256": "5 dc 055 cf 369 b 3460 cf 58 acb 289 fbd 3249 e 06 c 9 e 8 b 449208 e 0 d 0771 c 3 e 51 b 47 eb"
+    },
+    "core8k-hybrid-span-graphs-production-dflash4-q8-cache6144.json": {
+      "label": "core8k-hybrid-span-graphs-production-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10361.022,
+        "prompt_per_token_ms": 1.2848489583333333,
+        "prompt_per_second": 778.3015999772995,
+        "predicted_n": 80,
+        "predicted_ms": 5105.498,
+        "predicted_per_token_ms": 63.81872499999999,
+        "predicted_per_second": 15.669382301197652,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "8 e 3 ee 59432 fc 59 d 00920 e 2225 c 220 a 7 e 96 ae 973 a 8164 c 9 c 1 a 7853 b 3 d 1 b 69928 b",
+      "truncated": false,
+      "receipt_sha256": "95507 b 37 f 7 a 65 d 6 c 3830 d 8959 bc 0 e 283 e 4 b 70 ac 4 d 8 deb 6173 bb 420449 f 3 fbe 15"
+    },
+    "core8k-hybrid-span-graphs-off-production-dflash4-q8-cache6144.json": {
+      "label": "core8k-hybrid-span-graphs-off-production-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10349.311,
+        "prompt_per_token_ms": 1.283396701388889,
+        "prompt_per_second": 779.1823049862934,
+        "predicted_n": 80,
+        "predicted_ms": 4976.944,
+        "predicted_per_token_ms": 62.211800000000004,
+        "predicted_per_second": 16.074120986693842,
+        "draft_n": 96,
+        "draft_n_accepted": 54
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "64844 f 81 b 537594 dfa 550 a 170733 a 957238 ccaafb 9 cb 41 af 100 d 02 b 9 d 473 c 9 fa",
+      "truncated": false,
+      "receipt_sha256": "71 a 0210 e 8782 fec 0755 cdc 3 f 80 a 284977 eedfdf 57423 c 186 a 396 adc 46 fca 6 c 1 b"
+    },
+    "core8k-phase-drain-profile-dflash4-q8-cache6144.json": {
+      "label": "core8k-phase-drain-profile-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10553.635,
+        "prompt_per_token_ms": 1.3087344990079366,
+        "prompt_per_second": 764.0969201606839,
+        "predicted_n": 80,
+        "predicted_ms": 5042.786,
+        "predicted_per_token_ms": 63.034825,
+        "predicted_per_second": 15.864246470106009,
+        "draft_n": 89,
+        "draft_n_accepted": 55
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "beb 44 a 941 a 7422 cd 2 dfa 5 a 709 e 5 f 2 ba 13 a 1 e 7886 ea 1831 c 078016 cd 4 ff 314238",
+      "truncated": false,
+      "receipt_sha256": "1175927 cbb 7 b 166 f 151 d 13 b 6 b 0 ed 8 b 3 a 6 f 44 a 570 e 22 f 01382 a 8 a 4704 f 0 bfcce 0"
+    },
+    "core8k-paired-gate-up-dflash4-q8-cache6144.json": {
+      "label": "core8k-paired-gate-up-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10722.982,
+        "prompt_per_token_ms": 1.329734871031746,
+        "prompt_per_second": 752.0296126581206,
+        "predicted_n": 80,
+        "predicted_ms": 5115.064,
+        "predicted_per_token_ms": 63.938300000000005,
+        "predicted_per_second": 15.640078012709127,
+        "draft_n": 92,
+        "draft_n_accepted": 55
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "3 c 1 b 9877 f 9 e 22 ceb 0 de 7 deb 778264 f 0 a 066 b 908624 aa 328 f 6285 b 9 ce 602 c 9 b 96",
+      "truncated": false,
+      "receipt_sha256": "bdd 72270 d 44 d 379 fe 0 bdc 7 c 0208 ecd 24 a 24 e 69 a 4751087993 ee 0 a 1 cd 8971 f 13 a"
+    },
+    "core8k-paired-gate-up-off-dflash4-q8-cache6144.json": {
+      "label": "core8k-paired-gate-up-off-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10337.6,
+        "prompt_per_token_ms": 1.2819444444444446,
+        "prompt_per_second": 780.0650054171181,
+        "predicted_n": 80,
+        "predicted_ms": 4723.471,
+        "predicted_per_token_ms": 59.043387499999994,
+        "predicted_per_second": 16.9366976107189,
+        "draft_n": 92,
+        "draft_n_accepted": 56
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "791 a 4 a 9235 b 5668 d 63 c 8 dfe 83 df 9951 e 34039 ab 97 a 06 d 9 cffd 1 fa 3 c 6 f 3197131",
+      "truncated": false,
+      "receipt_sha256": "618754 cbe 9 e 31156703 d 6 de 93 e 8 b 935 c 96 a 4 fde 9 e 667 c 7 d 9 cc 298 a 901 f 6587 aa"
+    },
+    "core8k-paired-gate-up-registers-dflash4-q8-cache6144.json": {
+      "label": "core8k-paired-gate-up-registers-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10683.264,
+        "prompt_per_token_ms": 1.3248095238095237,
+        "prompt_per_second": 754.8254915351713,
+        "predicted_n": 80,
+        "predicted_ms": 5536.761,
+        "predicted_per_token_ms": 69.2095125,
+        "predicted_per_second": 14.448880852902988,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "8 e 3 ee 59432 fc 59 d 00920 e 2225 c 220 a 7 e 96 ae 973 a 8164 c 9 c 1 a 7853 b 3 d 1 b 69928 b",
+      "truncated": false,
+      "receipt_sha256": "d 2 cc 10 f 9 a 107 c 9 caca 51 b 1 d 63819 d 8 b 7 b 539 bd 3442 ca 687 c 689 d 6 cee 817972 f 0"
+    },
+    "core8k-paired-gate-up-registers-off-dflash4-q8-cache6144.json": {
+      "label": "core8k-paired-gate-up-registers-off-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10344.861,
+        "prompt_per_token_ms": 1.2828448660714287,
+        "prompt_per_second": 779.5174821585325,
+        "predicted_n": 80,
+        "predicted_ms": 5139.49,
+        "predicted_per_token_ms": 64.243625,
+        "predicted_per_second": 15.565746795888309,
+        "draft_n": 96,
+        "draft_n_accepted": 54
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "3 c 1 b 9877 f 9 e 22 ceb 0 de 7 deb 778264 f 0 a 066 b 908624 aa 328 f 6285 b 9 ce 602 c 9 b 96",
+      "truncated": false,
+      "receipt_sha256": "aa 2 ba 929 fa 43 b 48 b 20827081 d 214 fd 43 ab 8 b 1 c 756 f 32 ad 3786885 a 2 cd 8 e 8984 b"
+    },
+    "core8k-iq2-weight-cache-on-dflash4-q8-cache6144.json": {
+      "label": "core8k-iq2-weight-cache-on-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10857.428,
+        "prompt_per_token_ms": 1.346407242063492,
+        "prompt_per_second": 742.7173360025967,
+        "predicted_n": 80,
+        "predicted_ms": 6093.773,
+        "predicted_per_token_ms": 76.1721625,
+        "predicted_per_second": 13.128155577833308,
+        "draft_n": 100,
+        "draft_n_accepted": 53
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "8 e 3 ee 59432 fc 59 d 00920 e 2225 c 220 a 7 e 96 ae 973 a 8164 c 9 c 1 a 7853 b 3 d 1 b 69928 b",
+      "truncated": false,
+      "receipt_sha256": "47 fdd 386 da 50 c 069 b 2 c 8 ba 8 f 6074 bde 4 fb 271 c 56 bc 22 a 8929390 e 423 edee 3716"
+    },
+    "core8k-iq2-weight-cache-off-dflash4-q8-cache6144.json": {
+      "label": "core8k-iq2-weight-cache-off-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 10290.038,
+        "prompt_per_token_ms": 1.2760463789682541,
+        "prompt_per_second": 783.6705753661939,
+        "predicted_n": 80,
+        "predicted_ms": 4748.556,
+        "predicted_per_token_ms": 59.35695,
+        "predicted_per_second": 16.84722682011121,
+        "draft_n": 86,
+        "draft_n_accepted": 56
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "e 422 d 9 fb 4 dcca 93 c 2 bde 87 f 66 e 7 d 8 e 544 cf 9 afb 7 c 39 b 71 f 594978 d 77 e 1 cb 5 f 70",
+      "truncated": false,
+      "receipt_sha256": "8 d 94 dfcb 4 d 8 f 8299 f 0 b 6 d 1 e 63 d 2 c 7 ec 8659755 acc 15 a 525 a 023 b 776 d 30958 e 63"
+    },
+    "core8k-application-power-dflash4-q8-cache6144.json": {
+      "label": "core8k-application-power-dflash4-q8-cache6144",
+      "request_sha256": "046 c 2 c 8571 b 339 b 0763 d 886 fb 3937 d 35 e 465568 a 732 f 29947 b 40 ad 3 a 8 ed 0363 c",
+      "prompt_cache_disabled": true,
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 8064,
+        "prompt_ms": 15392.386,
+        "prompt_per_token_ms": 1.9087780257936509,
+        "prompt_per_second": 523.8953856796471,
+        "predicted_n": 80,
+        "predicted_ms": 6527.368,
+        "predicted_per_token_ms": 81.5921,
+        "predicted_per_second": 12.256088518373714,
+        "draft_n": 96,
+        "draft_n_accepted": 54
+      },
+      "checkpoint_order_correct": true,
+      "actual_output_token_count": 80,
+      "output_tokens_sha256": "8 e 3 ee 59432 fc 59 d 00920 e 2225 c 220 a 7 e 96 ae 973 a 8164 c 9 c 1 a 7853 b 3 d 1 b 69928 b",
+      "truncated": false,
+      "receipt_sha256": "5 ecf 757 ead 083 c 8 a 05 dc 28474 c 1 f 5 a 746804539 b 37 d 9 ac 72 c 2503 a 5 fae 94 cb 33"
+    }
+  },
+  "paired_output_comparability": [
+    {
+      "id": "cpu-doorbell",
+      "candidate": "core8k-cpu-doorbell-dflash4-q8-cache6144.json",
+      "control": "core8k-cpu-doorbell-control-dflash4-q8-cache6144.json",
+      "same_request_sha256": true,
+      "same_actual_output_tokens": true,
+      "candidate_draft_accepted": [
+        100,
+        53
+      ],
+      "control_draft_accepted": [
+        100,
+        53
+      ]
+    },
+    {
+      "id": "input-publication",
+      "candidate": "core8k-input-publication-dflash4-q8-cache6144.json",
+      "control": "core8k-input-publication-control-dflash4-q8-cache6144.json",
+      "same_request_sha256": true,
+      "same_actual_output_tokens": false,
+      "candidate_draft_accepted": [
+        88,
+        57
+      ],
+      "control_draft_accepted": [
+        93,
+        54
+      ]
+    },
+    {
+      "id": "decode-bounds",
+      "candidate": "core8k-decode-bounds-dflash4-q8-cache6144.json",
+      "control": "core8k-decode-bounds-control-dflash4-q8-cache6144.json",
+      "same_request_sha256": true,
+      "same_actual_output_tokens": false,
+      "candidate_draft_accepted": [
+        97,
+        53
+      ],
+      "control_draft_accepted": [
+        100,
+        53
+      ]
+    },
+    {
+      "id": "caller-affinity",
+      "candidate": "core8k-caller-affinity-dflash4-q8-cache6144.json",
+      "control": "core8k-caller-affinity-off-dflash4-q8-cache6144.json",
+      "same_request_sha256": true,
+      "same_actual_output_tokens": false,
+      "candidate_draft_accepted": [
+        95,
+        54
+      ],
+      "control_draft_accepted": [
+        100,
+        53
+      ]
+    },
+    {
+      "id": "hybrid-span-graphs-profile",
+      "candidate": "core8k-hybrid-span-graphs-dflash4-q8-cache6144.json",
+      "control": "core8k-hybrid-span-graphs-off-dflash4-q8-cache6144.json",
+      "same_request_sha256": true,
+      "same_actual_output_tokens": false,
+      "candidate_draft_accepted": [
+        96,
+        54
+      ],
+      "control_draft_accepted": [
+        100,
+        53
+      ]
+    },
+    {
+      "id": "hybrid-span-graphs-production",
+      "candidate": "core8k-hybrid-span-graphs-production-dflash4-q8-cache6144.json",
+      "control": "core8k-hybrid-span-graphs-off-production-dflash4-q8-cache6144.json",
+      "same_request_sha256": true,
+      "same_actual_output_tokens": false,
+      "candidate_draft_accepted": [
+        100,
+        53
+      ],
+      "control_draft_accepted": [
+        96,
+        54
+      ]
+    },
+    {
+      "id": "paired-gate-up-initial",
+      "candidate": "core8k-paired-gate-up-dflash4-q8-cache6144.json",
+      "control": "core8k-paired-gate-up-off-dflash4-q8-cache6144.json",
+      "same_request_sha256": true,
+      "same_actual_output_tokens": false,
+      "candidate_draft_accepted": [
+        92,
+        55
+      ],
+      "control_draft_accepted": [
+        92,
+        56
+      ]
+    },
+    {
+      "id": "paired-gate-up-registers",
+      "candidate": "core8k-paired-gate-up-registers-dflash4-q8-cache6144.json",
+      "control": "core8k-paired-gate-up-registers-off-dflash4-q8-cache6144.json",
+      "same_request_sha256": true,
+      "same_actual_output_tokens": false,
+      "candidate_draft_accepted": [
+        100,
+        53
+      ],
+      "control_draft_accepted": [
+        96,
+        54
+      ]
+    },
+    {
+      "id": "iq2-expanded144",
+      "candidate": "core8k-iq2-weight-cache-on-dflash4-q8-cache6144.json",
+      "control": "core8k-iq2-weight-cache-off-dflash4-q8-cache6144.json",
+      "same_request_sha256": true,
+      "same_actual_output_tokens": false,
+      "candidate_draft_accepted": [
+        100,
+        53
+      ],
+      "control_draft_accepted": [
+        86,
+        56
+      ]
+    }
+  ],
+  "launch_evidence": {
+    "after-transfer-timeline-production-launch.json": {
+      "timestamp": "2026-10-11 T 02:35:49.2242240-05:00",
+      "stopped_native_pid": 28876,
+      "wrapper_pid": 15988,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-after-transfer-timeline-20261011-023549.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-after-transfer-timeline-20261011-023549.stderr.log",
+      "source_sha256": "1 E 32271 CBACD 3 ACABA 0 E 174989 F 1578 D 0 C 14 F 9819 EBD 60 E 5 CADC 36 BB 8 FA 29 B 32",
+      "cuda_dll_sha256": "183 E 597489 E 0 C 44 BB 6 F 719 BF 3 C 5 A 948 B 7 A 25 DB 1 A 1 D 041 A 5 CDC 4 A 3 A 7383 A 33633",
+      "archived_timeline_source": "candidates/moe-hybrid-transfer-timeline.cu",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": false,
+      "timeline": false,
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "application-power-launch.json": {
+      "at": "2026-10-11 T 01:10:53.1064087-05:00",
+      "stopped_native_pid": 18264,
+      "wrapper_pid": 33044,
+      "stdout": "E:\\poolside\\logs\\core 8 k-application-power-20261011-011053.stdout.log",
+      "stderr": "E:\\poolside\\logs\\core 8 k-application-power-20261011-011053.stderr.log",
+      "settings": "8192 context; 6144 MiB base cache; 8192 batch; DFlash 4 q 8; phase memory; profile; pinned; adaptive; GPU misses 0",
+      "application_power_policy": "prefer maximum performance",
+      "source_sha256": "7 EA 4 B 2 B 7192835 BD 744972 D 5934 CB 0 D 666 FF 538 B 933 E 0 E 62 C 10166605 CA 53 BAD",
+      "cuda_dll_sha256": "5 B 54 E 8045667 AEF 5030 BB 0 CF 8 F 2 A 0 AEF 327 C 7648 E 73 E 0 BCDECDCE 314 C 4148 F 12"
+    },
+    "attention-timeline-launch.json": {
+      "timestamp": "2026-10-11 T 02:58:13.9467118-05:00",
+      "wrapper_pid": 24984,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-attention-timeline-20261011-025813.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-attention-timeline-20261011-025813.stderr.log",
+      "source_sha256": "25 D 9 DA 6 EAAEE 6 E 51 EAAC 67 DD 1 F 617 E 5 C 749914811503114 F 090 C 34 B 97 C 33 D 6 AE",
+      "cuda_dll_sha256": "B 67 F 08 D 29 DF 7788 EC 217652 DDB 041594298 BA 39 AA 63 AB 232 C 9 C 799069 B 7 CB 1 E 1",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "timeline": true,
+      "attention_timing": true,
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "cache-capacity-profile-launch.json": {
+      "at": "2026-10-11 T 01:39:54.1073702-05:00",
+      "wrapper_pid": 15192,
+      "stdout": "E:\\poolside\\logs\\core 8 k-cache-capacity-profile-20261011-013954.stdout.log",
+      "stderr": "E:\\poolside\\logs\\core 8 k-cache-capacity-profile-20261011-013954.stderr.log",
+      "settings": "8192 context; 6144 MiB base cache; 8192 batch; DFlash 4 q 8; phase memory; profile; pinned; adaptive; GPU misses 0",
+      "source_sha256": "1 E 32271 CBACD 3 ACABA 0 E 174989 F 1578 D 0 C 14 F 9819 EBD 60 E 5 CADC 36 BB 8 FA 29 B 32",
+      "cuda_dll_sha256": "8630 FE 53 C 842 BEC 768 FA 0 D 99 DB 2 C 69 FD 053 C 9 F 92 EC 00 D 0 DA 8 BE 8212894 C 87518"
+    },
+    "caller-affinity-launch.json": {
+      "timestamp": "2026-10-11 T 05:36:04.2889745-05:00",
+      "wrapper_pid": 17672,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-caller-affinity-20261011-053604.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-caller-affinity-20261011-053604.stderr.log",
+      "cpu_source_sha256": "A 3 B 044 B 3 D 30561 D 6123 FC 4094 DDDCDF 2 DBC 5 FECE 65 D 8 D 2 C 0 DD 744 CBD 2 F 1 AA 0 DE",
+      "cpu_dll_sha256": "4722 ACEF 13 E 0 B 0 F 4 DC 19 DD 137677 D 293 D 7 B 234 E 9 A 182 AF 0365731198 CBEF 04 A 7",
+      "cuda_dll_sha256": "941 E 44 CE 64569042 CA 73 B 5 FDA 0109 F 8411 E 9490816 CB 9 F 1 FF 103956 FF 797857 C",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "readback_span": true,
+      "caller_affinity": 1,
+      "decode_bounds": "engine default enabled",
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "caller-affinity-off-launch.json": {
+      "timestamp": "2026-10-11 T 05:41:47.8844613-05:00",
+      "wrapper_pid": 27604,
+      "stopped_native_pids": [
+        23060
+      ],
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-caller-affinity-off-20261011-054147.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-caller-affinity-off-20261011-054147.stderr.log",
+      "cpu_source_sha256": "A 3 B 044 B 3 D 30561 D 6123 FC 4094 DDDCDF 2 DBC 5 FECE 65 D 8 D 2 C 0 DD 744 CBD 2 F 1 AA 0 DE",
+      "cpu_dll_sha256": "4722 ACEF 13 E 0 B 0 F 4 DC 19 DD 137677 D 293 D 7 B 234 E 9 A 182 AF 0365731198 CBEF 04 A 7",
+      "cuda_dll_sha256": "941 E 44 CE 64569042 CA 73 B 5 FDA 0109 F 8411 E 9490816 CB 9 F 1 FF 103956 FF 797857 C",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "readback_span": true,
+      "caller_affinity": 0,
+      "decode_bounds": "engine default enabled",
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "caller-evaluation-production-launch.json": {
+      "timestamp": "2026-10-11 T 05:44:22.3071311-05:00",
+      "wrapper_pid": 21412,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-after-caller-evaluation-production-20261011-054422.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-after-caller-evaluation-production-20261011-054422.stderr.log",
+      "cpu_source_sha256": "4 D 86859 B 32305 BE 249 DE 05 D 08 D 8 B 4 E 6 E 1133 D 552653 E 0 FBB 2 D 724 BDF 459 F 0 B 9 E",
+      "cpu_dll_sha256": "3 D 48 ABD 4 F 81 B 0203585 F 22464367 C 9901 DDE 7 A 8 BD 9 BDA 274 E 9 B 9 B 556 AC 37 E 26 F",
+      "cuda_dll_sha256": "941 E 44 CE 64569042 CA 73 B 5 FDA 0109 F 8411 E 9490816 CB 9 F 1 FF 103956 FF 797857 C",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": false,
+      "readback_span": false,
+      "caller_affinity": "candidate removed",
+      "decode_bounds": "engine default enabled",
+      "timeline": false,
+      "verbosity": 3,
+      "cpu_doorbell": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "caller-placement-launch.json": {
+      "timestamp": "2026-10-11 T 05:20:14.0917625-05:00",
+      "wrapper_pid": 27772,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-caller-placement-20261011-052014.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-caller-placement-20261011-052014.stderr.log",
+      "cpu_source_sha256": "1 B 75 ACECCB 3151 A 4 F 073 E 01 DAD 0 AA 09 CDEF 54 A 8 E 587 CF 29 C 14 D 865 B 7 F 09522 B 6",
+      "cpu_dll_sha256": "671 CDC 04 A 7554 EF 36 BC 2 F 13465 F 78 DA 67 B 684 B 251230 A 92 CB 38 F 80 CDD 63 E 91 E 2",
+      "cuda_dll_sha256": "941 E 44 CE 64569042 CA 73 B 5 FDA 0109 F 8411 E 9490816 CB 9 F 1 FF 103956 FF 797857 C",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "readback_span": true,
+      "decode_bounds": "engine default enabled",
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "caller-sibling-sampling-launch.json": {
+      "timestamp": "2026-10-11 T 05:27:09.6350181-05:00",
+      "wrapper_pid": 10096,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-caller-sibling-sampling-20261011-052709.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-caller-sibling-sampling-20261011-052709.stderr.log",
+      "cpu_source_sha256": "4 D 86859 B 32305 BE 249 DE 05 D 08 D 8 B 4 E 6 E 1133 D 552653 E 0 FBB 2 D 724 BDF 459 F 0 B 9 E",
+      "cpu_dll_sha256": "3 D 48 ABD 4 F 81 B 0203585 F 22464367 C 9901 DDE 7 A 8 BD 9 BDA 274 E 9 B 9 B 556 AC 37 E 26 F",
+      "cuda_dll_sha256": "941 E 44 CE 64569042 CA 73 B 5 FDA 0109 F 8411 E 9490816 CB 9 F 1 FF 103956 FF 797857 C",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "readback_span": true,
+      "decode_bounds": "engine default enabled",
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "contiguous-mask-launch.json": {
+      "timestamp": "2026-10-11 T 04:18:15.0020522-05:00",
+      "wrapper_pid": 17516,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-contiguous-mask-20261011-041814.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-contiguous-mask-20261011-041814.stderr.log",
+      "mask_source_sha256": "062 FE 7 E 82 FA 79841 BCC 759 F 68 B 2 A 57 EF 8 F 57 E 8089 F 577 DDFDD 55 D 6 F 79 D 49 CDC 7",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "cuda_dll_sha256": "140 CC 1 E 7312 FF 2456 D 73 B 79 AC 160 CA 362750 B 6 F 1024 B 76102 B 45 E 3527 FC 1 DEA 1",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "contiguous-mask-production-launch.json": {
+      "timestamp": "2026-10-11 T 04:37:42.3187858-05:00",
+      "wrapper_pid": 12664,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-contiguous-mask-production-20261011-043742.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-contiguous-mask-production-20261011-043742.stderr.log",
+      "moe_source_sha256": "3191 A 8 F 8 CFC 6 D 98108 AA 49 B 1485 D 3 F 5 CE 871507 F 533259 CCAA 180 BD 4 DFCE 14 F 3",
+      "mask_source_sha256": "062 FE 7 E 82 FA 79841 BCC 759 F 68 B 2 A 57 EF 8 F 57 E 8089 F 577 DDFDD 55 D 6 F 79 D 49 CDC 7",
+      "cuda_dll_sha256": "140 CC 1 E 7312 FF 2456 D 73 B 79 AC 160 CA 362750 B 6 F 1024 B 76102 B 45 E 3527 FC 1 DEA 1",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": false,
+      "timeline": false,
+      "verbosity": 3,
+      "cpu_doorbell": "engine default enabled",
+      "input_publication_candidate": "reverted",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "core8k-gpu-spans-launch.json": {
+      "wrapper_pid": 2672,
+      "stdout": "E:\\poolside\\logs\\core 8 k-gpu-spans-20261010-234610.stdout.log",
+      "stderr": "E:\\poolside\\logs\\core 8 k-gpu-spans-20261010-234610.stderr.log",
+      "context": 8192,
+      "expert_cache_mib": 6144,
+      "batch": 8192,
+      "draft_max": 4,
+      "draft_kv": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "gpu_spans": "Replay GPU-only spans around hybrid expert operations during decode."
+    },
+    "core8k-internal-timings-launch.json": {
+      "wrapper_pid": 15584,
+      "stdout": "E:\\poolside\\logs\\core 8 k-internal-timings-20261010-232613.stdout.log",
+      "stderr": "E:\\poolside\\logs\\core 8 k-internal-timings-20261010-232613.stderr.log",
+      "context": 8192,
+      "expert_cache_mib": 6144,
+      "batch": 8192,
+      "draft_max": 4,
+      "draft_kv": "q 8_0",
+      "gpu_misses_per_token": 0
+    },
+    "cpu-doorbell-control-launch.json": {
+      "timestamp": "2026-10-11 T 03:53:32.0243240-05:00",
+      "stopped_native_pid": 3720,
+      "wrapper_pid": 30280,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-cpu-doorbell-control-20261011-035331.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-cpu-doorbell-control-20261011-035331.stderr.log",
+      "source_sha256": "ACC 5578406 C 773 B 6465 D 04 C 146 F 2 E 1 C 3 F 003348254427 A 200676 EB 4 A 3 EB 24872",
+      "llama_common_dll_sha256": "F 6 D 0457994 F 82 EAB 6 C 33 AE 2 FFD 091 C 6 F 1327 A 0638 AB 8 C 3 F 9 A 930596453370 B 58",
+      "cuda_dll_sha256": "8134 E 2353 E 04 AEF 1 AB 0 F 85 C 59331 C 247 B 42 B 56 C 3 EF 54 B 5 B 7 F 3 C 646 BF 7 F 51 CDB 4",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "timeline": false,
+      "verbosity": 5,
+      "cpu_doorbell": false,
+      "pin_experts": true,
+      "adaptive_cache": true,
+      "telemetry_pid": 33108,
+      "telemetry_executable": "C:\\Windows\\system 32\\nvidia-smi.exe",
+      "telemetry_csv": "C:\\code\\poolside-strata\\performance\\cpu-doorbell-control-gpu.csv"
+    },
+    "cpu-doorbell-launch.json": {
+      "timestamp": "2026-10-11 T 03:51:28.5067263-05:00",
+      "wrapper_pid": 14224,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-cpu-doorbell-20261011-035128.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-cpu-doorbell-20261011-035128.stderr.log",
+      "source_sha256": "ACC 5578406 C 773 B 6465 D 04 C 146 F 2 E 1 C 3 F 003348254427 A 200676 EB 4 A 3 EB 24872",
+      "llama_common_dll_sha256": "F 6 D 0457994 F 82 EAB 6 C 33 AE 2 FFD 091 C 6 F 1327 A 0638 AB 8 C 3 F 9 A 930596453370 B 58",
+      "cuda_dll_sha256": "8134 E 2353 E 04 AEF 1 AB 0 F 85 C 59331 C 247 B 42 B 56 C 3 EF 54 B 5 B 7 F 3 C 646 BF 7 F 51 CDB 4",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "timeline": false,
+      "verbosity": 5,
+      "cpu_doorbell": true,
+      "pin_experts": true,
+      "adaptive_cache": true,
+      "telemetry_pid": 9676,
+      "telemetry_executable": "C:\\Windows\\system 32\\nvidia-smi.exe",
+      "telemetry_csv": "C:\\code\\poolside-strata\\performance\\cpu-doorbell-gpu.csv"
+    },
+    "cpu-doorbell-production-launch.json": {
+      "timestamp": "2026-10-11 T 03:58:51.9327888-05:00",
+      "wrapper_pid": 11368,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-cpu-doorbell-production-20261011-035851.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-cpu-doorbell-production-20261011-035851.stderr.log",
+      "source_sha256": "3191 A 8 F 8 CFC 6 D 98108 AA 49 B 1485 D 3 F 5 CE 871507 F 533259 CCAA 180 BD 4 DFCE 14 F 3",
+      "llama_common_dll_sha256": "F 6 D 0457994 F 82 EAB 6 C 33 AE 2 FFD 091 C 6 F 1327 A 0638 AB 8 C 3 F 9 A 930596453370 B 58",
+      "llama_dll_sha256": "00151 E 0 ED 94 A 6 EC 45 A 2 B 8 EF 1365 D 8869 B 2 C 63 B 4 B 3 A 9684011 FAD 0 F 84502 C 83 AD",
+      "cuda_dll_sha256": "140 CC 1 E 7312 FF 2456 D 73 B 79 AC 160 CA 362750 B 6 F 1024 B 76102 B 45 E 3527 FC 1 DEA 1",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": false,
+      "timeline": false,
+      "verbosity": 3,
+      "cpu_doorbell": "engine default enabled",
+      "cpu_doorbell_environment_override": null,
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "cpu-wait-timing-launch.json": {
+      "timestamp": "2026-10-11 T 03:42:35.5135947-05:00",
+      "wrapper_pid": 20828,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-cpu-wait-timing-20261011-034235.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-cpu-wait-timing-20261011-034235.stderr.log",
+      "source_sha256": "5 D 3 BEA 69 E 54 B 1 A 14 BF 58 E 9 BEBE 802 A 62 F 2 F 542 EABD 97 B 0 F 95875 BDED 5 DE 528 F 3",
+      "llama_common_dll_sha256": "F 6 D 0457994 F 82 EAB 6 C 33 AE 2 FFD 091 C 6 F 1327 A 0638 AB 8 C 3 F 9 A 930596453370 B 58",
+      "cuda_dll_sha256": "4 E 905 EFA 528 A 8 AEC 60002 F 5 AD 43 B 748056873905 EADE 6 F 46767549784 E 0 A 609 C",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "timeline": false,
+      "verbosity": 5,
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "decode-bounds-control-launch.json": {
+      "timestamp": "2026-10-11 T 05:01:14.9441516-05:00",
+      "stopped_native_pids": [
+        17040
+      ],
+      "wrapper_pid": 29728,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-decode-bounds-control-20261011-050114.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-decode-bounds-control-20261011-050114.stderr.log",
+      "attention_source_sha256": "9 D 2 E 36 F 4 D 5 BD 4 B 0947 CD 9 D 4 C 7267 C 754581850 EE 049 F 655 BA 985231308 CC 7007",
+      "moe_source_sha256": "96394 D 6 A 50 EE 5 CAE 22 CDA 56 D 365 B 96 FFF 93 C 27 F 953 C 74 ED 5 BA 1 BBC 0 B 143 DEBC 7",
+      "cuda_source_sha256": "29 BF 88 D 604 B 7551 B 765 F 4 C 0464220 B 78501 CDDA 9 AFC 30036739598 C 83984 BDC 6",
+      "cuda_dll_sha256": "6 C 54939 A 8170096 A 0 D 00 C 2472 D 0 A 64 D 5 A 6778 DF 451 A 41 D 6 B 39 ABCDB 7 A 1199709",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "readback_span": true,
+      "decode_bounds": 0,
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "decode-bounds-launch.json": {
+      "timestamp": "2026-10-11 T 04:59:30.9916322-05:00",
+      "wrapper_pid": 29976,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-decode-bounds-20261011-045930.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-decode-bounds-20261011-045930.stderr.log",
+      "attention_source_sha256": "9 D 2 E 36 F 4 D 5 BD 4 B 0947 CD 9 D 4 C 7267 C 754581850 EE 049 F 655 BA 985231308 CC 7007",
+      "moe_source_sha256": "96394 D 6 A 50 EE 5 CAE 22 CDA 56 D 365 B 96 FFF 93 C 27 F 953 C 74 ED 5 BA 1 BBC 0 B 143 DEBC 7",
+      "cuda_source_sha256": "29 BF 88 D 604 B 7551 B 765 F 4 C 0464220 B 78501 CDDA 9 AFC 30036739598 C 83984 BDC 6",
+      "cuda_dll_sha256": "6 C 54939 A 8170096 A 0 D 00 C 2472 D 0 A 64 D 5 A 6778 DF 451 A 41 D 6 B 39 ABCDB 7 A 1199709",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "readback_span": true,
+      "decode_bounds": 1,
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "decode-bounds-production-launch.json": {
+      "timestamp": "2026-10-11 T 05:09:51.2611684-05:00",
+      "wrapper_pid": 31060,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-decode-bounds-production-20261011-050951.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-decode-bounds-production-20261011-050951.stderr.log",
+      "attention_source_sha256": "9 D 84509 C 1 C 955 A 3 D 090 E 1 E 692901 C 2 D 1723 BE 0693322 CD 1 EEB 51 BDDA 289 B 7935",
+      "moe_source_sha256": "96394 D 6 A 50 EE 5 CAE 22 CDA 56 D 365 B 96 FFF 93 C 27 F 953 C 74 ED 5 BA 1 BBC 0 B 143 DEBC 7",
+      "cuda_source_sha256": "29 BF 88 D 604 B 7551 B 765 F 4 C 0464220 B 78501 CDDA 9 AFC 30036739598 C 83984 BDC 6",
+      "cuda_dll_sha256": "941 E 44 CE 64569042 CA 73 B 5 FDA 0109 F 8411 E 9490816 CB 9 F 1 FF 103956 FF 797857 C",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": false,
+      "readback_span": false,
+      "decode_bounds": "engine default enabled",
+      "timeline": false,
+      "verbosity": 3,
+      "cpu_doorbell": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "gpu-spans-debug-launch.json": {
+      "stdout": "E:\\poolside\\logs\\core 8 k-gpu-spans-debug-20261010-235310.stdout.log",
+      "wrapper_pid": 20052,
+      "stderr": "E:\\poolside\\logs\\core 8 k-gpu-spans-debug-20261010-235310.stderr.log",
+      "backup": "E:\\poolside\\backups\\before-debug-gpu-20261010-235310",
+      "settings": "8192 context; 6144 MiB cache; 8192 batch; DFlash 4 q 8; profile; debug GPU; pinned; adaptive; GPU misses 0"
+    },
+    "hybrid-span-graphs-launch.json": {
+      "timestamp": "2026-10-11 T 05:54:50.7875751-05:00",
+      "wrapper_pid": 668,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-hybrid-span-graphs-20261011-055450.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-hybrid-span-graphs-20261011-055450.stderr.log",
+      "cuda_source_sha256": "7 BDC 8 DA 51 C 258 A 79 C 346 A 102 BC 95994 D 13 E 587 F 507 C 8 D 2828 CDCC 65 E 76 EB 43 C 6",
+      "cpu_source_sha256": "4 D 86859 B 32305 BE 249 DE 05 D 08 D 8 B 4 E 6 E 1133 D 552653 E 0 FBB 2 D 724 BDF 459 F 0 B 9 E",
+      "cpu_dll_sha256": "7 BC 86 BE 0 D 91 C 083 B 088 E 7 B 2 DA 516 FD 93784822 F 48 EED 2798963290 AB 77 C 6 C 7 DB",
+      "cuda_dll_sha256": "3 D 75051 E 103 F 126 B 969 EE 617 B 53 E 36 A 269 E 86292 BD 3 B 45 B 9 EBC 43 F 3546 ADC 373",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "readback_span": true,
+      "gpu_span_graphs": 1,
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "engine default enabled",
+      "decode_bounds": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "hybrid-span-graphs-off-launch.json": {
+      "timestamp": "2026-10-11 T 05:56:45.7197189-05:00",
+      "wrapper_pid": 8084,
+      "stopped_native_pids": [
+        18316
+      ],
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-hybrid-span-graphs-off-20261011-055645.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-hybrid-span-graphs-off-20261011-055645.stderr.log",
+      "cuda_source_sha256": "7 BDC 8 DA 51 C 258 A 79 C 346 A 102 BC 95994 D 13 E 587 F 507 C 8 D 2828 CDCC 65 E 76 EB 43 C 6",
+      "cpu_source_sha256": "4 D 86859 B 32305 BE 249 DE 05 D 08 D 8 B 4 E 6 E 1133 D 552653 E 0 FBB 2 D 724 BDF 459 F 0 B 9 E",
+      "cpu_dll_sha256": "7 BC 86 BE 0 D 91 C 083 B 088 E 7 B 2 DA 516 FD 93784822 F 48 EED 2798963290 AB 77 C 6 C 7 DB",
+      "cuda_dll_sha256": "3 D 75051 E 103 F 126 B 969 EE 617 B 53 E 36 A 269 E 86292 BD 3 B 45 B 9 EBC 43 F 3546 ADC 373",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "readback_span": true,
+      "gpu_span_graphs": 0,
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "engine default enabled",
+      "decode_bounds": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "hybrid-span-graphs-off-production-launch.json": {
+      "timestamp": "2026-10-11 T 06:02:02.0755026-05:00",
+      "wrapper_pid": 25560,
+      "stopped_native_pids": [
+        19124
+      ],
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-hybrid-span-graphs-off-production-20261011-060202.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-hybrid-span-graphs-off-production-20261011-060202.stderr.log",
+      "cuda_source_sha256": "7 BDC 8 DA 51 C 258 A 79 C 346 A 102 BC 95994 D 13 E 587 F 507 C 8 D 2828 CDCC 65 E 76 EB 43 C 6",
+      "cpu_source_sha256": "4 D 86859 B 32305 BE 249 DE 05 D 08 D 8 B 4 E 6 E 1133 D 552653 E 0 FBB 2 D 724 BDF 459 F 0 B 9 E",
+      "cpu_dll_sha256": "7 BC 86 BE 0 D 91 C 083 B 088 E 7 B 2 DA 516 FD 93784822 F 48 EED 2798963290 AB 77 C 6 C 7 DB",
+      "cuda_dll_sha256": "3 D 75051 E 103 F 126 B 969 EE 617 B 53 E 36 A 269 E 86292 BD 3 B 45 B 9 EBC 43 F 3546 ADC 373",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": false,
+      "readback_span": false,
+      "gpu_span_graphs": 0,
+      "timeline": false,
+      "verbosity": 3,
+      "cpu_doorbell": "engine default enabled",
+      "decode_bounds": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "hybrid-span-graphs-production-launch.json": {
+      "timestamp": "2026-10-11 T 06:00:29.7505726-05:00",
+      "wrapper_pid": 30796,
+      "stopped_native_pids": [
+        25700
+      ],
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-hybrid-span-graphs-production-20261011-060029.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-hybrid-span-graphs-production-20261011-060029.stderr.log",
+      "cuda_source_sha256": "7 BDC 8 DA 51 C 258 A 79 C 346 A 102 BC 95994 D 13 E 587 F 507 C 8 D 2828 CDCC 65 E 76 EB 43 C 6",
+      "cpu_source_sha256": "4 D 86859 B 32305 BE 249 DE 05 D 08 D 8 B 4 E 6 E 1133 D 552653 E 0 FBB 2 D 724 BDF 459 F 0 B 9 E",
+      "cpu_dll_sha256": "7 BC 86 BE 0 D 91 C 083 B 088 E 7 B 2 DA 516 FD 93784822 F 48 EED 2798963290 AB 77 C 6 C 7 DB",
+      "cuda_dll_sha256": "3 D 75051 E 103 F 126 B 969 EE 617 B 53 E 36 A 269 E 86292 BD 3 B 45 B 9 EBC 43 F 3546 ADC 373",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": false,
+      "readback_span": false,
+      "gpu_span_graphs": 1,
+      "timeline": false,
+      "verbosity": 3,
+      "cpu_doorbell": "engine default enabled",
+      "decode_bounds": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "input-publication-control-launch.json": {
+      "timestamp": "2026-10-11 T 04:35:20.4235710-05:00",
+      "stopped_native_pids": [
+        26300
+      ],
+      "wrapper_pid": 27216,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-input-publication-control-20261011-043520.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-input-publication-control-20261011-043520.stderr.log",
+      "moe_source_sha256": "8327 C 40945 ABC 2 DCF 9 FAD 24 CB 9 D 4 D 50 D 5460 B 238 A 3 DE 8 B 3344 FB 947297 B 8 FB 7 A",
+      "cuda_dll_sha256": "4 FD 758684 E 079929 B 7 D 4 DE 48 A 500 D 19 DED 657 AE 69 CB 04 B 7717 FC 98405 A 6 E 445 B",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "timeline": false,
+      "verbosity": 4,
+      "input_doorbell": 0,
+      "cpu_doorbell": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "input-publication-launch.json": {
+      "timestamp": "2026-10-11 T 04:33:50.4263525-05:00",
+      "wrapper_pid": 26772,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-input-publication-20261011-043350.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-input-publication-20261011-043350.stderr.log",
+      "moe_source_sha256": "8327 C 40945 ABC 2 DCF 9 FAD 24 CB 9 D 4 D 50 D 5460 B 238 A 3 DE 8 B 3344 FB 947297 B 8 FB 7 A",
+      "cuda_dll_sha256": "4 FD 758684 E 079929 B 7 D 4 DE 48 A 500 D 19 DED 657 AE 69 CB 04 B 7717 FC 98405 A 6 E 445 B",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "timeline": false,
+      "verbosity": 4,
+      "input_doorbell": 1,
+      "cpu_doorbell": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "iq2-weight-cache-off-launch.json": {
+      "timestamp": "2026-10-11 T 07:20:34.6442649-05:00",
+      "stopped_native_pids": [
+        15128
+      ],
+      "wrapper_pid": 32952,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-iq 2-weight-cache-off-20261011-072034.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-iq 2-weight-cache-off-20261011-072034.stderr.log",
+      "cpu_dll_sha256": "EF 661 CCB 7580 D 49 B 0 FBE 56 AE 45746 AB 9 C 8 FD 6 D 1 B 1 F 09372498 C 10 C 98 ADF 0 C 47 D",
+      "cuda_dll_sha256": "13 DA 3 D 114 EBFFA 25 F 9 FA 9 D 925 A 78813 D 734 C 137418 ACCD 628283 BF 081 DB 2 EF 8 C",
+      "llama_dll_sha256": "DA 7599 E 05 FBE 2 EEEA 7 C 01429 A 0 B 483 D 8 A 5091439 B 3 BAF 68 D 6 E 9 DF 675 B 189 B 1 B 7",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "pin_experts": true,
+      "adaptive_cache": true,
+      "profile": true,
+      "readback_span": true,
+      "timeline": false,
+      "predecode_iq2": false,
+      "free_ram_reserve_gib": 24
+    },
+    "iq2-weight-cache-on-launch.json": {
+      "timestamp": "2026-10-11 T 07:16:56.6570630-05:00",
+      "wrapper_pid": 15184,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-iq 2-weight-cache-on-20261011-071656.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-iq 2-weight-cache-on-20261011-071656.stderr.log",
+      "cpu_dll_sha256": "EF 661 CCB 7580 D 49 B 0 FBE 56 AE 45746 AB 9 C 8 FD 6 D 1 B 1 F 09372498 C 10 C 98 ADF 0 C 47 D",
+      "cuda_dll_sha256": "13 DA 3 D 114 EBFFA 25 F 9 FA 9 D 925 A 78813 D 734 C 137418 ACCD 628283 BF 081 DB 2 EF 8 C",
+      "llama_dll_sha256": "DA 7599 E 05 FBE 2 EEEA 7 C 01429 A 0 B 483 D 8 A 5091439 B 3 BAF 68 D 6 E 9 DF 675 B 189 B 1 B 7",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "pin_experts": true,
+      "adaptive_cache": true,
+      "profile": true,
+      "readback_span": true,
+      "timeline": false,
+      "predecode_iq2": true,
+      "free_ram_reserve_gib": 24
+    },
+    "launch-span-profile-launch.json": {
+      "timestamp": "2026-10-11 T 04:49:28.2673345-05:00",
+      "wrapper_pid": 27912,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-launch-span-profile-20261011-044928.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-launch-span-profile-20261011-044928.stderr.log",
+      "moe_source_sha256": "96394 D 6 A 50 EE 5 CAE 22 CDA 56 D 365 B 96 FFF 93 C 27 F 953 C 74 ED 5 BA 1 BBC 0 B 143 DEBC 7",
+      "cuda_source_sha256": "29 BF 88 D 604 B 7551 B 765 F 4 C 0464220 B 78501 CDDA 9 AFC 30036739598 C 83984 BDC 6",
+      "cuda_dll_sha256": "5 BF 921 AD 35 C 5563 BF 005 FDBC 057 A 40 F 27 B 2 C 7 CE 305 E 8 A 294 C 3483336 B 40392 EC",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "readback_span": true,
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "mapped-metadata-launch.json": {
+      "timestamp": "2026-10-11 T 02:41:06.8799057-05:00",
+      "wrapper_pid": 7644,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-mapped-metadata-20261011-024106.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-mapped-metadata-20261011-024106.stderr.log",
+      "source_sha256": "4 F 60 BFA 230234 EFFDE 39 DE 446 D 0 E 4084 C 7 C 423 E 94174 E 7 C 660194 AB 58 AEC 8 A 25",
+      "cuda_dll_sha256": "8 EE 1145 FA 70 BC 1 AB 8 F 518840 AC 3990 CD 903 BEAACA 2 CA 336 C 5463877 F 85 BA 4724",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "timeline": true,
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "mapped-metadata-production-launch.json": {
+      "timestamp": "2026-10-11 T 02:46:13.0035993-05:00",
+      "stopped_native_pid": 17672,
+      "wrapper_pid": 23048,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-mapped-metadata-production-20261011-024612.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-mapped-metadata-production-20261011-024612.stderr.log",
+      "source_sha256": "4 F 60 BFA 230234 EFFDE 39 DE 446 D 0 E 4084 C 7 C 423 E 94174 E 7 C 660194 AB 58 AEC 8 A 25",
+      "cuda_dll_sha256": "8 EE 1145 FA 70 BC 1 AB 8 F 518840 AC 3990 CD 903 BEAACA 2 CA 336 C 5463877 F 85 BA 4724",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": false,
+      "timeline": false,
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "mask-lower-bound-launch.json": {
+      "timestamp": "2026-10-11 T 03:10:34.3331832-05:00",
+      "wrapper_pid": 32108,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-mask-lower-bound-20261011-031034.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-mask-lower-bound-20261011-031034.stderr.log",
+      "source_sha256": "25 D 9 DA 6 EAAEE 6 E 51 EAAC 67 DD 1 F 617 E 5 C 749914811503114 F 090 C 34 B 97 C 33 D 6 AE",
+      "cuda_dll_sha256": "62 EBE 1 C 83 CFAC 8 F 757 FBED 05 E 24 B 4 C 7 F 2480 C 55 CC 40 CED 01 BD 27 BFC 04 EE 64 FA 5",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "timeline": true,
+      "attention_timing": true,
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "mask-lower-bound-production-launch.json": {
+      "timestamp": "2026-10-11 T 03:18:10.9540394-05:00",
+      "stopped_native_pid": 15884,
+      "wrapper_pid": 33268,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-mask-lower-bound-production-20261011-031810.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-mask-lower-bound-production-20261011-031810.stderr.log",
+      "source_sha256": "25 D 9 DA 6 EAAEE 6 E 51 EAAC 67 DD 1 F 617 E 5 C 749914811503114 F 090 C 34 B 97 C 33 D 6 AE",
+      "cuda_dll_sha256": "62 EBE 1 C 83 CFAC 8 F 757 FBED 05 E 24 B 4 C 7 F 2480 C 55 CC 40 CED 01 BD 27 BFC 04 EE 64 FA 5",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": false,
+      "timeline": false,
+      "attention_timing": false,
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "mask-timing-launch.json": {
+      "timestamp": "2026-10-11 T 04:08:04.7079572-05:00",
+      "wrapper_pid": 27632,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-mask-timing-20261011-040804.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-mask-timing-20261011-040804.stderr.log",
+      "mask_source_sha256": "3 ADFCC 0 DC 00 F 0 FDC 9 AFC 106 F 8 E 324 D 5124 F 82 B 385890 B 4 AD 488151 D 4 ED 1 C 5 D 2 B",
+      "llama_dll_sha256": "05 BB 22286 B 68 EEBF 61 F 42522 FA 15 F 6837 B 864 C 71 BB 869638 F 925 ABB 8580 F 186 A",
+      "cuda_dll_sha256": "140 CC 1 E 7312 FF 2456 D 73 B 79 AC 160 CA 362750 B 6 F 1024 B 76102 B 45 E 3527 FC 1 DEA 1",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "one-readback-wait-launch.json": {
+      "wrapper_pid": 28520,
+      "stdout": "E:\\poolside\\logs\\core 8 k-one-readback-wait-20261011-004447.stdout.log",
+      "stderr": "E:\\poolside\\logs\\core 8 k-one-readback-wait-20261011-004447.stderr.log",
+      "settings": "8192 context; 6144 MiB base cache; 8192 batch; DFlash 4 q 8; phase memory; profile; pinned; adaptive; GPU misses 0",
+      "cuda_dll_sha256": "40 EA 18 F 8 D 6 EBE 60 CC 073 AB 4 F 07 D 86 D 1823 A 882597716 AF 2 A 240 E 5 E 573 A 9 F 58 F 9",
+      "source_sha256": "61 C 9 D 75 E 5241 CFD 809 FD 906 D 0 B 3 B 6 DFF 597 C 54 D 9921 FDE 0 AB 2877686 CCCE 0620"
+    },
+    "paired-gate-up-launch.json": {
+      "timestamp": "2026-10-11 T 06:24:42.7432098-05:00",
+      "wrapper_pid": 14224,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-paired-gate-up-20261011-062442.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-paired-gate-up-20261011-062442.stderr.log",
+      "cpu_dll_sha256": "C 472 C 8756 A 7 FD 423 D 55 B 1131 F 626 CE 59 CD 7 EFFA 10 A 1 C 5 C 47 A 6 D 68 C 3 E 5 B 85 AACE",
+      "cuda_dll_sha256": "F 549 F 69 B 335 A 506 B 252 E 4 CC 00 F 8 A 36 BF 5 A 99553809 C 7 F 0 F 5999 BE 5 BD 0 ADDE 77 A",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "readback_span": true,
+      "paired_gate_up": 1,
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "engine default enabled",
+      "decode_bounds": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "paired-gate-up-off-launch.json": {
+      "timestamp": "2026-10-11 T 06:26:49.2446067-05:00",
+      "wrapper_pid": 28884,
+      "stopped_native_pids": [
+        9540
+      ],
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-paired-gate-up-off-20261011-062649.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-paired-gate-up-off-20261011-062649.stderr.log",
+      "cpu_dll_sha256": "C 472 C 8756 A 7 FD 423 D 55 B 1131 F 626 CE 59 CD 7 EFFA 10 A 1 C 5 C 47 A 6 D 68 C 3 E 5 B 85 AACE",
+      "cuda_dll_sha256": "F 549 F 69 B 335 A 506 B 252 E 4 CC 00 F 8 A 36 BF 5 A 99553809 C 7 F 0 F 5999 BE 5 BD 0 ADDE 77 A",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "readback_span": true,
+      "paired_gate_up": 0,
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "engine default enabled",
+      "decode_bounds": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "paired-gate-up-registers-launch.json": {
+      "timestamp": "2026-10-11 T 06:32:23.0476264-05:00",
+      "wrapper_pid": 19412,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-paired-gate-up-registers-20261011-063222.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-paired-gate-up-registers-20261011-063222.stderr.log",
+      "cpu_dll_sha256": "A 75954 AB 51 A 93 ABCE 005 C 9 A 9 D 260 CF 67634 F 73 C 67 DA 017 D 959195 D 52 CDBA 58 CC",
+      "cuda_dll_sha256": "F 549 F 69 B 335 A 506 B 252 E 4 CC 00 F 8 A 36 BF 5 A 99553809 C 7 F 0 F 5999 BE 5 BD 0 ADDE 77 A",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "readback_span": true,
+      "paired_gate_up": 1,
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "engine default enabled",
+      "decode_bounds": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "paired-gate-up-registers-off-launch.json": {
+      "timestamp": "2026-10-11 T 06:36:26.2519914-05:00",
+      "wrapper_pid": 23748,
+      "stopped_native_pids": [
+        14256
+      ],
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-paired-gate-up-registers-off-20261011-063626.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-paired-gate-up-registers-off-20261011-063626.stderr.log",
+      "cpu_dll_sha256": "A 75954 AB 51 A 93 ABCE 005 C 9 A 9 D 260 CF 67634 F 73 C 67 DA 017 D 959195 D 52 CDBA 58 CC",
+      "cuda_dll_sha256": "F 549 F 69 B 335 A 506 B 252 E 4 CC 00 F 8 A 36 BF 5 A 99553809 C 7 F 0 F 5999 BE 5 BD 0 ADDE 77 A",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "readback_span": true,
+      "paired_gate_up": 0,
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "engine default enabled",
+      "decode_bounds": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "phase-drain-profile-launch.json": {
+      "timestamp": "2026-10-11 T 06:16:27.2239908-05:00",
+      "wrapper_pid": 14304,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-phase-drain-profile-20261011-061627.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-phase-drain-profile-20261011-061627.stderr.log",
+      "cpu_source_sha256": "155606 D 90 EBB 96 E 9 A 83 ABF 7208 AB 726 B 8 A 3 DDE 2 C 2 EF 311 AE 97679 ED 3 A 118482 F",
+      "cpu_dll_sha256": "F 640 D 1596 A 262 ABBBC 5 A 5 DAE 4 EC 3 FAD 077 DDD 40 BC 34 EDB 03 AC 6 AF 1 FD 1 B 49 A 2 E 8",
+      "cuda_dll_sha256": "F 549 F 69 B 335 A 506 B 252 E 4 CC 00 F 8 A 36 BF 5 A 99553809 C 7 F 0 F 5999 BE 5 BD 0 ADDE 77 A",
+      "llama_dll_sha256": "5 B 8 A 05 BD 34 E 3 FFAC 76 FF 56 E 11 E 88726362 AFB 6 DD 0 E 74 DD 613 C 39 BD 46 E 9 B 0 B 86 E",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "readback_span": true,
+      "timeline": false,
+      "verbosity": 4,
+      "cpu_doorbell": "engine default enabled",
+      "decode_bounds": "engine default enabled",
+      "pin_experts": true,
+      "adaptive_cache": true
+    },
+    "singleton-iq-launch.json": {
+      "stderr": "E:\\poolside\\logs\\core 8 k-singleton-iq-20261011-000434.stderr.log",
+      "wrapper_pid": 32852,
+      "stdout": "E:\\poolside\\logs\\core 8 k-singleton-iq-20261011-000434.stdout.log",
+      "settings": "8192 context; 6144 MiB cache; 8192 batch; DFlash 4 q 8; profile; pinned; adaptive; GPU misses 0"
+    },
+    "transfer-timeline-launch.json": {
+      "timestamp": "2026-10-11 T 02:31:52.6419293-05:00",
+      "wrapper_pid": 28528,
+      "stdout_log": "E:\\poolside\\logs\\core 8 k-transfer-timeline-20261011-023152.stdout.log",
+      "stderr_log": "E:\\poolside\\logs\\core 8 k-transfer-timeline-20261011-023152.stderr.log",
+      "source_sha256": "2 F 518289428 A 546 EFD 6 B 8 AC 509 CF 25 A 9 F 3105 A 490 BF 010396 E 05156 D 677333 CA",
+      "cuda_dll_sha256": "3 A 4 E 411 C 21547 D 53 D 9123209 DECB 0426 BAB 7408402 E 2911 ED 299 DAFB 0 DEC 46 C 7",
+      "context_size": 8192,
+      "cache_mib": 6144,
+      "batch_size": 8192,
+      "draft_max": 4,
+      "draft_kv_type": "q 8_0",
+      "gpu_misses_per_token": 0,
+      "profile": true,
+      "timeline": true,
+      "pin_experts": true,
+      "adaptive_cache": true
+    }
+  },
+  "coverage_labels": [
+    "core8k-after-caller-evaluation-production-dflash4-q8-cache6144",
+    "core8k-application-power-dflash4-q8-cache6144",
+    "core8k-attention-timeline-dflash4-q8-cache6144",
+    "core8k-cache-capacity-profile-dflash4-q8-cache6144",
+    "core8k-caller-affinity-dflash4-q8-cache6144",
+    "core8k-caller-affinity-off-dflash4-q8-cache6144",
+    "core8k-caller-placement-dflash4-q8-cache6144",
+    "core8k-caller-sibling-sampling-dflash4-q8-cache6144",
+    "core8k-contiguous-mask-dflash4-q8-cache6144",
+    "core8k-contiguous-mask-production-dflash4-q8-cache6144",
+    "core8k-cpu-doorbell-control-dflash4-q8-cache6144",
+    "core8k-cpu-doorbell-dflash4-q8-cache6144",
+    "core8k-cpu-doorbell-production-dflash4-q8-cache6144",
+    "core8k-cpu-wait-timing-dflash4-q8-cache6144",
+    "core8k-decode-bounds-control-dflash4-q8-cache6144",
+    "core8k-decode-bounds-dflash4-q8-cache6144",
+    "core8k-decode-bounds-production-dflash4-q8-cache6144",
+    "core8k-gpu-spans-debug-dflash4-q8-cache6144",
+    "core8k-gpu-spans-dflash4-q8-cache6144",
+    "core8k-hybrid-span-graphs-dflash4-q8-cache6144",
+    "core8k-hybrid-span-graphs-off-dflash4-q8-cache6144",
+    "core8k-hybrid-span-graphs-off-production-dflash4-q8-cache6144",
+    "core8k-hybrid-span-graphs-production-dflash4-q8-cache6144",
+    "core8k-input-publication-control-dflash4-q8-cache6144",
+    "core8k-input-publication-dflash4-q8-cache6144",
+    "core8k-internal-timings-dflash4-q8-cache6144",
+    "core8k-iq2-weight-cache-off-dflash4-q8-cache6144",
+    "core8k-iq2-weight-cache-on-dflash4-q8-cache6144",
+    "core8k-launch-span-profile-dflash4-q8-cache6144",
+    "core8k-mapped-metadata-dflash4-q8-cache6144",
+    "core8k-mapped-metadata-production-dflash4-q8-cache6144",
+    "core8k-mask-lower-bound-dflash4-q8-cache6144",
+    "core8k-mask-lower-bound-production-dflash4-q8-cache6144",
+    "core8k-mask-timing-dflash4-q8-cache6144",
+    "core8k-one-readback-wait-dflash4-q8-cache6144",
+    "core8k-paired-gate-up-dflash4-q8-cache6144",
+    "core8k-paired-gate-up-off-dflash4-q8-cache6144",
+    "core8k-paired-gate-up-registers-dflash4-q8-cache6144",
+    "core8k-paired-gate-up-registers-off-dflash4-q8-cache6144",
+    "core8k-phase-drain-profile-dflash4-q8-cache6144",
+    "core8k-singleton-iq-dflash4-q8-cache6144",
+    "core8k-transfer-timeline-dflash4-q8-cache6144"
+  ],
+  "missing_or_weak_evidence": [
+    "No paired on/off same-binary control identified for original gpu-spans, singleton IQ, one-readback-wait, or application power; no isolated effect size claimed.",
+    "No dedicated original gpu-spans rollback receipt identified; later source/checkpoints establish whole hybrid capture disabled.",
+    "The cause of desktop application windows closing remains unexplained; no fresh stability investigation authorized.",
+    "Historical run/rollback receipts prove dated actions, not current server health or live performance.",
+    "Near-full 128 k andfull non-UI API feature coverage unfinished."
+  ]
+}

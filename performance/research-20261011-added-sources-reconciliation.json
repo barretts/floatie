@@ -1,0 +1,105 @@
+{
+  "timestamp": "2026-10-11T13:59:34.643751-05:00",
+  "expert": "expert-performance-knuth",
+  "files": [
+    {
+      "path": "E:\\poolside\\research\\Laguna_S_2.1_Speed_Research.html",
+      "bytes": 43471,
+      "sha256": "0f2e1f7b3747674ad77270ab29a020550805b352c22a86b893887b7ac318d39f"
+    },
+    {
+      "path": "E:\\poolside\\research\\Laguna_S21_Performance_Research.pdf",
+      "bytes": 47337,
+      "sha256": "82230388c7ade21925ffb538882de1b3d9dece8e2c8acbb52ae74dec44c2aa3b"
+    },
+    {
+      "path": "E:\\poolside\\research\\Laguna_S21_Research_Package\\Laguna_S21_Performance_Research.pdf",
+      "bytes": 22386,
+      "sha256": "94704e951031b49fada05d9a2d0f6253bc6b0493e37b3aef0215e0b605f76575"
+    },
+    {
+      "path": "E:\\poolside\\research\\Laguna_S21_Research_Package\\Laguna_S21_Performance_Research.md",
+      "bytes": 16516,
+      "sha256": "bd1dd451e9bb88d1bfa8c3a43e301b6eb63d96b11fbe2651e022ad7c0b0fd04a"
+    },
+    {
+      "path": "E:\\poolside\\research\\Laguna_S_2.1_Optimization_Report.docx",
+      "bytes": 11921,
+      "sha256": "bb12f66af8475ff50779d77660c96cd390d869f4568cf3e835257584c6d3cbac"
+    },
+    {
+      "path": "E:\\poolside\\research\\Laguna_S_2.1_Optimization_Report.md",
+      "bytes": 9633,
+      "sha256": "e888e10839c63acd839a59ca77f36080cb1262d333f3b314b36d88815af98901"
+    }
+  ],
+  "document_review": {
+    "both_pdfs_identical_extracted_text": true,
+    "pdf_pages_reviewed": 6,
+    "pdf_visual_review": "All six pages rendered and inspected; text and tables read.",
+    "html_identical_to_original_dated_report": true,
+    "docx": "Read complete document.xml paragraphs; a shorter version of the Markdown optimization report, not a third cache algorithm."
+  },
+  "local_reconciliation": [
+    {
+      "recommendation": "Adaptive frequency-decay cache",
+      "local_status": "Already implemented per layer with token-scaled decay, prefill history cap, 1.10 promotion threshold, and budgeted upload admission.",
+      "source": "core-engine/ggml/src/ggml-cuda/moe-hybrid.cu"
+    },
+    {
+      "recommendation": "Least-Stale eviction",
+      "local_status": "The paper addresses eviction of future-layer experts from a shared cache. Local cache victims are restricted to the same layer, so that collision mechanism does not apply directly. No promised 85-90% hit rate for Laguna.",
+      "primary_source": "https://arxiv.org/html/2602.03921v1"
+    },
+    {
+      "recommendation": "Predictive HOT+STAGE / ExpertFlow",
+      "local_status": "Potential future work, not a ready Laguna backend. Predictor training/artifacts needed; Mira also converts experts to its custom INT8 format, unlike the requested existing Q3 GGUF.",
+      "primary_sources": [
+        "https://arxiv.org/html/2609.38090v1",
+        "https://github.com/expertflow-dac/expertflow"
+      ]
+    },
+    {
+      "recommendation": "Grouped CPU expert execution",
+      "local_status": "Already reuses IQ2/IQ3/IQ4 weight unpacking across groups of 2-4 token rows; Q6 uses standard per-pair dots. 77.35% of groups in the current controlled profile window are singleton groups.",
+      "source": "core-engine/ggml/src/ggml-cpu/moe.cpp"
+    },
+    {
+      "recommendation": "GPU uploads overlapping CPU experts",
+      "local_status": "Already retained as budgeted cache admission; uploads are queued after cached slot reads and before CPU expert completion.",
+      "source": "core-engine/ggml/src/ggml-cuda/moe-hybrid.cu"
+    },
+    {
+      "recommendation": "Disable DFlash to reclaim cache VRAM",
+      "local_status": "Fresh same-build comparison measured 16.07 tok/s with DFlash versus 11.36 without, even though draft-off had a larger expert cache. Keep DFlash4.",
+      "evidence": "performance/research-dflash-on-off-comparison.json"
+    },
+    {
+      "recommendation": "Compact SWA allocation and KV budgets",
+      "local_status": "Implemented, but actual allocation uses padded window+ubatch space, not a 512-cell allocation for large prefill. Existing Q8 draft weights are about 1130 MiB rather than report BF16 estimate 2.2 GiB.",
+      "evidence": "performance/research-20261011-local-reconciliation.json"
+    },
+    {
+      "recommendation": "Zen1 CPU kernels",
+      "local_status": "AVX2/FMA already enabled. Four-output-row IQ2 candidate reading the original layout was measured slower and fully removed. IK lossless packed R4 layout remains an unmeasured lead.",
+      "evidence": "performance/iq2-rows4-comparison.json"
+    },
+    {
+      "recommendation": "Chunk size, thread, speculation sweeps / new benchmark suites",
+      "local_status": "Not adopted: user disallowed sweeps and new tests. Reuse only the saved request and performance_probe.py."
+    }
+  ],
+  "new_measured_comparisons": {
+    "larger_decode_cache": "CPU time -5.13%, no measured generation speed gain, slower reported prefill; restored original cache engine.",
+    "dflash": "41.49% faster observed generation than draft-off on current request; one comparison, no general guarantee.",
+    "iq2_four_output_rows": "14.44 tok/s on versus 15.22 off on identical binaries and request; original layout candidate rejected and completely restored. Not a measurement of persistent R4 packing."
+  },
+  "latest_normal_receipt": "performance/core8k-after-research-production-dflash4-q8-cache6144.json",
+  "targets_unmet": true,
+  "limitations": [
+    "Research throughput and hit-rate assertions are not measurements on this machine.",
+    "Current recall request is one workload, not a general quality benchmark.",
+    "No 128k run before 8k gate.",
+    "GPU/CPU event intervals overlap and must not be added into a serial-time claim."
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "backup": "E:\\poolside\\backups\\before-fused-bulk-gate-up-20261011-005154",
+  "source_sha256": "7EA4B2B7192835BD744972D5934CB0D666FF538B933E0E62C10166605CA53BAD",
+  "change": "Fuse bulk gate/up MMQ using interleaved CUDA uploads with unchanged total atlas bytes; reuse gathered input scratch for activation; restore the measured host event wait and retain host dispatch timing.",
+  "status": "deployed; awaiting compilation and inference"
+}

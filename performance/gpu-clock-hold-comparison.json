@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-11T00:57:39.6264672-05:00",
+  "requested_min_mhz": 2400,
+  "requested_max_mhz": 3120,
+  "lock_exit_code": 4,
+  "lock_output": "The current user does not have permission to change clocks for GPU 00000000:43:00.0.\r\nTerminating early due to previous errors.",
+  "status": "unsupported or denied; no comparison run"
+}

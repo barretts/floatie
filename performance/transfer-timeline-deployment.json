@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-11T02:31:04.3806728-05:00",
+  "stopped_native_pid": 28364,
+  "backup_directory": "E:\\poolside\\backups\\before-transfer-timeline-20261011-023100",
+  "source_sha256": "2F518289428A546EFD6B8AC509CF25A9F3105A490BF010396E05156D677333CA",
+  "build_log": "E:\\poolside\\logs\\transfer-timeline-build-20261011-023100.log",
+  "build_status": "complete",
+  "build_exit_code": 0,
+  "cuda_dll_sha256": "3A4E411C21547D53D9123209DECB0426BAB7408402E2911ED299DAFB0DEC46C7"
+}

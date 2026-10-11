@@ -1,0 +1,13 @@
+﻿{
+    "timestamp":  "2026-10-11T08:54:53.8917721-05:00",
+    "phase":  "post-request idle snapshot; not a peak",
+    "csv_columns":  [
+                        "memory_used_mib",
+                        "memory_free_mib",
+                        "graphics_clock_mhz",
+                        "memory_clock_mhz",
+                        "power_watts",
+                        "temperature_c"
+                    ],
+    "values":  "14479, 1631, 210, 405, 2.95, 32"
+}

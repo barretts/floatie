@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-10-11T06:43:09.3555569-05:00",
+  "stopped_native_pids": [
+    12504
+  ],
+  "phase_backup": "E:\\poolside\\backups\\before-phase-drain-profile-20261011-061532",
+  "paired_source_backup": "E:\\poolside\\backups\\before-paired-gate-up-20261011-062407",
+  "cpu_source_sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+  "cpu_dll_sha256": "7BC86BE0D91C083B088E7B2DA516FD93784822F48EED2798963290AB77C6C7DB",
+  "cuda_dll_sha256": "941E44CE64569042CA73B5FDA0109F8411E9490816CB9F1FF103956FF797857C",
+  "reason": "Neither paired kernel improved throughput. Restore retained CPU kernels and remove temporary per-worker instrumentation; its findings are preserved.",
+  "build_state": "Restored sources have fresh timestamps so the next incremental build recompiles any candidate objects before linking."
+}

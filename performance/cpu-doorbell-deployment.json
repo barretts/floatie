@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-10-11T03:49:53.4140934-05:00",
+  "stopped_native_pid": 22604,
+  "backup_directory": "E:\\poolside\\backups\\before-cpu-doorbell-20261011-034953",
+  "source_sha256": "ACC5578406C773B6465D04C146F2E1C3F003348254427A200676EB4A3EB24872",
+  "build_log": "E:\\poolside\\logs\\cpu-doorbell-build-20261011-034953.log",
+  "build_status": "complete",
+  "reason": "Optional bounded CPU-completion handshake and mapped result reduction. The GPU waits at most 10 ms per block; unfinished blocks reduce in a second launch queued after CPU completion. All selected experts and cache behavior are preserved.",
+  "build_exit_code": 0,
+  "cuda_dll_sha256": "8134E2353E04AEF1AB0F85C59331C247B42B56C3EF54B5B7F3C646BF7F51CDB4"
+}

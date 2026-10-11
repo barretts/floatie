@@ -1,0 +1,4132 @@
+diff --git a/common/arg.cpp b/common/arg.cpp
+index 9676ada..4ddb8a3 100644
+--- a/common/arg.cpp
++++ b/common/arg.cpp
+@@ -256,6 +256,12 @@ static void parse_tensor_buffer_overrides(const std::string & value, std::vector
+         if (buft) {
+             buft_list[ggml_backend_buft_name(buft)] = buft;
+         }
++        auto get_moe_buft = (ggml_backend_buffer_type_t (*)()) ggml_backend_reg_get_proc_address(
++                ggml_backend_dev_backend_reg(dev), "ggml_backend_cuda_moe_buffer_type");
++        if (get_moe_buft) {
++            auto * moe_buft = get_moe_buft();
++            buft_list[ggml_backend_buft_name(moe_buft)] = moe_buft;
++        }
+     }
+ 
+     for (const auto & override : string_split<std::string>(value, ',')) {
+diff --git a/common/speculative.cpp b/common/speculative.cpp
+index 5ec3f62..8dbb661 100644
+--- a/common/speculative.cpp
++++ b/common/speculative.cpp
+@@ -912,6 +912,7 @@ struct common_speculative_impl_draft_dflash : public common_speculative_impl {
+     int32_t n_embd_dec = 0;  // draft hidden size
+     int32_t n_embd_enc = 0;  // target_layer_ids_n * target_hidden_size
+     int32_t n_embd_tgt = 0;  // target model hidden size
++    int32_t n_swa_all  = 0;
+ 
+     int32_t     block_size    = 0;
+     llama_token mask_token_id = 0;
+@@ -941,6 +942,7 @@ struct common_speculative_impl_draft_dflash : public common_speculative_impl {
+         n_embd_tgt    = llama_model_n_embd(model_tgt);
+         n_embd_dec    = llama_model_n_embd(model_dft);
+         n_embd_enc    = (int32_t) target_layer_ids_n * n_embd_tgt;
++        n_swa_all     = llama_model_n_swa_all(model_dft);
+ 
+         // read the trained block size from the dflash.block_size metadata key
+         block_size = 16;
+@@ -1062,7 +1064,36 @@ struct common_speculative_impl_draft_dflash : public common_speculative_impl {
+             }
+             const int32_t n_rows = i_batch_end[seq_id] - i_batch_beg[seq_id] + 1;
+ 
+-            for (int32_t offset = 0; offset < n_rows; offset += n_ubatch) {
++            // Feature fusion and KV injection are token-independent. Only trim
++            // prefill batches; verification may roll back anywhere in its block.
++            int32_t offset_begin = 0;
++            if (n_swa_all > 0 && n_rows > n_swa_all && n_rows > params.n_max + 1) {
++                bool consecutive = true;
++                for (int32_t i = 1; i < n_rows; ++i) {
++                    const int32_t idx = i_batch_beg[seq_id] + i;
++                    if (batch_in.pos[idx] != batch_in.pos[idx - 1] + 1) {
++                        consecutive = false;
++                        break;
++                    }
++                }
++                if (consecutive) {
++                    // Preserve the original chunks and their matrix shapes.
++                    offset_begin = ((n_rows - n_swa_all) / n_ubatch) * n_ubatch;
++                }
++            }
++            if (offset_begin > 0) {
++                // The retained suffix replaces the entire all-SWA draft window.
++                // Clear this sequence so its absolute positions can skip the
++                // omitted prefix without violating cache continuity.
++                if (!llama_memory_seq_rm(llama_get_memory(ctx_dft), seq_id, -1, -1)) {
++                    LOG_ERR("%s: failed to reset draft cache for trimmed prefill, seq_id=%d\n",
++                            __func__, (int) seq_id);
++                    return false;
++                }
++            }
++            const int64_t injection_start = offset_begin > 0 ? ggml_time_us() : 0;
++
++            for (int32_t offset = offset_begin; offset < n_rows; offset += n_ubatch) {
+                 const int32_t n_chunk = std::min(n_ubatch, n_rows - offset);
+ 
+                 // gather this chunk's target features, interleaved by extract layer
+@@ -1142,6 +1173,11 @@ struct common_speculative_impl_draft_dflash : public common_speculative_impl {
+                     return false;
+                 }
+             }
++            if (offset_begin > 0) {
++                LOG_INF("%s: injected %d target rows for seq %d, skipped %d outside the %d-token window (%.2f ms)\n",
++                        __func__, n_rows - offset_begin, (int) seq_id, offset_begin, n_swa_all,
++                        (ggml_time_us() - injection_start) / 1000.0);
++            }
+         }
+ 
+         return true;
+@@ -2322,6 +2358,17 @@ common_speculative_init_result::common_speculative_init_result(
+     cparams.n_rs_seq  = 0;
+     cparams.ctx_other = ctx_tgt;
+ 
++    if (std::find(params.speculative.types.begin(), params.speculative.types.end(),
++                  COMMON_SPECULATIVE_TYPE_DRAFT_DFLASH) != params.speculative.types.end()) {
++        // Feature injection already chunks by the draft ubatch. Reserving the
++        // target prefill batch also reserves unused noise-block logits.
++        const uint32_t noise_tokens = params.n_parallel * (uint32_t(std::max(0, params.speculative.draft.n_max)) + 1);
++        const uint32_t draft_batch = std::max<uint32_t>(512, noise_tokens);
++        cparams.n_batch = std::min(cparams.n_batch, draft_batch);
++        cparams.n_ubatch = cparams.n_ubatch == 0 ? cparams.n_batch : std::min(cparams.n_ubatch, cparams.n_batch);
++        LOG_INF("%s: DFlash working batch = %u, ubatch = %u\n", __func__, cparams.n_batch, cparams.n_ubatch);
++    }
++
+     std::string model_path;
+     if (has_draft) {
+         model_path = params.speculative.draft.mparams.path;
+diff --git a/ggml/include/ggml.h b/ggml/include/ggml.h
+index 92ba652..8e6a367 100644
+--- a/ggml/include/ggml.h
++++ b/ggml/include/ggml.h
+@@ -586,6 +586,7 @@ extern "C" {
+         GGML_OP_OPT_STEP_SGD,
+ 
+         GGML_OP_GLU,
++        GGML_OP_MOE_HYBRID,
+ 
+         GGML_OP_COUNT,
+     };
+@@ -1439,6 +1440,16 @@ extern "C" {
+             enum ggml_op_hint    hint);
+ 
+     // indirect matrix multiplication
++    // Weighted SwiGLU expert sum [embedding, tokens]. CUDA backend only.
++    GGML_API struct ggml_tensor * ggml_moe_hybrid(
++            struct ggml_context * ctx,
++            struct ggml_tensor * gate,
++            struct ggml_tensor * up,
++            struct ggml_tensor * down,
++            struct ggml_tensor * x,
++            struct ggml_tensor * ids,
++            struct ggml_tensor * routing_weights);
++
+     GGML_API struct ggml_tensor * ggml_mul_mat_id(
+             struct ggml_context * ctx,
+             struct ggml_tensor  * as,
+diff --git a/ggml/src/ggml-alloc.c b/ggml/src/ggml-alloc.c
+index 3bda9ab..7009a64 100644
+--- a/ggml/src/ggml-alloc.c
++++ b/ggml/src/ggml-alloc.c
+@@ -921,6 +921,15 @@ static bool ggml_gallocr_reserve_n_impl(
+                 realloc = true;
+             }
+         }
++        const char * phase_buffers = getenv("GGML_MOE_PHASE_BUFFERS");
++        const size_t cur_size = galloc->buffers[i] ? ggml_vbuffer_size(galloc->buffers[i]) : 0;
++        const bool trim = phase_buffers && atoi(phase_buffers) != 0 &&
++                cur_size > 128 * 1024 * 1024 && new_size < cur_size / 4;
++        realloc |= trim;
++        if (trim) {
++            GGML_LOG_INFO("MoE phase buffers: shrinking %s compute buffer from %.2f to %.2f MiB\n",
++                    ggml_backend_buft_name(galloc->bufts[i]), cur_size / 1048576.0, new_size / 1048576.0);
++        }
+         if (realloc) {
+ #ifndef NDEBUG
+             {
+diff --git a/ggml/src/ggml-backend.cpp b/ggml/src/ggml-backend.cpp
+index 8761592..59352e2 100644
+--- a/ggml/src/ggml-backend.cpp
++++ b/ggml/src/ggml-backend.cpp
+@@ -1505,8 +1505,27 @@ static bool ggml_backend_sched_alloc_splits(ggml_backend_sched_t sched) {
+         }
+     }
+ 
++    bool trim_buffers = false;
++    const char * phase_buffers = getenv("GGML_MOE_PHASE_BUFFERS");
++    if (phase_buffers && atoi(phase_buffers) != 0) {
++        bool hybrid_decode = false;
++        for (int i = 0; i < sched->graph.n_nodes; ++i) {
++            const auto * node = sched->graph.nodes[i];
++            if (node->op == GGML_OP_MOE_HYBRID) {
++                hybrid_decode = node->src[3]->ne[2] <= 32;
++                if (!hybrid_decode) {
++                    break;
++                }
++            }
++        }
++        if (hybrid_decode) {
++            for (int i = 0; i < sched->n_backends; ++i) {
++                trim_buffers |= ggml_gallocr_get_buffer_size(sched->galloc, i) > 128 * 1024 * 1024;
++            }
++        }
++    }
+     // allocate graph
+-    if (backend_ids_changed || !ggml_gallocr_alloc_graph(sched->galloc, &sched->graph)) {
++    if (backend_ids_changed || trim_buffers || !ggml_gallocr_alloc_graph(sched->galloc, &sched->graph)) {
+ #ifndef NDEBUG
+         GGML_LOG_DEBUG("%s: failed to allocate graph, reserving (backend_ids_changed = %d)\n", __func__, backend_ids_changed);
+ #endif
+@@ -1514,7 +1533,7 @@ static bool ggml_backend_sched_alloc_splits(ggml_backend_sched_t sched) {
+         if (sched->debug_realloc > 0) {
+             // we are interested only in situations where the graph was reallocated even though its size remained the same [GGML_SCHED_DEBUG_REALLOC]
+             // example: https://github.com/ggml-org/llama.cpp/pull/17143
+-            const bool unexpected = !backend_ids_changed && sched->debug_prev_graph_size == sched->debug_graph_size;
++            const bool unexpected = !backend_ids_changed && !trim_buffers && sched->debug_prev_graph_size == sched->debug_graph_size;
+ 
+             if (unexpected || sched->debug_realloc > 1) {
+                 GGML_ABORT("%s: unexpected graph reallocation (graph size = %d, nodes = %d, leafs = %d), debug_realloc = %d\n", __func__,
+diff --git a/ggml/src/ggml-cpu/CMakeLists.txt b/ggml/src/ggml-cpu/CMakeLists.txt
+index 1316978..78620bc 100644
+--- a/ggml/src/ggml-cpu/CMakeLists.txt
++++ b/ggml/src/ggml-cpu/CMakeLists.txt
+@@ -29,6 +29,8 @@ function(ggml_add_cpu_backend_variant_impl tag_name)
+     list (APPEND GGML_CPU_SOURCES
+         ggml-cpu/ggml-cpu.c
+         ggml-cpu/ggml-cpu.cpp
++        ggml-cpu/moe.cpp
++        ggml-cpu/moe-iq.cpp
+         ggml-cpu/repack.cpp
+         ggml-cpu/repack.h
+         ggml-cpu/hbm.cpp
+diff --git a/ggml/src/ggml-cpu/ggml-cpu.cpp b/ggml/src/ggml-cpu/ggml-cpu.cpp
+index 128883b..3d96fad 100644
+--- a/ggml/src/ggml-cpu/ggml-cpu.cpp
++++ b/ggml/src/ggml-cpu/ggml-cpu.cpp
+@@ -421,6 +421,9 @@ static ggml_backend_buffer_t ggml_backend_cpu_device_buffer_from_host_ptr(ggml_b
+ }
+ 
+ static bool ggml_backend_cpu_device_supports_op(ggml_backend_dev_t dev, const struct ggml_tensor * op) {
++    if (op->op == GGML_OP_MOE_HYBRID) {
++        return false;
++    }
+     const struct ggml_tensor * src0 = op->src[0];
+     const struct ggml_tensor * src1 = op->src[1];
+ 
+diff --git a/ggml/src/ggml-cuda/CMakeLists.txt b/ggml/src/ggml-cuda/CMakeLists.txt
+index d3953ee..6a2e363 100644
+--- a/ggml/src/ggml-cuda/CMakeLists.txt
++++ b/ggml/src/ggml-cuda/CMakeLists.txt
+@@ -129,6 +129,8 @@ if (CUDAToolkit_FOUND)
+                              ${GGML_SOURCES_CUDA}
+                             )
+ 
++    target_link_libraries(ggml-cuda PRIVATE ggml-cpu)
++
+     add_compile_definitions(GGML_CUDA_PEER_MAX_BATCH_SIZE=${GGML_CUDA_PEER_MAX_BATCH_SIZE})
+ 
+     if (GGML_CUDA_GRAPHS)
+diff --git a/ggml/src/ggml-cuda/fattn-common.cuh b/ggml/src/ggml-cuda/fattn-common.cuh
+index e67cc7f..08fb349 100644
+--- a/ggml/src/ggml-cuda/fattn-common.cuh
++++ b/ggml/src/ggml-cuda/fattn-common.cuh
+@@ -661,10 +661,10 @@ constexpr __device__ dequantize_V_t get_dequantize_V() {
+     }
+ }
+ 
+-template <int ncols1>
++template <int ncols1, bool find_min = false>
+ __launch_bounds__(FATTN_KQ_STRIDE/2, 1)
+ static __global__ void flash_attn_mask_to_KV_max(
+-        const half2 * mask_ptr, int * KV_max_ptr, const int ne30, const int64_t s31, const int64_t s33) {
++        const half2 * mask_ptr, int * KV_max_ptr, const int ne30, const int n_queries, const int64_t s31, const int64_t s33) {
+     const half2 * GGML_CUDA_RESTRICT mask   = mask_ptr;
+     int         * GGML_CUDA_RESTRICT KV_max = KV_max_ptr;
+ 
+@@ -688,8 +688,11 @@ static __global__ void flash_attn_mask_to_KV_max(
+ 
+ #pragma unroll
+         for (int j = 0; j < ncols1; ++j) {
++            if (jt*ncols1 + j >= n_queries) {
++                continue;
++            }
+             const float2 tmp = __half22float2(mask[j*s31 + KV_max_sj/2 + tid]);
+-            all_inf = all_inf && int(isinf(tmp.x)) && int(isinf(tmp.y));
++            all_inf = all_inf && int(tmp.x == -INFINITY) && int(tmp.y == -INFINITY);
+         }
+ 
+         all_inf = warp_reduce_all(all_inf);
+@@ -711,11 +714,40 @@ static __global__ void flash_attn_mask_to_KV_max(
+     // In either case, walk back the decrementation by FATTN_KQ_STRIDE.
+     KV_max_sj += FATTN_KQ_STRIDE;
+ 
++    int KV_min_sj = 0;
++    if constexpr (find_min) {
++        for (; KV_min_sj < KV_max_sj; KV_min_sj += FATTN_KQ_STRIDE) {
++            int all_inf = 1;
++#pragma unroll
++            for (int j = 0; j < ncols1; ++j) {
++                if (jt*ncols1 + j >= n_queries) {
++                    continue;
++                }
++                const float2 tmp = __half22float2(mask[j*s31 + KV_min_sj/2 + tid]);
++                all_inf = all_inf && int(tmp.x == -INFINITY) && int(tmp.y == -INFINITY);
++            }
++            all_inf = warp_reduce_all(all_inf);
++            if (tid % WARP_SIZE == 0) {
++                buf_iw[tid / WARP_SIZE] = all_inf;
++            }
++            __syncthreads();
++            all_inf = buf_iw[tid % WARP_SIZE];
++            __syncthreads();
++            all_inf = warp_reduce_all(all_inf);
++            if (!all_inf) {
++                break;
++            }
++        }
++    }
++
+     if (threadIdx.x != 0) {
+         return;
+     }
+ 
+     KV_max[sequence*ne31 + jt] = KV_max_sj;
++    if constexpr (find_min) {
++        KV_max[gridDim.y*ne31 + sequence*ne31 + jt] = KV_min_sj;
++    }
+ }
+ 
+ template<int D, int ncols1, int ncols2> // D == head size
+@@ -1088,10 +1120,13 @@ void launch_fattn(
+     const int ntiles_z_gqa = ((gqa_ratio + ncols2 - 1) / ncols2);
+     const int ntiles_dst   = ntiles_x * ntiles_z_gqa * K->ne[2] * Q->ne[3];
+ 
+-    // Optional optimization where the mask is scanned to determine whether part of the calculation can be skipped.
+-    // Only worth the overhead if there is at lease one FATTN_KQ_STRIDE x FATTN_KQ_STRIDE square to be skipped or
+-    //     multiple sequences of possibly different lengths.
+-    if (mask && K->ne[1] % FATTN_KQ_STRIDE == 0 && (Q->ne[1] >= 1024 || Q->ne[3] > 1)) {
++    static const bool decode_bounds_enabled = [] {
++        const char * value = std::getenv("GGML_CUDA_FATTN_DECODE_BOUNDS");
++        return !value || !*value || std::strcmp(value, "1") == 0;
++    }();
++    // Stream-K can skip leading masked tiles in small sliding-window batches.
++    const bool scan_decode = decode_bounds_enabled && stream_k && Q->ne[1] <= 32 && K->ne[1] >= 1024;
++    if (mask && K->ne[1] % FATTN_KQ_STRIDE == 0 && (Q->ne[1] >= 1024 || Q->ne[3] > 1 || scan_decode)) {
+         const int64_t s31 = mask->nb[1] / sizeof(half2);
+         const int64_t s33 = mask->nb[3] / sizeof(half2);
+ 
+@@ -1101,10 +1136,16 @@ void launch_fattn(
+         const int ne_KV_max = blocks_num_KV_max.x*blocks_num_KV_max.y;
+         const int iter_k = K->ne[1] / FATTN_KQ_STRIDE;
+ 
+-        KV_max.alloc(ne_KV_max);
++        KV_max.alloc(ne_KV_max * (stream_k ? 2 : 1));
+         ggml_cuda_kernel_launch_params launch_params = ggml_cuda_kernel_launch_params(blocks_num_KV_max, block_dim_KV_max, 0, main_stream);
+-        ggml_cuda_kernel_launch(flash_attn_mask_to_KV_max<ncols1>, launch_params,
+-            (const half2 *) mask->data, KV_max.ptr, iter_k, s31, s33);
++        if (stream_k) {
++            // The stream-K path stores lower bounds after upper bounds.
++            ggml_cuda_kernel_launch(flash_attn_mask_to_KV_max<ncols1, true>, launch_params,
++                (const half2 *) mask->data, KV_max.ptr, iter_k, int(Q->ne[1]), s31, s33);
++        } else {
++            ggml_cuda_kernel_launch(flash_attn_mask_to_KV_max<ncols1>, launch_params,
++                (const half2 *) mask->data, KV_max.ptr, iter_k, int(Q->ne[1]), s31, s33);
++        }
+         CUDA_CHECK(cudaGetLastError());
+     }
+ 
+diff --git a/ggml/src/ggml-cuda/fattn-mma-f16.cuh b/ggml/src/ggml-cuda/fattn-mma-f16.cuh
+index 7f4cfd5..5618497 100644
+--- a/ggml/src/ggml-cuda/fattn-mma-f16.cuh
++++ b/ggml/src/ggml-cuda/fattn-mma-f16.cuh
+@@ -1823,20 +1823,26 @@ static __global__ void flash_attn_ext_f16(
+ 
+         const float slope = ncols2 == 1 ? get_alibi_slope(max_bias, zt_Q, n_head_log2, m0, m1) : 1.0f;
+ 
++        int kb0_valid_start = kb0_start;
+         if (KV_max) {
+             kb0_stop = min(kb0_stop, KV_max[sequence*iter_j + jt] / nbatch_fa);
++            if (kb0_start < kb0_stop) {
++                const int lower = KV_max[ne03*iter_j + sequence*iter_j + jt] / nbatch_fa;
++                // Keep one masked iteration for an empty stream-K partition.
++                kb0_valid_start = min(kb0_stop - 1, max(kb0_start, lower));
++            }
+         }
+         constexpr bool is_fixup = false; // All but (potentially) the last iterations write their data to dst rather than the fixup buffer.
+         if (kb0_start == 0) {
+             constexpr bool needs_fixup = false; // CUDA block is working on an entire tile.
+             flash_attn_ext_f16_process_tile<DKQ, DV, ncols1, ncols2, nwarps, use_logit_softcap, V_is_K_view, needs_fixup, is_fixup>
+                 (Q_f2, K_h2, V_h2, mask_h, sinks_f, dstk, dst_meta, scale, slope, logit_softcap,
+-                 ne01, ne02, gqa_ratio, ne11, stride_Q1, stride_Q2, stride_K, stride_V, stride_mask, jt, zt_gqa, kb0_start, kb0_stop);
++                 ne01, ne02, gqa_ratio, ne11, stride_Q1, stride_Q2, stride_K, stride_V, stride_mask, jt, zt_gqa, kb0_valid_start, kb0_stop);
+         } else {
+             constexpr bool needs_fixup = true; // CUDA block is missing the beginning of a tile.
+             flash_attn_ext_f16_process_tile<DKQ, DV, ncols1, ncols2, nwarps, use_logit_softcap, V_is_K_view, needs_fixup, is_fixup>
+                 (Q_f2, K_h2, V_h2, mask_h, sinks_f, dstk, dst_meta, scale, slope, logit_softcap,
+-                 ne01, ne02, gqa_ratio, ne11, stride_Q1, stride_Q2, stride_K, stride_V, stride_mask, jt, zt_gqa, kb0_start, kb0_stop);
++                 ne01, ne02, gqa_ratio, ne11, stride_Q1, stride_Q2, stride_K, stride_V, stride_mask, jt, zt_gqa, kb0_valid_start, kb0_stop);
+         }
+ 
+         kbc += iter_k;
+@@ -1869,15 +1875,20 @@ static __global__ void flash_attn_ext_f16(
+ 
+     const float slope = ncols2 == 1 ? get_alibi_slope(max_bias, zt_Q, n_head_log2, m0, m1) : 1.0f;
+ 
++    int kb0_valid_start = kb0_start;
+     if (KV_max) {
+         kb0_stop = min(kb0_stop, KV_max[sequence*iter_j + jt] / nbatch_fa);
++        if (kb0_start < kb0_stop) {
++            const int lower = KV_max[ne03*iter_j + sequence*iter_j + jt] / nbatch_fa;
++            kb0_valid_start = min(kb0_stop - 1, max(kb0_start, lower));
++        }
+     }
+ 
+     constexpr bool is_fixup = true; // Last index writes its data to fixup buffer to avoid data races with other blocks.
+     constexpr bool needs_fixup = false;
+     flash_attn_ext_f16_process_tile<DKQ, DV, ncols1, ncols2, nwarps, use_logit_softcap, V_is_K_view, needs_fixup, is_fixup>
+         (Q_f2, K_h2, V_h2, mask_h, sinks_f, dstk, dst_meta, scale, slope, logit_softcap,
+-         ne01, ne02, gqa_ratio, ne11, stride_Q1, stride_Q2, stride_K, stride_V, stride_mask, jt, zt_gqa, kb0_start, kb0_stop);
++         ne01, ne02, gqa_ratio, ne11, stride_Q1, stride_Q2, stride_K, stride_V, stride_mask, jt, zt_gqa, kb0_valid_start, kb0_stop);
+ #else
+     GGML_UNUSED_VARS(Q_ptr, K_ptr, V_ptr, mask_ptr, sinks_ptr, KV_max_ptr, dst_ptr, dst_meta_ptr, scale,
+         max_bias, m0, m1, n_head_log2, logit_softcap,
+diff --git a/ggml/src/ggml-cuda/fattn.cu b/ggml/src/ggml-cuda/fattn.cu
+index c10c502..62ae530 100644
+--- a/ggml/src/ggml-cuda/fattn.cu
++++ b/ggml/src/ggml-cuda/fattn.cu
+@@ -5,6 +5,7 @@
+ #include "fattn-vec.cuh"
+ #include "fattn-wmma-f16.cuh"
+ #include "fattn.cuh"
++#include "moe-hybrid.cuh"
+ 
+ template <int DKQ, int DV, int ncols2>
+ static void ggml_cuda_flash_attn_ext_mma_f16_switch_ncols1(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
+@@ -580,6 +581,7 @@ size_t ggml_cuda_flash_attn_ext_get_alloc_size(int device, const ggml_tensor * d
+ 
+ void ggml_cuda_flash_attn_ext(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
+     ggml_cuda_set_device(ctx.device);
++    const size_t interval = ggml_cuda_moe_hybrid_attention_begin(ctx, dst);
+     switch (ggml_cuda_get_best_fattn_kernel(ggml_cuda_get_device(), dst)) {
+         case BEST_FATTN_KERNEL_NONE:
+             GGML_ABORT("fatal error");
+@@ -596,6 +598,7 @@ void ggml_cuda_flash_attn_ext(ggml_backend_cuda_context & ctx, ggml_tensor * dst
+             ggml_cuda_flash_attn_ext_mma_f16(ctx, dst);
+             break;
+     }
++    ggml_cuda_moe_hybrid_attention_end(ctx, interval);
+ }
+ 
+ bool ggml_cuda_flash_attn_ext_supported(int device, const ggml_tensor * dst) {
+diff --git a/ggml/src/ggml-cuda/ggml-cuda.cu b/ggml/src/ggml-cuda/ggml-cuda.cu
+index 0878ab9..8625f08 100644
+--- a/ggml/src/ggml-cuda/ggml-cuda.cu
++++ b/ggml/src/ggml-cuda/ggml-cuda.cu
+@@ -30,6 +30,7 @@
+ #include "ggml-cuda/im2col.cuh"
+ #include "ggml-cuda/mmf.cuh"
+ #include "ggml-cuda/mmq.cuh"
++#include "ggml-cuda/moe-hybrid.cuh"
+ #include "ggml-cuda/mmvf.cuh"
+ #include "ggml-cuda/mmvq.cuh"
+ #include "ggml-cuda/norm.cuh"
+@@ -1239,6 +1240,60 @@ ggml_backend_buffer_type_t ggml_backend_cuda_host_buffer_type() {
+     return &ggml_backend_cuda_buffer_type_host;
+ }
+ 
++// Expert weights are owned RAM. Only MOE_HYBRID may consume this buffer on CUDA.
++static const char * ggml_backend_cuda_moe_buffer_name(ggml_backend_buffer_type_t buft) {
++    GGML_UNUSED(buft);
++    return "CUDA_MOE_HOST";
++}
++
++static bool ggml_backend_buft_is_cuda_moe(ggml_backend_buffer_type_t buft) {
++    return buft->iface.get_name == ggml_backend_cuda_moe_buffer_name;
++}
++
++static void ggml_backend_cuda_moe_pinned_free(ggml_backend_buffer_t buffer) {
++    CUDA_CHECK(cudaHostUnregister(buffer->context));
++    ggml_aligned_free(buffer->context, buffer->size);
++}
++
++static ggml_backend_buffer_t ggml_backend_cuda_moe_alloc(ggml_backend_buffer_type_t buft, size_t size) {
++    ggml_backend_buffer_t buffer = ggml_backend_buft_alloc_buffer(ggml_backend_cpu_buffer_type(), size);
++    if (buffer) {
++        buffer->buft = buft;
++        const char * pin = std::getenv("GGML_CUDA_MOE_PINNED");
++        if (size > 0 && pin && pin[0] == '1' && pin[1] == '\0' &&
++                std::getenv("GGML_CUDA_NO_PINNED") == nullptr) {
++            // Register before the loader touches the expert pages. CPU buffer callbacks keep their raw pointer.
++            const cudaError_t err = cudaHostRegister(buffer->context, size, cudaHostRegisterPortable);
++            if (err == cudaSuccess) {
++                buffer->iface.free_buffer = ggml_backend_cuda_moe_pinned_free;
++                std::fprintf(stderr, "CUDA hybrid MoE: pinned %.2f GiB of expert RAM\n",
++                        double(size) / (1024.0 * 1024.0 * 1024.0));
++            } else {
++                std::fprintf(stderr, "CUDA hybrid MoE: expert pinning failed (%s); using pageable RAM\n",
++                        cudaGetErrorString(err));
++                (void) cudaGetLastError();
++            }
++        }
++    }
++    return buffer;
++}
++
++static ggml_backend_buffer_type_t ggml_backend_cuda_moe_buffer_type() {
++    static ggml_backend_buffer_type buft = {
++        {
++            ggml_backend_cuda_moe_buffer_name,
++            ggml_backend_cuda_moe_alloc,
++            ggml_backend_cpu_buffer_type()->iface.get_alignment,
++            nullptr,
++            ggml_backend_cpu_buffer_type()->iface.get_alloc_size,
++            ggml_backend_cpu_buffer_type()->iface.is_host,
++        },
++        ggml_backend_reg_dev_get(ggml_backend_cuda_reg(), 0),
++        nullptr,
++    };
++    return &buft;
++}
++
+ //static bool ggml_backend_buffer_is_cuda_host(ggml_backend_buffer_t buffer) {
+ //    return buffer->buft->iface.get_name == ggml_backend_cuda_host_buffer_type_name;
+ //}
+@@ -2119,6 +2174,9 @@ static bool ggml_cuda_compute_forward(ggml_backend_cuda_context & ctx, struct gg
+         case GGML_OP_MUL_MAT:
+             ggml_cuda_mul_mat(ctx, dst->src[0], dst->src[1], dst);
+             break;
++        case GGML_OP_MOE_HYBRID:
++            ggml_cuda_op_moe_hybrid(ctx, dst);
++            break;
+         case GGML_OP_MUL_MAT_ID:
+             ggml_cuda_mul_mat_id(ctx, dst);
+             break;
+@@ -2283,6 +2341,7 @@ static const char * ggml_backend_cuda_get_name(ggml_backend_t backend) {
+ static void ggml_backend_cuda_free(ggml_backend_t backend) {
+     ggml_backend_cuda_context * cuda_ctx = (ggml_backend_cuda_context *)backend->context;
+ 
++    ggml_cuda_moe_hybrid_cleanup(*cuda_ctx);
+     delete cuda_ctx;
+     delete backend;
+ }
+@@ -2408,6 +2467,10 @@ static bool ggml_cuda_graph_check_compability(ggml_cgraph * cgraph) {
+             continue;
+         }
+ 
++        if (node->op == GGML_OP_MOE_HYBRID) {
++            return false; // CPU dispatch and readback cannot be captured.
++        }
++
+         // [TAG_MUL_MAT_ID_CUDA_GRAPHS]
+         if (node->op == GGML_OP_MUL_MAT_ID) {
+             const int cc = ggml_cuda_info().devices[ggml_cuda_get_device()].cc;
+@@ -3757,6 +3820,27 @@ static int ggml_cuda_try_fuse(ggml_backend_cuda_context * cuda_ctx, ggml_cgraph
+ 
+ static void ggml_cuda_graph_evaluate_and_capture(ggml_backend_cuda_context * cuda_ctx, ggml_cgraph * cgraph, const bool use_cuda_graph, const bool cuda_graph_update_required, const void * graph_key) {
+     bool graph_evaluated_or_captured = false;
++    static const bool profile_hybrid_launch = [] {
++        const char * profile = std::getenv("GGML_CUDA_MOE_PROFILE");
++        const char * span = std::getenv("GGML_CUDA_MOE_PROFILE_READBACK_SPAN");
++        return profile && std::strcmp(profile, "1") == 0 && span && std::strcmp(span, "1") == 0;
++    }();
++    bool measure_launch = false;
++    int64_t target_tokens = 0;
++    if (profile_hybrid_launch && !use_cuda_graph) {
++        for (int i = 0; i < cgraph->n_nodes; ++i) {
++            const ggml_tensor * node = cgraph->nodes[i];
++            if (node->op == GGML_OP_MOE_HYBRID) {
++                target_tokens = std::max(target_tokens, node->src[3]->ne[2]);
++            }
++        }
++        measure_launch = target_tokens > 0 && target_tokens <= 32;
++    }
++    const int64_t launch_start = measure_launch ? ggml_time_us() : 0;
++    int64_t hybrid_us = 0;
++    int hybrid_nodes = 0;
++    int ordinary_dispatches = 0;
++    int fused_nodes = 0;
+ 
+     // flag used to determine whether it is an integrated_gpu
+     const bool integrated            = ggml_cuda_info().devices[cuda_ctx->device].integrated;
+@@ -3898,6 +3982,10 @@ static void ggml_cuda_graph_evaluate_and_capture(ggml_backend_cuda_context * cud
+                 int nodes_to_skip = ggml_cuda_try_fuse(cuda_ctx, cgraph, i);
+ 
+                 if (nodes_to_skip != 0) {
++                    if (measure_launch) {
++                        ++ordinary_dispatches;
++                        fused_nodes += nodes_to_skip;
++                    }
+ #ifdef GGML_CUDA_DEBUG
+                     const int last_fused = i + nodes_to_skip;
+                     GGML_LOG_INFO("nodes_fused: %d, first: %s (%s), last: %s (%s)\n",
+@@ -3913,14 +4001,25 @@ static void ggml_cuda_graph_evaluate_and_capture(ggml_backend_cuda_context * cud
+                     if (node->src[j] != nullptr) {
+                         assert(node->src[j]->buffer);
+                         assert(node->src[j]->buffer->buft == ggml_backend_cuda_buffer_type(cuda_ctx->device) ||
+-                               (integrated && ggml_backend_buft_is_cuda_host(node->src[j]->buffer->buft)));
++                               (integrated && ggml_backend_buft_is_cuda_host(node->src[j]->buffer->buft)) ||
++                               (node->op == GGML_OP_MOE_HYBRID && j < 3 &&
++                                ggml_backend_buft_is_cuda_moe(node->src[j]->buffer->buft) &&
++                                node->src[j]->buffer->buft->device == ggml_backend_reg_dev_get(ggml_backend_cuda_reg(), cuda_ctx->device)));
+                     }
+                 }
+ #else
+                 GGML_UNUSED(integrated);
+ #endif  // NDEBUG
+ 
++                const bool measure_hybrid = measure_launch && node->op == GGML_OP_MOE_HYBRID;
++                const int64_t hybrid_start = measure_hybrid ? ggml_time_us() : 0;
+                 bool ok = ggml_cuda_compute_forward(*cuda_ctx, node);
++                if (measure_hybrid) {
++                    hybrid_us += ggml_time_us() - hybrid_start;
++                    ++hybrid_nodes;
++                } else if (measure_launch) {
++                    ++ordinary_dispatches;
++                }
+                 if (!ok) {
+                     GGML_LOG_ERROR("%s: op not supported %s (%s)\n", __func__, node->name, ggml_op_name(node->op));
+                 }
+@@ -3967,6 +4066,33 @@ static void ggml_cuda_graph_evaluate_and_capture(ggml_backend_cuda_context * cud
+         graph_evaluated_or_captured = true;
+ #endif  // USE_CUDA_GRAPH
+     }
++    if (measure_launch) {
++        struct launch_totals {
++            int calls = 0;
++            int64_t target_tokens = 0;
++            int64_t hybrid_nodes = 0;
++            int64_t ordinary_dispatches = 0;
++            int64_t fused_nodes = 0;
++            int64_t hybrid_us = 0;
++            int64_t outside_hybrid_us = 0;
++        };
++        static thread_local launch_totals totals;
++        ++totals.calls;
++        totals.target_tokens += target_tokens;
++        totals.hybrid_nodes += hybrid_nodes;
++        totals.ordinary_dispatches += ordinary_dispatches;
++        totals.fused_nodes += fused_nodes;
++        totals.hybrid_us += hybrid_us;
++        totals.outside_hybrid_us += ggml_time_us() - launch_start - hybrid_us;
++        if (totals.calls == 16) {
++            GGML_LOG_INFO("CUDA hybrid launch profile: calls=%d target_tokens=%lld hybrid_nodes=%lld "
++                    "ordinary_dispatches=%lld fused_nodes=%lld host_hybrid_ms=%.2f host_outside_hybrid_ms=%.2f\n",
++                    totals.calls, static_cast<long long>(totals.target_tokens), static_cast<long long>(totals.hybrid_nodes),
++                    static_cast<long long>(totals.ordinary_dispatches), static_cast<long long>(totals.fused_nodes),
++                    double(totals.hybrid_us) / 1000.0, double(totals.outside_hybrid_us) / 1000.0);
++            totals = {};
++        }
++    }
+ }
+ 
+ #ifdef USE_CUDA_GRAPH
+@@ -3991,6 +4117,8 @@ static enum ggml_status ggml_backend_cuda_graph_compute(ggml_backend_t backend,
+ 
+     ggml_cuda_set_device(cuda_ctx->device);
+ 
++    ggml_cuda_moe_hybrid_prefill_begin(*cuda_ctx, cgraph);
++
+     bool use_cuda_graph             = false;
+     bool cuda_graph_update_required = false;
+     const void * graph_key = nullptr;
+@@ -4073,6 +4201,8 @@ static void ggml_backend_cuda_event_wait(ggml_backend_t backend, ggml_backend_ev
+ static void ggml_backend_cuda_graph_optimize(ggml_backend_t backend, ggml_cgraph * cgraph) {
+     ggml_backend_cuda_context * cuda_ctx = (ggml_backend_cuda_context *) backend->context;
+ 
++    ggml_cuda_moe_hybrid_prepare_graph(*cuda_ctx, cgraph);
++
+ #ifdef USE_CUDA_GRAPH
+     const void * graph_key = ggml_cuda_graph_get_key(cgraph);
+     const bool use_cuda_graph = ggml_cuda_graph_set_enabled(cuda_ctx, graph_key);
+@@ -4582,6 +4712,15 @@ static ggml_backend_buffer_type_t ggml_backend_cuda_device_get_host_buffer_type(
+ static bool ggml_backend_cuda_device_supports_op(ggml_backend_dev_t dev, const ggml_tensor * op) {
+     ggml_backend_cuda_device_context * dev_ctx = (ggml_backend_cuda_device_context *) dev->context;
+ 
++    // Host expert pointers may only be consumed by the hybrid operator.
++    for (int i = 0; i < GGML_MAX_SRC; ++i) {
++        if (op->src[i] && op->src[i]->buffer &&
++            ggml_backend_buft_is_cuda_moe(op->src[i]->buffer->buft) &&
++            op->op != GGML_OP_MOE_HYBRID && !ggml_cuda_is_view_or_noop(op)) {
++            return false;
++        }
++    }
++
+     // check if all the sources are allocated on this device
+     for (int i = 0; i < GGML_MAX_SRC; i++) {
+         if (op->src[i] && op->src[i]->buffer && ggml_backend_buft_is_cuda(op->src[i]->buffer->buft)) {
+@@ -4637,6 +4776,22 @@ static bool ggml_backend_cuda_device_supports_op(ggml_backend_dev_t dev, const g
+                     return false;
+             }
+             break;
++        case GGML_OP_MOE_HYBRID:
++            for (int i = 0; i < 3; ++i) {
++                const auto * w = op->src[i];
++                if (!w || !w->buffer || !ggml_backend_buft_is_cuda_moe(w->buffer->buft) ||
++                    w->buffer->buft->device != dev || !ggml_is_contiguous(w)) {
++                    return false;
++                }
++                switch (w->type) {
++                    case GGML_TYPE_IQ3_S: case GGML_TYPE_IQ2_S: case GGML_TYPE_IQ3_XXS:
++                    case GGML_TYPE_IQ4_XS: case GGML_TYPE_Q8_0: case GGML_TYPE_Q6_K:
++                        break;
++                    default: return false;
++                }
++            }
++            return op->src[3]->type == GGML_TYPE_F32 && op->src[4]->type == GGML_TYPE_I32 &&
++                   op->src[5] && op->src[5]->type == GGML_TYPE_F32;
+         case GGML_OP_MUL_MAT:
+         case GGML_OP_MUL_MAT_ID:
+             {
+@@ -4986,7 +5141,8 @@ static bool ggml_backend_cuda_device_supports_op(ggml_backend_dev_t dev, const g
+ static bool ggml_backend_cuda_device_supports_buft(ggml_backend_dev_t dev, ggml_backend_buffer_type_t buft) {
+     ggml_backend_cuda_device_context * dev_ctx = (ggml_backend_cuda_device_context *) dev->context;
+     const bool integrated = ggml_cuda_info().devices[dev_ctx->device].integrated;
+-    return (ggml_backend_buft_is_cuda(buft) && buft->device == dev) || (integrated && ggml_backend_buft_is_cuda_host(buft));
++    return ((ggml_backend_buft_is_cuda(buft) || ggml_backend_buft_is_cuda_moe(buft)) && buft->device == dev) ||
++           (integrated && ggml_backend_buft_is_cuda_host(buft));
+ }
+ 
+ static int64_t get_op_batch_size(const ggml_tensor * op) {
+@@ -5154,6 +5310,9 @@ static void * ggml_backend_cuda_reg_get_proc_address(ggml_backend_reg_t reg, con
+     if (strcmp(name, "ggml_backend_unregister_host_buffer") == 0) {
+         return (void *)ggml_backend_cuda_unregister_host_buffer;
+     }
++    if (strcmp(name, "ggml_backend_cuda_moe_buffer_type") == 0) {
++        return (void *)ggml_backend_cuda_moe_buffer_type;
++    }
+     if (strcmp(name, "ggml_backend_get_features") == 0) {
+         return (void *)ggml_backend_cuda_get_features;
+     }
+diff --git a/ggml/src/ggml-cuda/mmq.cu b/ggml/src/ggml-cuda/mmq.cu
+index bf9f5d5..2ce40a6 100644
+--- a/ggml/src/ggml-cuda/mmq.cu
++++ b/ggml/src/ggml-cuda/mmq.cu
+@@ -76,8 +76,9 @@ static void ggml_cuda_mul_mat_q_switch_type(ggml_backend_cuda_context & ctx, con
+     }
+ }
+ 
+-void ggml_cuda_mul_mat_q(
+-        ggml_backend_cuda_context & ctx, const ggml_tensor * src0, const ggml_tensor * src1, const ggml_tensor * ids, ggml_tensor * dst) {
++static void ggml_cuda_mul_mat_q_impl(
++        ggml_backend_cuda_context & ctx, const ggml_tensor * src0, const ggml_tensor * src1,
++        const ggml_tensor * ids, ggml_tensor * dst, int64_t max_expert_rows) {
+     GGML_ASSERT(        src1->type == GGML_TYPE_F32);
+     GGML_ASSERT(        dst->type  == GGML_TYPE_F32);
+     GGML_ASSERT(!ids || ids->type  == GGML_TYPE_I32); // Optional, used for batched GGML_MUL_MAT_ID.
+@@ -218,11 +219,22 @@ void ggml_cuda_mul_mat_q(
+         ne00, ne01, ne_get_rows, s01, ne_get_rows, s1,
+         ne02, ne02, s02, s12, s2,
+         ne03, ne13, s03, s13, s3,
+-        ne12};
++        max_expert_rows > 0 ? max_expert_rows : ne12};
+ 
+     ggml_cuda_mul_mat_q_switch_type(ctx, args, stream);
+ }
+ 
++void ggml_cuda_mul_mat_q(ggml_backend_cuda_context & ctx, const ggml_tensor * src0,
++        const ggml_tensor * src1, const ggml_tensor * ids, ggml_tensor * dst) {
++    ggml_cuda_mul_mat_q_impl(ctx, src0, src1, ids, dst, 0);
++}
++
++void ggml_cuda_mul_mat_q_bounded(ggml_backend_cuda_context & ctx, const ggml_tensor * src0,
++        const ggml_tensor * src1, const ggml_tensor * ids, ggml_tensor * dst, int64_t max_expert_rows) {
++    GGML_ASSERT(ids && max_expert_rows > 0 && max_expert_rows <= src1->ne[2]);
++    ggml_cuda_mul_mat_q_impl(ctx, src0, src1, ids, dst, max_expert_rows);
++}
++
+ bool ggml_cuda_should_use_mmq(enum ggml_type type, int cc, int64_t ne11, int64_t n_experts) {
+ #ifdef GGML_CUDA_FORCE_CUBLAS
+     return false;
+diff --git a/ggml/src/ggml.c b/ggml/src/ggml.c
+index 086b6ab..d77ff3e 100644
+--- a/ggml/src/ggml.c
++++ b/ggml/src/ggml.c
+@@ -1095,9 +1095,10 @@ static const char * GGML_OP_NAME[GGML_OP_COUNT] = {
+     "OPT_STEP_SGD",
+ 
+     "GLU",
++    "MOE_HYBRID",
+ };
+ 
+-static_assert(GGML_OP_COUNT == 98, "GGML_OP_COUNT != 98");
++static_assert(GGML_OP_COUNT == 99, "GGML_OP_COUNT != 99");
+ 
+ static const char * GGML_OP_SYMBOL[GGML_OP_COUNT] = {
+     "none",
+@@ -1207,9 +1208,10 @@ static const char * GGML_OP_SYMBOL[GGML_OP_COUNT] = {
+     "sgd(x)",
+ 
+     "glu(x)",
++    "moe_hybrid(gate,up,down,x,ids)",
+ };
+ 
+-static_assert(GGML_OP_COUNT == 98, "GGML_OP_COUNT != 98");
++static_assert(GGML_OP_COUNT == 99, "GGML_OP_COUNT != 99");
+ 
+ static_assert(GGML_OP_POOL_COUNT == 2, "GGML_OP_POOL_COUNT != 2");
+ 
+@@ -3346,6 +3348,32 @@ struct ggml_tensor * ggml_mul_mat_id(
+     return result;
+ }
+ 
++struct ggml_tensor * ggml_moe_hybrid(
++        struct ggml_context * ctx,
++        struct ggml_tensor * gate, struct ggml_tensor * up, struct ggml_tensor * down,
++        struct ggml_tensor * x, struct ggml_tensor * ids, struct ggml_tensor * routing_weights) {
++    GGML_ASSERT(ggml_are_same_shape(gate, up));
++    GGML_ASSERT(gate->ne[3] == 1 && down->ne[3] == 1);
++    GGML_ASSERT(down->ne[0] == gate->ne[1] && down->ne[1] == gate->ne[0]);
++    GGML_ASSERT(down->ne[2] == gate->ne[2]);
++    GGML_ASSERT(x->type == GGML_TYPE_F32 && x->ne[0] == gate->ne[0]);
++    GGML_ASSERT(x->ne[1] == 1 && x->ne[3] == 1 && ggml_is_contiguous(x));
++    GGML_ASSERT(ids->type == GGML_TYPE_I32 && ids->ne[1] == x->ne[2]);
++    GGML_ASSERT(ids->ne[2] == 1 && ids->ne[3] == 1 && ggml_is_contiguous(ids));
++    GGML_ASSERT(routing_weights->type == GGML_TYPE_F32 && ggml_is_contiguous(routing_weights));
++    GGML_ASSERT(routing_weights->ne[0] == 1 && routing_weights->ne[1] == ids->ne[0]);
++    GGML_ASSERT(routing_weights->ne[2] == x->ne[2] && routing_weights->ne[3] == 1);
++    struct ggml_tensor * result = ggml_new_tensor_2d(ctx, GGML_TYPE_F32, down->ne[1], x->ne[2]);
++    result->op = GGML_OP_MOE_HYBRID;
++    result->src[0] = gate;
++    result->src[1] = up;
++    result->src[2] = down;
++    result->src[3] = x;
++    result->src[4] = ids;
++    result->src[5] = routing_weights;
++    return result;
++}
++
+ // ggml_out_prod
+ 
+ static inline bool ggml_can_out_prod(const struct ggml_tensor * t0, const struct ggml_tensor * t1) {
+diff --git a/src/llama-ext.h b/src/llama-ext.h
+index 348bbae..6b5905b 100644
+--- a/src/llama-ext.h
++++ b/src/llama-ext.h
+@@ -86,6 +86,9 @@ using llama_memory_breakdown = std::map<ggml_backend_buffer_type_t, llama_memory
+ LLAMA_API int32_t llama_model_n_expert (const struct llama_model * model);
+ LLAMA_API int32_t llama_model_n_devices(const struct llama_model * model);
+ 
++// Returns the window only when every layer uses standard sliding attention.
++LLAMA_API int32_t llama_model_n_swa_all(const struct llama_model * model);
++
+ LLAMA_API ggml_backend_dev_t llama_model_get_device(const struct llama_model * model, int i);
+ 
+ LLAMA_API llama_memory_breakdown llama_get_memory_breakdown(const struct llama_context * ctx);
+diff --git a/src/llama-graph.cpp b/src/llama-graph.cpp
+index 5880522..5a53e78 100644
+--- a/src/llama-graph.cpp
++++ b/src/llama-graph.cpp
+@@ -16,6 +16,7 @@
+ #include <cassert>
+ #include <cmath>
+ #include <cstring>
++#include <cstdlib>
+ #include <numeric>
+ #include <sstream>
+ #include <string>
+@@ -1972,150 +1973,172 @@ ggml_tensor * llm_graph_context::build_moe_ffn(
+     ggml_tensor * up = nullptr;
+     ggml_tensor * experts = nullptr;
+ 
+-    if (gate_up_exps) {
+-        // merged gate_up path: one mul_mat_id, then split into gate and up views
+-        ggml_tensor * gate_up = build_lora_mm_id(gate_up_exps, cur, selected_experts, up_exps_s); // [n_ff*2, n_expert_used, n_tokens]
+-        cb(gate_up, "ffn_moe_gate_up", il);
+-
+-        if (up_exps_s) {
+-            cb(gate_up, "ffn_moe_gate_up_scaled", il);
+-        }
+-
+-        if (gate_up_exps_b) {
+-            gate_up = ggml_add_id(ctx0, gate_up, gate_up_exps_b, selected_experts);
+-            cb(gate_up, "ffn_moe_gate_up_biased", il);
+-        }
+-
+-        const int64_t n_ff = gate_up->ne[0] / 2;
+-        cur = ggml_view_3d(ctx0, gate_up, n_ff, gate_up->ne[1], gate_up->ne[2], gate_up->nb[1], gate_up->nb[2], 0);
+-        cb(cur, "ffn_moe_gate", il);
+-        up  = ggml_view_3d(ctx0, gate_up, n_ff, gate_up->ne[1], gate_up->ne[2], gate_up->nb[1], gate_up->nb[2], n_ff * gate_up->nb[0]);
+-        cb(up, "ffn_moe_up", il);
++    const char * hybrid_env = std::getenv("LLAMA_MOE_HYBRID");
++    const bool hybrid = arch == LLM_ARCH_LAGUNA && hybrid_env && std::strcmp(hybrid_env, "1") == 0;
++    if (hybrid) {
++        GGML_ASSERT(gate_exps && up_exps && down_exps && !gate_up_exps);
++        GGML_ASSERT(!weight_before_ffn && type_op == LLM_FFN_SILU);
++        GGML_ASSERT(!gate_exps_b && !up_exps_b && !down_exps_b);
++        GGML_ASSERT(!gate_exps_s && !up_exps_s && !down_exps_s);
++        GGML_ASSERT(loras->empty());
++        GGML_ASSERT(il < 0 || hparams.swiglu_clamp_exp[il] <= 1e-6f);
++        for (auto * tensor : {gate_exps, up_exps, down_exps}) {
++            GGML_ASSERT(tensor->buffer && std::strcmp(ggml_backend_buft_name(
++                ggml_backend_buffer_get_type(tensor->buffer)), "CUDA_MOE_HOST") == 0 &&
++                "hybrid MoE requires routed expert weights in CUDA_MOE_HOST");
++        }
++        experts = ggml_moe_hybrid(ctx0, gate_exps, up_exps, down_exps,
++                                  ggml_cont(ctx0, cur), ggml_cont(ctx0, selected_experts), ggml_cont(ctx0, weights));
++        cb(experts, "ffn_moe_hybrid", il);
++        ggml_build_forward_expand(gf, experts);
++        return experts;
+     } else {
+-        // separate gate and up path
+-        up = build_lora_mm_id(up_exps, cur, selected_experts, up_exps_s); // [n_ff, n_expert_used, n_tokens]
+-        cb(up, "ffn_moe_up", il);
++        if (gate_up_exps) {
++            // merged gate_up path: one mul_mat_id, then split into gate and up views
++            ggml_tensor * gate_up = build_lora_mm_id(gate_up_exps, cur, selected_experts, up_exps_s); // [n_ff*2, n_expert_used, n_tokens]
++            cb(gate_up, "ffn_moe_gate_up", il);
+ 
+-        if (up_exps_s) {
+-            cb(up, "ffn_moe_up_scaled", il);
+-        }
++            if (up_exps_s) {
++                cb(gate_up, "ffn_moe_gate_up_scaled", il);
++            }
+ 
+-        if (up_exps_b) {
+-            up = ggml_add_id(ctx0, up, up_exps_b, selected_experts);
+-            cb(up, "ffn_moe_up_biased", il);
+-        }
++            if (gate_up_exps_b) {
++                gate_up = ggml_add_id(ctx0, gate_up, gate_up_exps_b, selected_experts);
++                cb(gate_up, "ffn_moe_gate_up_biased", il);
++            }
+ 
+-        if (gate_exps) {
+-            cur = build_lora_mm_id(gate_exps, cur, selected_experts, gate_exps_s); // [n_ff, n_expert_used, n_tokens]
++            const int64_t n_ff = gate_up->ne[0] / 2;
++            cur = ggml_view_3d(ctx0, gate_up, n_ff, gate_up->ne[1], gate_up->ne[2], gate_up->nb[1], gate_up->nb[2], 0);
+             cb(cur, "ffn_moe_gate", il);
++            up  = ggml_view_3d(ctx0, gate_up, n_ff, gate_up->ne[1], gate_up->ne[2], gate_up->nb[1], gate_up->nb[2], n_ff * gate_up->nb[0]);
++            cb(up, "ffn_moe_up", il);
+         } else {
+-            cur = up;
+-        }
+-
+-        if (gate_exps_s) {
+-            cb(cur, "ffn_moe_gate_scaled", il);
+-        }
++            // separate gate and up path
++            up = build_lora_mm_id(up_exps, cur, selected_experts, up_exps_s); // [n_ff, n_expert_used, n_tokens]
++            cb(up, "ffn_moe_up", il);
+ 
+-        if (gate_exps_b) {
+-            cur = ggml_add_id(ctx0, cur, gate_exps_b, selected_experts);
+-            cb(cur, "ffn_moe_gate_biased", il);
+-        }
+-    }
++            if (up_exps_s) {
++                cb(up, "ffn_moe_up_scaled", il);
++            }
+ 
+-    const bool has_gate = gate_exps || gate_up_exps;
++            if (up_exps_b) {
++                up = ggml_add_id(ctx0, up, up_exps_b, selected_experts);
++                cb(up, "ffn_moe_up_biased", il);
++            }
+ 
+-    switch (type_op) {
+-        case LLM_FFN_SILU:
+             if (gate_exps) {
+-                if (il >= 0) {
+-                    const float limit = hparams.swiglu_clamp_exp[il];
+-                    constexpr float eps = 1e-6f;
+-                    if (limit > eps) {
+-                        up = ggml_clamp(ctx0, up, -limit, limit);
+-                        cb(up, "ffn_moe_up_clamped", il);
++                cur = build_lora_mm_id(gate_exps, cur, selected_experts, gate_exps_s); // [n_ff, n_expert_used, n_tokens]
++                cb(cur, "ffn_moe_gate", il);
++            } else {
++                cur = up;
++            }
+ 
+-                        if (arch == LLM_ARCH_DEEPSEEK4) {
+-                            cur = ggml_clamp(ctx0, cur, -INFINITY, limit);
+-                            cb(cur, "ffn_moe_gate_clamped", il);
+-                            cur = ggml_swiglu_split(ctx0, cur, up);
+-                        } else {
+-                            ggml_tensor * gate_act = ggml_silu(ctx0, cur);
+-                            cb(gate_act, "ffn_moe_silu", il);
+-                            gate_act = ggml_clamp(ctx0, gate_act, -INFINITY, limit);
+-                            cb(gate_act, "ffn_moe_silu_clamped", il);
+-                            cur = ggml_mul(ctx0, gate_act, up);
++            if (gate_exps_s) {
++                cb(cur, "ffn_moe_gate_scaled", il);
++            }
++
++            if (gate_exps_b) {
++                cur = ggml_add_id(ctx0, cur, gate_exps_b, selected_experts);
++                cb(cur, "ffn_moe_gate_biased", il);
++            }
++        }
++
++        const bool has_gate = gate_exps || gate_up_exps;
++
++        switch (type_op) {
++            case LLM_FFN_SILU:
++                if (gate_exps) {
++                    if (il >= 0) {
++                        const float limit = hparams.swiglu_clamp_exp[il];
++                        constexpr float eps = 1e-6f;
++                        if (limit > eps) {
++                            up = ggml_clamp(ctx0, up, -limit, limit);
++                            cb(up, "ffn_moe_up_clamped", il);
++
++                            if (arch == LLM_ARCH_DEEPSEEK4) {
++                                cur = ggml_clamp(ctx0, cur, -INFINITY, limit);
++                                cb(cur, "ffn_moe_gate_clamped", il);
++                                cur = ggml_swiglu_split(ctx0, cur, up);
++                            } else {
++                                ggml_tensor * gate_act = ggml_silu(ctx0, cur);
++                                cb(gate_act, "ffn_moe_silu", il);
++                                gate_act = ggml_clamp(ctx0, gate_act, -INFINITY, limit);
++                                cb(gate_act, "ffn_moe_silu_clamped", il);
++                                cur = ggml_mul(ctx0, gate_act, up);
++                            }
++                            cb(cur, "ffn_moe_swiglu_limited", il);
++                            break;
+                         }
+-                        cb(cur, "ffn_moe_swiglu_limited", il);
+-                        break;
+                     }
+                 }
+-            }
+ 
+-            if (has_gate) {
+-                cur = ggml_swiglu_split(ctx0, cur, up);
+-                cb(cur, "ffn_moe_swiglu", il);
+-            } else {
+-                cur = ggml_silu(ctx0, cur);
+-                cb(cur, "ffn_moe_silu", il);
+-            } break;
+-        case LLM_FFN_GELU:
+-            if (has_gate) {
+-                cur = ggml_geglu_split(ctx0, cur, up);
+-                cb(cur, "ffn_moe_geglu", il);
+-            } else {
+-                cur = ggml_gelu(ctx0, cur);
+-                cb(cur, "ffn_moe_gelu", il);
+-            } break;
+-        case LLM_FFN_SWIGLU_OAI_MOE:
+-            {
+-                // TODO: move to hparams?
+-                constexpr float alpha = 1.702f;
+-                constexpr float limit = 7.0f;
+-                cur = ggml_swiglu_oai(ctx0, cur, up, alpha, limit);
+-                cb(cur, "ffn_moe_swiglu_oai", il);
+-            } break;
+-        case LLM_FFN_RELU:
+-            if (has_gate) {
+-                cur = ggml_reglu_split(ctx0, cur, up);
+-                cb(cur, "ffn_moe_reglu", il);
+-            } else {
+-                cur = ggml_relu(ctx0, cur);
+-                cb(cur, "ffn_moe_relu", il);
+-            } break;
+-        case LLM_FFN_RELU_SQR:
+-            if (has_gate) {
+-                // TODO: add support for gated squared relu
+-                GGML_ABORT("fatal error: gated squared relu not implemented");
+-            } else {
+-                cur = ggml_relu(ctx0, cur);
+-                cur = ggml_sqr(ctx0, cur);
+-                cb(cur, "ffn_moe_relu_sqr", il);
+-            } break;
+-        default:
+-            GGML_ABORT("fatal error");
+-    }
++                if (has_gate) {
++                    cur = ggml_swiglu_split(ctx0, cur, up);
++                    cb(cur, "ffn_moe_swiglu", il);
++                } else {
++                    cur = ggml_silu(ctx0, cur);
++                    cb(cur, "ffn_moe_silu", il);
++                } break;
++            case LLM_FFN_GELU:
++                if (has_gate) {
++                    cur = ggml_geglu_split(ctx0, cur, up);
++                    cb(cur, "ffn_moe_geglu", il);
++                } else {
++                    cur = ggml_gelu(ctx0, cur);
++                    cb(cur, "ffn_moe_gelu", il);
++                } break;
++            case LLM_FFN_SWIGLU_OAI_MOE:
++                {
++                    // TODO: move to hparams?
++                    constexpr float alpha = 1.702f;
++                    constexpr float limit = 7.0f;
++                    cur = ggml_swiglu_oai(ctx0, cur, up, alpha, limit);
++                    cb(cur, "ffn_moe_swiglu_oai", il);
++                } break;
++            case LLM_FFN_RELU:
++                if (has_gate) {
++                    cur = ggml_reglu_split(ctx0, cur, up);
++                    cb(cur, "ffn_moe_reglu", il);
++                } else {
++                    cur = ggml_relu(ctx0, cur);
++                    cb(cur, "ffn_moe_relu", il);
++                } break;
++            case LLM_FFN_RELU_SQR:
++                if (has_gate) {
++                    // TODO: add support for gated squared relu
++                    GGML_ABORT("fatal error: gated squared relu not implemented");
++                } else {
++                    cur = ggml_relu(ctx0, cur);
++                    cur = ggml_sqr(ctx0, cur);
++                    cb(cur, "ffn_moe_relu_sqr", il);
++                } break;
++            default:
++                GGML_ABORT("fatal error");
++        }
+ 
+-    // Metal's MUL_MAT_ID casts src1 (the SwiGLU activation) to f16, which overflows to NaN when a
+-    // value exceeds the f16 max of 65504 (some models reach ~1e6 here). ggml has no max-reduce, so
+-    // scale each (expert,token) column by its L2 norm: L2 >= the largest element, so the f16 cast
+-    // stays in range; when the overflow comes from a single outlier, L2 ~= that element.
+-    // Mathematically a per-column identity, so it only shifts the result by ~1 ULP (the rescale
+-    // factor is not a power of two).
+-    const float f16_safe = 32768.0f; // stay well under the f16 max of 65504
+-    ggml_tensor * col_l2 = ggml_sqrt(ctx0, ggml_sum_rows(ctx0, ggml_sqr(ctx0, cur))); // [1, n_expert_used, n_tokens]
+-    col_l2 = ggml_clamp(ctx0, col_l2, 1e-8f, 1e30f); // guard empty columns against div-by-zero
+-    ggml_tensor * cur_s = ggml_div(ctx0, ggml_scale(ctx0, cur, f16_safe), col_l2);
+-    experts = build_lora_mm_id(down_exps, cur_s, selected_experts, down_exps_s); // [n_embd, n_expert_used, n_tokens]
+-    experts = ggml_scale(ctx0, ggml_mul(ctx0, experts, col_l2), 1.0f/f16_safe);
+-    cb(experts, "ffn_moe_down", il);
++        // Metal's MUL_MAT_ID casts src1 (the SwiGLU activation) to f16, which overflows to NaN when a
++        // value exceeds the f16 max of 65504 (some models reach ~1e6 here). ggml has no max-reduce, so
++        // scale each (expert,token) column by its L2 norm: L2 >= the largest element, so the f16 cast
++        // stays in range; when the overflow comes from a single outlier, L2 ~= that element.
++        // Mathematically a per-column identity, so it only shifts the result by ~1 ULP (the rescale
++        // factor is not a power of two).
++        const float f16_safe = 32768.0f; // stay well under the f16 max of 65504
++        ggml_tensor * col_l2 = ggml_sqrt(ctx0, ggml_sum_rows(ctx0, ggml_sqr(ctx0, cur))); // [1, n_expert_used, n_tokens]
++        col_l2 = ggml_clamp(ctx0, col_l2, 1e-8f, 1e30f); // guard empty columns against div-by-zero
++        ggml_tensor * cur_s = ggml_div(ctx0, ggml_scale(ctx0, cur, f16_safe), col_l2);
++        experts = build_lora_mm_id(down_exps, cur_s, selected_experts, down_exps_s); // [n_embd, n_expert_used, n_tokens]
++        experts = ggml_scale(ctx0, ggml_mul(ctx0, experts, col_l2), 1.0f/f16_safe);
++        cb(experts, "ffn_moe_down", il);
+ 
+-    if (down_exps_s) {
+-        cb(experts, "ffn_moe_down_scaled", il);
+-    }
++        if (down_exps_s) {
++            cb(experts, "ffn_moe_down_scaled", il);
++        }
++
++        if (down_exps_b) {
++            experts = ggml_add_id(ctx0, experts, down_exps_b, selected_experts);
++            cb(experts, "ffn_moe_down_biased", il);
++        }
+ 
+-    if (down_exps_b) {
+-        experts = ggml_add_id(ctx0, experts, down_exps_b, selected_experts);
+-        cb(experts, "ffn_moe_down_biased", il);
+     }
+ 
+     if (!weight_before_ffn) {
+diff --git a/src/llama-kv-cache.cpp b/src/llama-kv-cache.cpp
+index e70583e..d1c479d 100644
+--- a/src/llama-kv-cache.cpp
++++ b/src/llama-kv-cache.cpp
+@@ -9,6 +9,7 @@
+ #include <cassert>
+ #include <cmath>
+ #include <cstring>
++#include <cstdlib>
+ #include <limits>
+ #include <map>
+ #include <stdexcept>
+@@ -1528,6 +1529,53 @@ struct args_set_input_kq_mask {
+     int64_t n_tps;
+ };
+ 
++template<typename T>
++static bool set_input_kq_mask_contiguous(const args_set_input_kq_mask & args, T * data, bool causal_attn) {
++    const auto & ubatch = args.ubatch;
++    if (!causal_attn || args.n_stream != 1 || args.n_kv <= 0 || args.n_tps <= 32 || args.hparams.use_alibi ||
++            ubatch->is_pos_2d() ||
++            (args.swa_type != LLAMA_SWA_TYPE_NONE && args.swa_type != LLAMA_SWA_TYPE_STANDARD)) {
++        return false;
++    }
++    const llama_seq_id seq_id = ubatch->seq_id[0][0];
++    for (uint32_t i = 0; i < ubatch->n_tokens; ++i) {
++        if (ubatch->n_seq_id[i] != 1 || ubatch->seq_id[i][0] != seq_id || ubatch->pos[i] < 0) {
++            return false;
++        }
++    }
++    const auto & cells = args.v_cells.at(args.seq_to_stream[seq_id]);
++    if (args.n_kv > cells.size()) {
++        return false;
++    }
++    int64_t n_valid = 0;
++    const int64_t pos_first = cells.is_empty(0) ? 0 : cells.pos_get(0);
++    while (n_valid < args.n_kv && !cells.is_empty(n_valid)) {
++        if (!cells.seq_has(n_valid, seq_id) || int64_t(cells.pos_get(n_valid)) != pos_first + n_valid) {
++            return false;
++        }
++        ++n_valid;
++    }
++    for (int64_t j = n_valid; j < args.n_kv; ++j) {
++        if (!cells.is_empty(j)) {
++            return false;
++        }
++    }
++
++    const T mask_keep = llama_cast<T>(0.0f);
++    const T mask_drop = llama_cast<T>(-INFINITY);
++    for (uint32_t i = 0; i < ubatch->n_tokens; ++i) {
++        const int64_t pos = int64_t(ubatch->pos[i]) - pos_first;
++        const int64_t hi = std::clamp<int64_t>(pos + 1, 0, n_valid);
++        const int64_t lo = args.swa_type == LLAMA_SWA_TYPE_STANDARD ?
++                std::clamp<int64_t>(pos - int64_t(args.n_swa) + 1, 0, hi) : 0;
++        T * row = data + args.n_kv * i;
++        std::fill(row, row + lo, mask_drop);
++        std::fill(row + lo, row + hi, mask_keep);
++        std::fill(row + hi, row + args.n_kv, mask_drop);
++    }
++    return true;
++}
++
+ template<typename T, bool causal, bool swa, bool is_2d, bool alibi>
+ static void set_input_kq_mask_impl(const args_set_input_kq_mask & args, T * data) {
+   //const auto & hparams = args.hparams;
+@@ -1729,7 +1777,12 @@ void llama_kv_cache::set_input_kq_mask(ggml_tensor * dst, const llama_ubatch * u
+     // n_tps == n_tokens_per_stream
+     const int64_t n_tps = n_tokens/n_stream;
+ 
+-    //const int64_t t_start = ggml_time_us();
++    static const bool profile_masks = [] {
++        const char * value = std::getenv("GGML_CUDA_MOE_PROFILE");
++        return value && std::atoi(value) != 0;
++    }();
++    const bool measure = profile_masks && n_tokens > 32;
++    const int64_t t_start = measure ? ggml_time_us() : 0;
+ 
+     const args_set_input_kq_mask args = {
+         /*.hparams          =*/ hparams,
+@@ -1743,15 +1796,26 @@ void llama_kv_cache::set_input_kq_mask(ggml_tensor * dst, const llama_ubatch * u
+         /*.n_tps            =*/ n_tps,
+     };
+ 
++    bool contiguous = false;
+     if (dst->type == GGML_TYPE_F16) {
+-        set_input_kq_mask_impl<ggml_fp16_t>(args, (ggml_fp16_t *) dst->data, causal_attn);
++        auto * data = (ggml_fp16_t *) dst->data;
++        contiguous = set_input_kq_mask_contiguous(args, data, causal_attn);
++        if (!contiguous) {
++            set_input_kq_mask_impl<ggml_fp16_t>(args, data, causal_attn);
++        }
+     } else {
+-        set_input_kq_mask_impl<float>(args, (float *) dst->data, causal_attn);
++        auto * data = (float *) dst->data;
++        contiguous = set_input_kq_mask_contiguous(args, data, causal_attn);
++        if (!contiguous) {
++            set_input_kq_mask_impl<float>(args, data, causal_attn);
++        }
+     }
+ 
+-    //const int64_t t_end = ggml_time_us();
+-
+-    //LLAMA_LOG_ERROR("%s: kq mask time: %0.3f ms\n", __func__, (t_end - t_start)/1000.0);
++    if (measure) {
++        LLAMA_LOG_INFO("KV mask profile: tokens=%u cells=%lld window=%u type=%s fill_ms=%.3f path=%s\n",
++                n_tokens, (long long) n_kv, n_swa, ggml_type_name(dst->type),
++                (ggml_time_us() - t_start) / 1000.0, contiguous ? "contiguous" : "generic");
++    }
+ }
+ 
+ void llama_kv_cache::set_input_pos_bucket(ggml_tensor * dst, const llama_ubatch * ubatch) const {
+diff --git a/src/llama-model.cpp b/src/llama-model.cpp
+index 5f0d425..4e91d5b 100644
+--- a/src/llama-model.cpp
++++ b/src/llama-model.cpp
+@@ -2379,6 +2379,19 @@ int32_t llama_model_n_swa(const llama_model * model) {
+     return model->hparams.n_swa;
+ }
+ 
++int32_t llama_model_n_swa_all(const llama_model * model) {
++    const auto & hparams = model->hparams;
++    if (hparams.n_swa == 0 || hparams.swa_type != LLAMA_SWA_TYPE_STANDARD || hparams.n_layer() == 0) {
++        return 0;
++    }
++    for (uint32_t il = 0; il < hparams.n_layer(); ++il) {
++        if (!hparams.is_swa(il)) {
++            return 0;
++        }
++    }
++    return hparams.n_swa;
++}
++
+ 
+ uint32_t llama_model_n_cls_out(const struct llama_model * model) {
+     return model->hparams.n_cls_out;
+diff --git a/src/models/dflash.cpp b/src/models/dflash.cpp
+index fca06a1..b5dc3e6 100644
+--- a/src/models/dflash.cpp
++++ b/src/models/dflash.cpp
+@@ -1,5 +1,6 @@
+ #include "models.h"
+ 
++#include "llama-impl.h"
+ #include "llama-kv-cache.h"
+ #include "llama-kv-cache-iswa.h"
+ 
+@@ -218,9 +219,24 @@ llama_model_dflash::graph<false>::graph(const llama_model & model, const llm_gra
+                 const auto  * kv     = is_swa ? inp_attn_iswa->mctx->get_swa() : inp_attn_iswa->mctx->get_base();
+                 ggml_tensor * k_idxs = is_swa ? inp_attn_iswa->get_k_idxs_swa() : inp_attn_iswa->get_k_idxs();
+                 ggml_tensor * v_idxs = is_swa ? inp_attn_iswa->get_v_idxs_swa() : inp_attn_iswa->get_v_idxs();
++                // Injection must use the same cache basis as build_attn.
++                ggml_tensor * k_rot = is_swa ? inp_attn_iswa->self_k_rot_swa : inp_attn_iswa->self_k_rot;
++                ggml_tensor * v_rot = is_swa ? inp_attn_iswa->self_v_rot_swa : inp_attn_iswa->self_v_rot;
++                if (k_rot) {
++                    Kcur = llama_mul_mat_hadamard(ctx0, Kcur, k_rot);
++                }
++                if (v_rot) {
++                    Vcur = llama_mul_mat_hadamard(ctx0, Vcur, v_rot);
++                }
+                 ggml_build_forward_expand(gf, kv->cpy_k(ctx0, Kcur, k_idxs, il));
+                 ggml_build_forward_expand(gf, kv->cpy_v(ctx0, Vcur, v_idxs, il));
+             } else {
++                if (inp_attn->self_k_rot) {
++                    Kcur = llama_mul_mat_hadamard(ctx0, Kcur, inp_attn->self_k_rot);
++                }
++                if (inp_attn->self_v_rot) {
++                    Vcur = llama_mul_mat_hadamard(ctx0, Vcur, inp_attn->self_v_rot);
++                }
+                 ggml_build_forward_expand(gf, inp_attn->mctx->cpy_k(ctx0, Kcur, inp_attn->get_k_idxs(), il));
+                 ggml_build_forward_expand(gf, inp_attn->mctx->cpy_v(ctx0, Vcur, inp_attn->get_v_idxs(), il));
+             }
+diff --git a/tools/server/server-context.cpp b/tools/server/server-context.cpp
+index 5fadc1c..eaf327d 100644
+--- a/tools/server/server-context.cpp
++++ b/tools/server/server-context.cpp
+@@ -3647,7 +3647,20 @@ private:
+         if (!common_speculative_process(spec.get(), batch_view)) {
+             SRV_ERR("%s", "failed to process speculative batch\n");
+ 
+-            // TODO: handle error
++            // The target batch has already succeeded, but the draft may have
++            // processed only part of it. Neither cache is safe to reuse. The
++            // outer handler aborts all active slots, so invalidate their prompt
++            // state before release can make it available for another request.
++            for (auto & slot : slots) {
++                if (slot.is_processing()) {
++                    slot.prompt_clear(true);
++                    slot.prompt.data.main.clear();
++                    slot.prompt.data.drft.clear();
++                    slot.prompt.checkpoints.clear();
++                    slot.spec_ckpt.clear();
++                }
++            }
++
+             throw std::runtime_error("failed to process speculative batch");
+         }
+ 
+diff --git a/ggml/include/ggml-cpu-moe.h b/ggml/include/ggml-cpu-moe.h
+new file mode 100644
+--- /dev/null
++++ b/ggml/include/ggml-cpu-moe.h
+@@ -0,0 +1,53 @@
++#pragma once
++
++#include "ggml.h"
++#include "ggml-backend.h"
++
++#if defined(GGML_BACKEND_SHARED) && defined(_WIN32) && !defined(__MINGW32__)
++#    if defined(GGML_CPU_MOE_IMPLEMENTATION)
++#        define GGML_CPU_MOE_API __declspec(dllexport) extern
++#    else
++#        define GGML_CPU_MOE_API __declspec(dllimport) extern
++#    endif
++#else
++#    define GGML_CPU_MOE_API GGML_BACKEND_API
++#endif
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++struct ggml_cpu_moe_pool;
++
++// threads includes the calling thread. Calls on one pool must be serialized.
++GGML_CPU_MOE_API struct ggml_cpu_moe_pool * ggml_cpu_moe_pool_new(int threads);
++GGML_CPU_MOE_API void ggml_cpu_moe_pool_free(struct ggml_cpu_moe_pool * pool);
++GGML_CPU_MOE_API const char * ggml_cpu_moe_pool_error(const struct ggml_cpu_moe_pool * pool);
++
++// Host weights retain their tensor strides. Inputs, ids, mask and output are
++// compact. A mask byte of one computes that selected expert; zero leaves its
++// output untouched so the caller can merge independent GPU contributions.
++// x: [K, x_cols, tokens], ids/mask: [topk, tokens], out: [M, topk, tokens].
++GGML_CPU_MOE_API bool ggml_cpu_moe_compute_projection(
++        struct ggml_cpu_moe_pool * pool,
++        const struct ggml_tensor * weights,
++        const float * x, int64_t x_cols,
++        const int32_t * ids, const uint8_t * cpu_mask,
++        int64_t topk, int64_t tokens, float * out);
++
++// gate/up: [H, FF, experts], down: [FF, H, experts].
++// x: [H, tokens], ids/mask: [topk, tokens], out: [H, topk, tokens].
++// Router weights are applied by the graph after this unweighted expert result.
++GGML_CPU_MOE_API bool ggml_cpu_moe_compute_fused(
++        struct ggml_cpu_moe_pool * pool,
++        const struct ggml_tensor * gate,
++        const struct ggml_tensor * up,
++        const struct ggml_tensor * down,
++        const float * x,
++        const int32_t * ids, const uint8_t * cpu_mask,
++        int64_t topk, int64_t tokens, float * out);
++
++#ifdef __cplusplus
++}
++#endif
++
+diff --git a/ggml/src/ggml-cpu/moe-iq.cpp b/ggml/src/ggml-cpu/moe-iq.cpp
+new file mode 100644
+--- /dev/null
++++ b/ggml/src/ggml-cpu/moe-iq.cpp
+@@ -0,0 +1,235 @@
++/*
++MIT License
++
++Copyright (c) 2026 Niko1221 and the Strata contributors
++
++Permission is hereby granted, free of charge, to any person obtaining a copy
++of this software and associated documentation files (the "Software"), to deal
++in the Software without restriction, including without limitation the rights
++to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is
++furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included in all
++copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
++SOFTWARE.
++*/
++// Adapted from Strata iq_avx2.cpp and iq_avx2_rows.inl at
++// 82f46a8c8f475f001ad76d92f58f4a4f8ffb0253. Separate tensor strides; AVX2 only.
++#include "moe-iq.h"
++
++#if defined(__AVX2__)
++#define GGML_COMMON_DECL_CPP
++#define GGML_COMMON_IMPL_CPP
++#include "ggml-common.h"
++#include <immintrin.h>
++#include <cmath>
++#include <cstring>
++
++namespace {
++inline float h2f(uint16_t h) { return _mm_cvtss_f32(_mm_cvtph_ps(_mm_cvtsi32_si128((int) h))); }
++inline uint32_t u32(const uint8_t* p) { uint32_t v; std::memcpy(&v, p, 4); return v; }
++inline uint16_t u16(const uint8_t* p) { uint16_t v; std::memcpy(&v, p, 2); return v; }
++inline uint64_t u64(const uint8_t* p) { uint64_t v; std::memcpy(&v, p, 8); return v; }
++
++// 32 sign bits -> 32 bytes of -1 (bit set) / +1: ggml's bit_selector pattern, shared by all tokens.
++inline __m256i sgn_vec(uint32_t m) {
++    const __m128i bm = _mm_set1_epi32((int) m);
++    const __m128i lo = _mm_shuffle_epi8(bm, _mm_setr_epi8(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1));
++    const __m128i hi = _mm_shuffle_epi8(bm, _mm_setr_epi8(2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3));
++    const __m256i bits = _mm256_inserti128_si256(_mm256_castsi128_si256(lo), hi, 1);
++    const __m256i sel = _mm256_setr_epi8(1, 2, 4, 8, 16, 32, 64, (char) 0x80,
++                                         1, 2, 4, 8, 16, 32, 64, (char) 0x80,
++                                         1, 2, 4, 8, 16, 32, 64, (char) 0x80,
++                                         1, 2, 4, 8, 16, 32, 64, (char) 0x80);
++    const __m256i nz = _mm256_cmpeq_epi8(_mm256_and_si256(bits, sel), sel);
++    return _mm256_or_si256(nz, _mm256_set1_epi8(1));
++}
++
++// The two 16-value scales of one 32-value half (IQ2_XS, IQ2_S): int16 lanes 0-7 = a (values 0-15),
++// 8-15 = b (values 16-31).  NOT a broadcast dword [a,b] - that would alternate the scales lane by lane.
++inline __m256i sc16(int a, int b) {
++    return _mm256_inserti128_si256(_mm256_castsi128_si256(_mm_set1_epi16((short) a)),
++                                   _mm_set1_epi16((short) b), 1);
++}
++// One scale for the whole 32-value half (IQ2_XXS, IQ3_XXS, IQ3_S).
++inline __m256i sc32(int s) { return _mm256_set1_epi16(s); }
++
++inline float hsum8(__m256 v) {
++    const __m128 lo = _mm256_castps256_ps128(v), hi = _mm256_extractf128_ps(v, 1);
++    __m128 s = _mm_add_ps(lo, hi);
++    s = _mm_hadd_ps(s, s);
++    s = _mm_hadd_ps(s, s);
++    return _mm_cvtss_f32(s);
++}
++
++template<int TY> struct Fmt32;
++template <> struct Fmt32<22> {   // IQ2_S: d, qs[64] (32 grid bytes, 32 sign bytes), qh[8], scales[8]
++    static constexpr int bytes = 82;
++    static constexpr float K = 0.125f;
++    static inline void decode(const uint8_t* b, int j, int half, __m256i& g, __m256i& sgn, __m256i& sc) {
++        const uint8_t* qs = b + 2 + 8 * j;
++        const uint8_t h = b[66 + 2 * j + half];
++        const int o = 4 * half;
++        g = _mm256_set_epi64x((long long) iq2s_grid[qs[o + 3] | ((h << 2) & 0x300)],
++                              (long long) iq2s_grid[qs[o + 2] | ((h << 4) & 0x300)],
++                              (long long) iq2s_grid[qs[o + 1] | ((h << 6) & 0x300)],
++                              (long long) iq2s_grid[qs[o] | ((h << 8) & 0x300)]);
++        const uint64_t m = u64(b + 2 + 32 + 8 * j);
++        sgn = sgn_vec(half ? (uint32_t) (m >> 32) : (uint32_t) m);
++        const uint8_t sb = b[74 + 2 * j + half];
++        sc = sc16(2 * (sb & 15) + 1, 2 * (sb >> 4) + 1);
++    }
++};
++
++template <> struct Fmt32<21> {   // IQ3_S: d, qs[64], qh[8], signs[32], scales[4]
++    static constexpr int bytes = 110;
++    static constexpr float K = 1.0f;
++    static inline void decode(const uint8_t* b, int j, int half, __m256i& g, __m256i& sgn, __m256i& sc) {
++        const uint8_t* q = b + 2 + 16 * j + 8 * half;
++        const uint32_t h = b[66 + 2 * j + half];
++#define G3(k) (int) iq3s_grid[q[k] | (((h >> k) & 1u) << 8)]
++        g = _mm256_set_epi32(G3(7), G3(6), G3(5), G3(4), G3(3), G3(2), G3(1), G3(0));
++#undef G3
++        const uint64_t m = u64(b + 74 + 8 * j);
++        sgn = sgn_vec(half ? (uint32_t) (m >> 32) : (uint32_t) m);
++        const uint8_t s = b[106 + j];
++        sc = sc32(half ? 2 * (s >> 4) + 1 : 2 * (s & 15) + 1);
++    }
++};
++
++template <> struct Fmt32<23> {   // IQ4_XS: d, scales_h, scales_l[4], qs[128] - 136 B, 8 signed sub-scales
++    // ggml's ggml_vec_dot_iq4_xs_q8_K: the same 16-value codebook as IQ4_NL, but each of the eight 32-value
++    // sub-blocks carries its own 6-bit scale, read as two nibbles of scales_l[p] plus two bits of scales_h, and
++    // used SIGNED as (ls - 32).  The scale therefore folds into the int16 operand of madd_epi16 instead of
++    // becoming a float multiply per sub-block, and the codebook sign is carried the way iq4nl_rows does it.
++    static constexpr int bytes = 136;
++    static constexpr float K = 1.0f;
++    static inline void decode(const uint8_t* b, int j, int half, __m256i& g, __m256i& sgn, __m256i& sc) {
++        const int H = 2 * j + half;   // the eight 32-value sub-blocks, in the order the activation bytes come
++        const __m128i values = _mm_loadu_si128((const __m128i*) kvalues_iq4nl);
++        const __m128i bits = _mm_loadu_si128((const __m128i*) (b + 8 + 16 * H));
++        const __m128i m4 = _mm_set1_epi8(0x0f);
++        const __m256i q4 = _mm256_inserti128_si256(
++            _mm256_castsi128_si256(_mm_shuffle_epi8(values, _mm_and_si128(bits, m4))),
++            _mm_shuffle_epi8(values, _mm_and_si128(_mm_srli_epi16(bits, 4), m4)), 1);
++        g   = _mm256_sign_epi8(q4, q4);                       // |w|, the unsigned operand of maddubs
++        sgn = _mm256_sign_epi8(_mm256_set1_epi8(1), q4);      // w's sign, applied to the activation
++        const int ls = ((b[4 + (H >> 1)] >> (4 * (H & 1))) & 0xf) | (((u16(b + 2) >> (2 * H)) & 3) << 4);
++        sc = _mm256_set1_epi16((short) (ls - 32));
++    }
++};
++
++template <int TY, int NT>
++inline void row_dot(const uint8_t* row, int nblocks, const block_q8_K* const* y, float* res) {
++    __m256 accf[NT];
++    for (int t = 0; t < NT; ++t) accf[t] = _mm256_setzero_ps();
++    for (int i = 0; i < nblocks; ++i) {
++        const uint8_t* blk = row + (size_t) i * Fmt32<TY>::bytes;
++        __m256i acci[NT];
++        for (int t = 0; t < NT; ++t) acci[t] = _mm256_setzero_si256();
++        for (int j = 0; j < 4; ++j) {
++            for (int half = 0; half < 2; ++half) {
++                __m256i g, sgn, sc;
++                Fmt32<TY>::decode(blk, j, half, g, sgn, sc);
++                const int off = 64 * j + 32 * half;
++                for (int t = 0; t < NT; ++t) {
++                    const __m256i yv = _mm256_loadu_si256((const __m256i*) (y[t][i].qs + off));
++                    const __m256i ys = _mm256_sign_epi8(yv, sgn);
++                    acci[t] = _mm256_add_epi32(acci[t], _mm256_madd_epi16(_mm256_maddubs_epi16(g, ys), sc));
++                }
++            }
++        }
++        const float dx = h2f(u16(blk)) * Fmt32<TY>::K;
++        for (int t = 0; t < NT; ++t)
++            accf[t] = _mm256_fmadd_ps(_mm256_set1_ps(dx * y[t][i].d), _mm256_cvtepi32_ps(acci[t]), accf[t]);
++    }
++    for (int t = 0; t < NT; ++t) res[t] = hsum8(accf[t]);
++}
++
++
++template<int TY, int NT, bool gate_up>
++void apply_rows(const uint8_t * weights, const uint8_t * up, size_t stride, size_t up_stride,
++        int width, const void * const * acts, float * const * outputs, int first, int end) {
++    const block_q8_K * activation[NT];
++    for (int t = 0; t < NT; ++t) activation[t] = static_cast<const block_q8_K *>(acts[t]);
++    float gate_value[NT], up_value[NT];
++    for (int r = first; r < end; ++r) {
++        row_dot<TY, NT>(weights + size_t(r) * stride, width / QK_K, activation, gate_value);
++        if constexpr (gate_up) {
++            row_dot<TY, NT>(up + size_t(r) * up_stride, width / QK_K, activation, up_value);
++        }
++        for (int t = 0; t < NT; ++t) {
++            if constexpr (gate_up) {
++                outputs[t][r] = (gate_value[t] / (1.0f + std::exp(-gate_value[t]))) * up_value[t];
++            } else {
++                outputs[t][r] = gate_value[t];
++            }
++        }
++    }
++}
++
++template<int TY, bool gate_up>
++void dispatch_count(const void * weights, const void * up, size_t stride, size_t up_stride,
++        int width, const void * const * acts, int count, float * const * outputs, int first, int end) {
++    const auto * w = static_cast<const uint8_t *>(weights);
++    const auto * u = static_cast<const uint8_t *>(up);
++    switch (count) {
++        case 1: apply_rows<TY, 1, gate_up>(w, u, stride, up_stride, width, acts, outputs, first, end); break;
++        case 2: apply_rows<TY, 2, gate_up>(w, u, stride, up_stride, width, acts, outputs, first, end); break;
++        case 3: apply_rows<TY, 3, gate_up>(w, u, stride, up_stride, width, acts, outputs, first, end); break;
++        case 4: apply_rows<TY, 4, gate_up>(w, u, stride, up_stride, width, acts, outputs, first, end); break;
++        default: GGML_ABORT("invalid multi-token expert group");
++    }
++}
++
++template<bool gate_up>
++void dispatch(ggml_type type, const void * weights, const void * up, size_t stride, size_t up_stride,
++        int width, const void * const * acts, int count, float * const * outputs, int first, int end) {
++    GGML_ASSERT(width % QK_K == 0);
++    switch (type) {
++        case GGML_TYPE_IQ2_S: dispatch_count<22, gate_up>(weights, up, stride, up_stride, width, acts, count, outputs, first, end); break;
++        case GGML_TYPE_IQ3_S: dispatch_count<21, gate_up>(weights, up, stride, up_stride, width, acts, count, outputs, first, end); break;
++        case GGML_TYPE_IQ4_XS: dispatch_count<23, gate_up>(weights, up, stride, up_stride, width, acts, count, outputs, first, end); break;
++        default: GGML_ABORT("unsupported multi-token expert quantization");
++    }
++}
++} // namespace
++#endif
++
++bool ggml_cpu_moe_iq_supported(ggml_type type) {
++#if defined(__AVX2__)
++    return type == GGML_TYPE_IQ2_S || type == GGML_TYPE_IQ3_S || type == GGML_TYPE_IQ4_XS;
++#else
++    GGML_UNUSED(type);
++    return false;
++#endif
++}
++
++void ggml_cpu_moe_iq_rows(ggml_type type, const void * weights, size_t row_bytes,
++        int width, const void * const * activations, int count,
++        float * const * outputs, int first, int end) {
++#if defined(__AVX2__)
++    dispatch<false>(type, weights, nullptr, row_bytes, 0, width, activations, count, outputs, first, end);
++#else
++    GGML_ABORT("multi-token IQ kernels require AVX2");
++#endif
++}
++
++void ggml_cpu_moe_iq_gate_up(ggml_type type, const void * gate, const void * up,
++        size_t gate_stride, size_t up_stride, int width,
++        const void * const * activations, int count,
++        float * const * outputs, int first, int end) {
++#if defined(__AVX2__)
++    dispatch<true>(type, gate, up, gate_stride, up_stride, width, activations, count, outputs, first, end);
++#else
++    GGML_ABORT("multi-token IQ kernels require AVX2");
++#endif
++}
+diff --git a/ggml/src/ggml-cpu/moe-iq.h b/ggml/src/ggml-cpu/moe-iq.h
+new file mode 100644
+--- /dev/null
++++ b/ggml/src/ggml-cpu/moe-iq.h
+@@ -0,0 +1,15 @@
++#pragma once
++
++#include "ggml.h"
++
++bool ggml_cpu_moe_iq_supported(ggml_type type);
++
++// Reuse each decoded weight block across up to four Q8_K activation rows.
++void ggml_cpu_moe_iq_rows(ggml_type type, const void * weights, size_t row_bytes,
++        int width, const void * const * activations, int count,
++        float * const * outputs, int first, int end);
++
++void ggml_cpu_moe_iq_gate_up(ggml_type type, const void * gate, const void * up,
++        size_t gate_stride, size_t up_stride, int width,
++        const void * const * activations, int count,
++        float * const * outputs, int first, int end);
+diff --git a/ggml/src/ggml-cpu/moe.cpp b/ggml/src/ggml-cpu/moe.cpp
+new file mode 100644
+--- /dev/null
++++ b/ggml/src/ggml-cpu/moe.cpp
+@@ -0,0 +1,643 @@
++#define GGML_CPU_MOE_IMPLEMENTATION
++#include "ggml-cpu-moe.h"
++#include "ggml-cpu.h"
++#include "ggml-impl.h"
++#include "moe-iq.h"
++
++#include <algorithm>
++#include <atomic>
++#include <chrono>
++#include <cmath>
++#include <condition_variable>
++#include <cstdlib>
++#include <cstdint>
++#include <exception>
++#include <limits>
++#include <mutex>
++#include <new>
++#include <stdexcept>
++#include <string>
++#include <thread>
++#include <vector>
++
++#if defined(_WIN32)
++#    ifndef NOMINMAX
++#        define NOMINMAX
++#    endif
++#    include <windows.h>
++#endif
++#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
++#    include <immintrin.h>
++#endif
++
++namespace {
++
++void moe_pause() {
++#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
++    _mm_pause();
++#else
++    std::this_thread::yield();
++#endif
++}
++
++size_t checked_product(size_t a, size_t b) {
++    if (b && a > std::numeric_limits<size_t>::max() / b) {
++        throw std::runtime_error("MoE scratch size overflow");
++    }
++    return a * b;
++}
++
++size_t align64(size_t bytes) {
++    if (bytes > std::numeric_limits<size_t>::max() - 63) {
++        throw std::runtime_error("MoE scratch size overflow");
++    }
++    return (bytes + 63) & ~size_t(63);
++}
++
++struct aligned_bytes {
++    std::vector<uint8_t> storage;
++
++    void resize(size_t bytes) {
++        if (bytes > std::numeric_limits<size_t>::max() - 63) {
++            throw std::runtime_error("MoE scratch size overflow");
++        }
++        if (storage.size() < bytes + 63) {
++            storage.resize(bytes + 63);
++        }
++    }
++
++    uint8_t * data() {
++        return reinterpret_cast<uint8_t *>(
++                (reinterpret_cast<uintptr_t>(storage.data()) + 63) & ~uintptr_t(63));
++    }
++};
++
++struct matrix {
++    const ggml_tensor * tensor = nullptr;
++    ggml_vec_dot_t dot = nullptr;
++    ggml_from_float_t quantize = nullptr;
++    ggml_type activation_type = GGML_TYPE_COUNT;
++    size_t activation_stride = 0;
++
++    void set(const ggml_tensor * value) {
++        if (!value || !value->data ||
++                value->type < 0 || value->type >= GGML_TYPE_COUNT ||
++                value->ne[0] <= 0 || value->ne[0] > std::numeric_limits<int>::max() ||
++                value->ne[1] <= 0 || value->ne[2] <= 0 || value->ne[3] != 1) {
++            throw std::runtime_error("MoE expects a populated three-dimensional host weight tensor");
++        }
++        const ggml_type_traits_cpu * traits = ggml_get_type_traits_cpu(value->type);
++        if (!traits || !traits->vec_dot ||
++                traits->vec_dot_type < 0 || traits->vec_dot_type >= GGML_TYPE_COUNT) {
++            throw std::runtime_error("MoE weight type has no CPU dot product");
++        }
++        const ggml_type_traits_cpu * activation = ggml_get_type_traits_cpu(traits->vec_dot_type);
++        if (!activation || !activation->from_float) {
++            throw std::runtime_error("MoE activation type has no CPU quantizer");
++        }
++        if (value->ne[0] % ggml_blck_size(value->type) != 0 ||
++                value->ne[0] % ggml_blck_size(traits->vec_dot_type) != 0 ||
++                value->nb[0] != ggml_type_size(value->type)) {
++            throw std::runtime_error("MoE matrix rows do not match their quantization blocks");
++        }
++        const size_t row_bytes = ggml_row_size(value->type, value->ne[0]);
++        if (value->nb[1] < row_bytes ||
++                value->nb[2] < checked_product(value->nb[1], size_t(value->ne[1]))) {
++            throw std::runtime_error("MoE matrix has overlapping row or expert strides");
++        }
++        tensor = value;
++        dot = traits->vec_dot;
++        quantize = activation->from_float;
++        activation_type = traits->vec_dot_type;
++        activation_stride = align64(ggml_row_size(activation_type, value->ne[0]));
++    }
++
++    float row(int32_t expert, int64_t r, const void * activation) const {
++        float result;
++        const char * weights = static_cast<const char *>(tensor->data) +
++                size_t(expert) * tensor->nb[2] + size_t(r) * tensor->nb[1];
++        dot(int(tensor->ne[0]), &result, 0, weights, 0, activation, 0, 1);
++        return result;
++    }
++};
++
++#if defined(_WIN32)
++std::vector<GROUP_AFFINITY> physical_cores(bool include_siblings = false) {
++    DWORD bytes = 0;
++    GetLogicalProcessorInformationEx(RelationProcessorCore, nullptr, &bytes);
++    if (!bytes) {
++        return {};
++    }
++    std::vector<uint8_t> storage(bytes);
++    auto * info = reinterpret_cast<PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(storage.data());
++    if (!GetLogicalProcessorInformationEx(RelationProcessorCore, info, &bytes)) {
++        return {};
++    }
++    std::vector<GROUP_AFFINITY> result;
++    for (DWORD offset = 0; offset < bytes;) {
++        const auto * item = reinterpret_cast<const SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX *>(
++                storage.data() + offset);
++        if (!item->Size || item->Size > bytes - offset) {
++            break;
++        }
++        if (item->Relationship == RelationProcessorCore) {
++            for (WORD group = 0; group < item->Processor.GroupCount; ++group) {
++                GROUP_AFFINITY affinity = item->Processor.GroupMask[group];
++                if (affinity.Mask) {
++                    if (!include_siblings) {
++                        affinity.Mask &= (~affinity.Mask + 1);
++                    }
++                    result.push_back(affinity);
++                    break;
++                }
++            }
++        }
++        offset += item->Size;
++    }
++    return result;
++}
++#endif
++
++} // namespace
++
++struct ggml_cpu_moe_pool {
++    enum class phase { projection, gate_up, quantize_down, down };
++
++    struct job {
++        size_t entry;
++        size_t input_column;
++        int32_t expert;
++    };
++
++    struct job_group {
++        size_t first;
++        size_t count;
++    };
++
++    explicit ggml_cpu_moe_pool(int requested_threads) {
++        static std::once_flag cpu_init;
++        std::call_once(cpu_init, [] { ggml_cpu_init(); });
++        const char * profile = std::getenv("GGML_CUDA_MOE_PROFILE");
++        profile_enabled = profile && std::atoi(profile) != 0;
++#if defined(_WIN32)
++        cores = physical_cores();
++        if (profile_enabled) {
++            profile_cores = physical_cores(true);
++        }
++        const int automatic = cores.empty() ? int(std::thread::hardware_concurrency()) : int(cores.size());
++#else
++        const int automatic = int(std::thread::hardware_concurrency());
++#endif
++        const int threads = std::max(1, std::min(128, requested_threads > 0 ? requested_threads : automatic));
++        try {
++            for (int i = 0; i < threads - 1; ++i) {
++                workers.emplace_back([this, i] { worker(i); });
++            }
++        } catch (...) {
++            {
++                std::lock_guard<std::mutex> lock(sleep_mutex);
++                stop.store(true, std::memory_order_release);
++            }
++            cv.notify_all();
++            for (auto & worker_thread : workers) {
++                worker_thread.join();
++            }
++            throw;
++        }
++    }
++
++    ~ggml_cpu_moe_pool() {
++        {
++            std::lock_guard<std::mutex> lock(sleep_mutex);
++            stop.store(true, std::memory_order_release);
++        }
++        cv.notify_all();
++        for (auto & worker_thread : workers) {
++            worker_thread.join();
++        }
++    }
++
++    bool prepare(const int32_t * ids, const uint8_t * mask,
++                 int64_t topk, int64_t tokens, int64_t columns, int64_t experts,
++                 const float * x, float * out) {
++        error.clear();
++        if (!ids || !mask || !x || !out || topk <= 0 || tokens <= 0 ||
++                columns <= 0 || columns > topk || topk % columns != 0 ||
++                topk > std::numeric_limits<int32_t>::max() ||
++                tokens > std::numeric_limits<int32_t>::max()) {
++            throw std::runtime_error("MoE received invalid input dimensions or null input");
++        }
++        entries = checked_product(size_t(topk), size_t(tokens));
++        if (entries > size_t(std::numeric_limits<int32_t>::max())) {
++            throw std::runtime_error("MoE selected-expert batch is too large");
++        }
++        jobs.clear();
++        if (jobs.capacity() < entries) {
++            jobs.reserve(entries);
++        }
++        for (size_t entry = 0; entry < entries; ++entry) {
++            if (ids[entry] < 0 || ids[entry] >= experts) {
++                throw std::runtime_error("MoE routed expert id is outside the weight tensor");
++            }
++            if (mask[entry]) {
++                const size_t token = entry / size_t(topk);
++                const size_t slot = entry % size_t(topk);
++                jobs.push_back({entry, token * size_t(columns) + slot % size_t(columns), ids[entry]});
++            }
++        }
++        std::stable_sort(jobs.begin(), jobs.end(), [](const job & a, const job & b) {
++            return a.expert < b.expert;
++        });
++        groups.clear();
++        for (size_t first = 0; first < jobs.size();) {
++            size_t end = first + 1;
++            while (end < jobs.size() && end - first < 4 && jobs[end].expert == jobs[first].expert) {
++                ++end;
++            }
++            groups.push_back({first, end - first});
++            first = end;
++        }
++        output = out;
++        return !jobs.empty();
++    }
++
++    void quantize_input(const matrix & m, aligned_bytes & destination, const float * x, size_t columns) {
++        destination.resize(checked_product(columns, m.activation_stride));
++        for (size_t column = 0; column < columns; ++column) {
++            m.quantize(x + column * size_t(m.tensor->ne[0]),
++                       destination.data() + column * m.activation_stride, m.tensor->ne[0]);
++        }
++    }
++
++    void run(phase value, int64_t rows) {
++        current_phase = value;
++        phase_rows = rows;
++        chunks_per_job = value == phase::quantize_down ? 1 : (size_t(rows) + 63) / 64;
++        const bool group_rows = value != phase::quantize_down;
++        task_count = checked_product(group_rows ? groups.size() : jobs.size(), chunks_per_job);
++        next_task.store(0, std::memory_order_relaxed);
++        remaining_workers.store(int(workers.size()), std::memory_order_relaxed);
++        {
++            // Publish under the same lock as the sleep predicate: a worker
++            // cannot miss the transition between its final poll and waiting.
++            std::lock_guard<std::mutex> lock(sleep_mutex);
++            epoch.fetch_add(1, std::memory_order_release);
++            if (sleepers.load(std::memory_order_relaxed)) {
++                cv.notify_all();
++            }
++        }
++        drain();
++        while (remaining_workers.load(std::memory_order_acquire) != 0) {
++            moe_pause();
++        }
++    }
++
++    void drain() {
++        for (;;) {
++            const size_t task = next_task.fetch_add(1, std::memory_order_relaxed);
++            if (task >= task_count) {
++                return;
++            }
++            if (current_phase == phase::quantize_down) {
++                const job & j = jobs[task / chunks_per_job];
++                float * activation = intermediate.data() + j.entry * size_t(down.tensor->ne[0]);
++                float sum_squares = 0.0f;
++                for (int64_t r = 0; r < down.tensor->ne[0]; ++r) {
++                    sum_squares += activation[r] * activation[r];
++                }
++                const float norm = std::clamp(std::sqrt(sum_squares), 1e-8f, 1e30f);
++                down_norm[j.entry] = norm;
++                for (int64_t r = 0; r < down.tensor->ne[0]; ++r) {
++                    activation[r] = (activation[r] * 32768.0f) / norm;
++                }
++                down.quantize(activation, quantized_down.data() + j.entry * down.activation_stride,
++                              down.tensor->ne[0]);
++                continue;
++            }
++            const int64_t r0 = int64_t(task % chunks_per_job) * 64;
++            const int64_t r1 = std::min(r0 + 64, phase_rows);
++            const job_group & group = groups[task / chunks_per_job];
++            if (group.count > 1 && compute_group(group, int(r0), int(r1))) {
++                continue;
++            }
++            for (size_t index = group.first; index < group.first + group.count; ++index) {
++                const job & j = jobs[index];
++                if (current_phase == phase::projection) {
++                    const void * act = quantized_input.data() + j.input_column * gate.activation_stride;
++                    float * dst = output + j.entry * size_t(phase_rows);
++                    for (int64_t r = r0; r < r1; ++r) {
++                        dst[r] = gate.row(j.expert, r, act);
++                    }
++                } else if (current_phase == phase::gate_up) {
++                    const void * gate_act = quantized_input.data() + j.input_column * gate.activation_stride;
++                    const void * up_act = same_input_format ? gate_act :
++                            quantized_up.data() + j.input_column * up.activation_stride;
++                    float * dst = intermediate.data() + j.entry * size_t(phase_rows);
++                    for (int64_t r = r0; r < r1; ++r) {
++                        const float g = gate.row(j.expert, r, gate_act);
++                        const float u = up.row(j.expert, r, up_act);
++                        dst[r] = (g / (1.0f + std::exp(-g))) * u;
++                    }
++                } else {
++                    const void * act = quantized_down.data() + j.entry * down.activation_stride;
++                    float * dst = output + j.entry * size_t(phase_rows);
++                    for (int64_t r = r0; r < r1; ++r) {
++                        dst[r] = (down.row(j.expert, r, act) * down_norm[j.entry]) * (1.0f / 32768.0f);
++                    }
++                }
++            }
++        }
++    }
++
++    bool compute_group(const job_group & group, int first, int end) {
++        const matrix & m = current_phase == phase::down ? down : gate;
++        if (!ggml_cpu_moe_iq_supported(m.tensor->type) ||
++                (current_phase == phase::gate_up &&
++                 (!same_input_format || gate.tensor->type != up.tensor->type))) {
++            return false;
++        }
++        const void * acts[4];
++        float * outputs[4];
++        for (size_t t = 0; t < group.count; ++t) {
++            const job & j = jobs[group.first + t];
++            acts[t] = current_phase == phase::down ?
++                    quantized_down.data() + j.entry * down.activation_stride :
++                    quantized_input.data() + j.input_column * gate.activation_stride;
++            outputs[t] = current_phase == phase::gate_up ?
++                    intermediate.data() + j.entry * size_t(phase_rows) :
++                    output + j.entry * size_t(phase_rows);
++        }
++        const size_t expert = size_t(jobs[group.first].expert);
++        const char * weights = static_cast<const char *>(m.tensor->data) + expert * m.tensor->nb[2];
++        if (current_phase == phase::gate_up) {
++            const char * up_weights = static_cast<const char *>(up.tensor->data) + expert * up.tensor->nb[2];
++            ggml_cpu_moe_iq_gate_up(m.tensor->type, weights, up_weights,
++                    gate.tensor->nb[1], up.tensor->nb[1], int(m.tensor->ne[0]),
++                    acts, int(group.count), outputs, first, end);
++        } else {
++            ggml_cpu_moe_iq_rows(m.tensor->type, weights, m.tensor->nb[1], int(m.tensor->ne[0]),
++                    acts, int(group.count), outputs, first, end);
++            if (current_phase == phase::down) {
++                for (size_t t = 0; t < group.count; ++t) {
++                    const float scale = down_norm[jobs[group.first + t].entry];
++                    for (int r = first; r < end; ++r) {
++                        outputs[t][r] = (outputs[t][r] * scale) * (1.0f / 32768.0f);
++                    }
++                }
++            }
++        }
++        return true;
++    }
++
++    void worker(int index) {
++#if defined(_WIN32)
++        if (!cores.empty() && size_t(index + 1) < cores.size()) {
++            GROUP_AFFINITY previous = {};
++            if (SetThreadGroupAffinity(GetCurrentThread(), &cores[size_t(index + 1)], &previous)) {
++                worker_affinity_successes.fetch_add(1, std::memory_order_relaxed);
++            } else {
++                worker_affinity_failures.fetch_add(1, std::memory_order_relaxed);
++            }
++        }
++#else
++        (void) index;
++#endif
++        uint64_t observed = 0;
++        auto idle_since = std::chrono::steady_clock::now();
++        unsigned spins = 0;
++        while (!stop.load(std::memory_order_acquire)) {
++            const uint64_t current = epoch.load(std::memory_order_acquire);
++            if (current != observed) {
++                observed = current;
++                drain();
++                remaining_workers.fetch_sub(1, std::memory_order_release);
++                idle_since = std::chrono::steady_clock::now();
++                spins = 0;
++                continue;
++            }
++            moe_pause();
++            if ((++spins & 1023u) != 0) {
++                continue;
++            }
++            if (std::chrono::steady_clock::now() - idle_since < std::chrono::milliseconds(20)) {
++                continue;
++            }
++            std::unique_lock<std::mutex> lock(sleep_mutex);
++            sleepers.fetch_add(1, std::memory_order_release);
++            cv.wait(lock, [&] {
++                return stop.load(std::memory_order_acquire) ||
++                        epoch.load(std::memory_order_acquire) != observed;
++            });
++            sleepers.fetch_sub(1, std::memory_order_release);
++            idle_since = std::chrono::steady_clock::now();
++        }
++    }
++
++    void sample_caller_core() {
++#if defined(_WIN32)
++        PROCESSOR_NUMBER processor = {};
++        GetCurrentProcessorNumberEx(&processor);
++        ++profile_caller_samples;
++        const DWORD thread_id = GetCurrentThreadId();
++        if (!profile_caller_thread_id) {
++            profile_caller_thread_id = thread_id;
++        }
++        profile_caller_other_thread_samples += thread_id != profile_caller_thread_id;
++        const auto matches = [&](const GROUP_AFFINITY & core) {
++            return core.Group == processor.Group && (core.Mask & (KAFFINITY(1) << processor.Number)) != 0;
++        };
++        if (!profile_cores.empty() && matches(profile_cores[0])) {
++            ++profile_caller_reserved_core_samples;
++        }
++        for (size_t i = 1; i < profile_cores.size() && i <= workers.size(); ++i) {
++            if (matches(profile_cores[i])) {
++                ++profile_caller_worker_core_samples;
++                break;
++            }
++        }
++#endif
++    }
++
++    std::string error;
++    matrix gate, up, down;
++    aligned_bytes quantized_input, quantized_up, quantized_down;
++    std::vector<float> intermediate;
++    std::vector<float> down_norm;
++    std::vector<job> jobs;
++    std::vector<job_group> groups;
++    bool profile_enabled = false;
++    uint64_t profile_calls = 0;
++    uint64_t profile_jobs = 0;
++    uint64_t profile_group_counts[4] = {};
++    uint64_t profile_weight_bytes = 0;
++    int64_t profile_setup_us = 0;
++    int64_t profile_gate_up_us = 0;
++    int64_t profile_down_quant_us = 0;
++    int64_t profile_down_us = 0;
++    uint64_t profile_caller_samples = 0;
++    uint64_t profile_caller_worker_core_samples = 0;
++    uint64_t profile_caller_reserved_core_samples = 0;
++    uint64_t profile_caller_other_thread_samples = 0;
++    uint32_t profile_caller_thread_id = 0;
++    std::atomic<unsigned> worker_affinity_successes{0};
++    std::atomic<unsigned> worker_affinity_failures{0};
++    size_t entries = 0;
++    float * output = nullptr;
++    bool same_input_format = false;
++
++    phase current_phase = phase::projection;
++    int64_t phase_rows = 0;
++    size_t chunks_per_job = 0;
++    size_t task_count = 0;
++    alignas(64) std::atomic<size_t> next_task{0};
++    alignas(64) std::atomic<int> remaining_workers{0};
++    alignas(64) std::atomic<uint64_t> epoch{0};
++    alignas(64) std::atomic<bool> stop{false};
++    alignas(64) std::atomic<int> sleepers{0};
++    std::mutex sleep_mutex;
++    std::condition_variable cv;
++    std::vector<std::thread> workers;
++#if defined(_WIN32)
++    std::vector<GROUP_AFFINITY> cores;
++    std::vector<GROUP_AFFINITY> profile_cores;
++#endif
++};
++
++ggml_cpu_moe_pool * ggml_cpu_moe_pool_new(int threads) {
++    try {
++        return new ggml_cpu_moe_pool(threads);
++    } catch (...) {
++        return nullptr;
++    }
++}
++
++void ggml_cpu_moe_pool_free(ggml_cpu_moe_pool * pool) {
++    delete pool;
++}
++
++const char * ggml_cpu_moe_pool_error(const ggml_cpu_moe_pool * pool) {
++    return pool ? pool->error.c_str() : "MoE CPU pool allocation failed";
++}
++
++bool ggml_cpu_moe_compute_projection(
++        ggml_cpu_moe_pool * pool, const ggml_tensor * weights,
++        const float * x, int64_t x_cols,
++        const int32_t * ids, const uint8_t * cpu_mask,
++        int64_t topk, int64_t tokens, float * out) {
++    if (!pool) {
++        return false;
++    }
++    try {
++        pool->gate.set(weights);
++        if (!pool->prepare(ids, cpu_mask, topk, tokens, x_cols, weights->ne[2], x, out)) {
++            return true;
++        }
++        pool->quantize_input(pool->gate, pool->quantized_input, x,
++                             checked_product(size_t(tokens), size_t(x_cols)));
++        pool->run(ggml_cpu_moe_pool::phase::projection, weights->ne[1]);
++        return true;
++    } catch (const std::exception & ex) {
++        pool->error = ex.what();
++        return false;
++    } catch (...) {
++        pool->error = "Unknown MoE CPU projection failure";
++        return false;
++    }
++}
++
++bool ggml_cpu_moe_compute_fused(
++        ggml_cpu_moe_pool * pool,
++        const ggml_tensor * gate, const ggml_tensor * up, const ggml_tensor * down,
++        const float * x, const int32_t * ids, const uint8_t * cpu_mask,
++        int64_t topk, int64_t tokens, float * out) {
++    if (!pool) {
++        return false;
++    }
++    const int64_t profile_start = pool->profile_enabled ? ggml_time_us() : 0;
++    try {
++        pool->gate.set(gate);
++        pool->up.set(up);
++        pool->down.set(down);
++        if (gate->ne[0] != up->ne[0] || gate->ne[1] != up->ne[1] ||
++                gate->ne[2] != up->ne[2] || down->ne[2] != gate->ne[2] ||
++                down->ne[0] != gate->ne[1] || down->ne[1] != gate->ne[0]) {
++            throw std::runtime_error("MoE gate, up and down dimensions are inconsistent");
++        }
++        if (!pool->prepare(ids, cpu_mask, topk, tokens, 1, gate->ne[2], x, out)) {
++            return true;
++        }
++        pool->same_input_format = pool->gate.activation_type == pool->up.activation_type;
++        pool->quantize_input(pool->gate, pool->quantized_input, x, size_t(tokens));
++        if (!pool->same_input_format) {
++            pool->quantize_input(pool->up, pool->quantized_up, x, size_t(tokens));
++        }
++        const size_t intermediate_size = checked_product(pool->entries, size_t(gate->ne[1]));
++        if (pool->intermediate.size() < intermediate_size) {
++            pool->intermediate.resize(intermediate_size);
++        }
++        pool->quantized_down.resize(checked_product(pool->entries, pool->down.activation_stride));
++        if (pool->down_norm.size() < pool->entries) {
++            pool->down_norm.resize(pool->entries);
++        }
++        const int64_t before_gate_up = pool->profile_enabled ? ggml_time_us() : 0;
++        if (pool->profile_enabled) {
++            pool->sample_caller_core();
++        }
++        pool->run(ggml_cpu_moe_pool::phase::gate_up, gate->ne[1]);
++        const int64_t before_down_quant = pool->profile_enabled ? ggml_time_us() : 0;
++        pool->run(ggml_cpu_moe_pool::phase::quantize_down, down->ne[0]);
++        const int64_t before_down = pool->profile_enabled ? ggml_time_us() : 0;
++        pool->run(ggml_cpu_moe_pool::phase::down, down->ne[1]);
++        if (pool->profile_enabled) {
++            pool->sample_caller_core();
++            pool->profile_setup_us += before_gate_up - profile_start;
++            pool->profile_gate_up_us += before_down_quant - before_gate_up;
++            pool->profile_down_quant_us += before_down - before_down_quant;
++            pool->profile_down_us += ggml_time_us() - before_down;
++            pool->profile_jobs += pool->jobs.size();
++            for (const auto & group : pool->groups) {
++                ++pool->profile_group_counts[group.count - 1];
++            }
++            pool->profile_weight_bytes += pool->groups.size() * (gate->nb[2] + up->nb[2] + down->nb[2]);
++            if (++pool->profile_calls == 752) {
++                GGML_LOG_INFO("CUDA hybrid MoE CPU profile: calls=%llu jobs=%llu groups_1_2_3_4=(%llu,%llu,%llu,%llu) "
++                        "scheduled_weight_MiB=%.2f setup_ms=%.2f gate_up_ms=%.2f down_quant_ms=%.2f down_ms=%.2f\n",
++                        (unsigned long long) pool->profile_calls, (unsigned long long) pool->profile_jobs,
++                        (unsigned long long) pool->profile_group_counts[0], (unsigned long long) pool->profile_group_counts[1],
++                        (unsigned long long) pool->profile_group_counts[2], (unsigned long long) pool->profile_group_counts[3],
++                        double(pool->profile_weight_bytes) / (1024 * 1024), double(pool->profile_setup_us) / 1000,
++                        double(pool->profile_gate_up_us) / 1000, double(pool->profile_down_quant_us) / 1000,
++                        double(pool->profile_down_us) / 1000);
++                GGML_LOG_INFO("CUDA hybrid MoE CPU placement: samples=%llu worker_core_samples=%llu "
++                        "reserved_core_samples=%llu caller_thread_id=%u other_thread_samples=%llu "
++                        "worker_affinity_successes=%u worker_affinity_failures=%u\n",
++                        (unsigned long long) pool->profile_caller_samples,
++                        (unsigned long long) pool->profile_caller_worker_core_samples,
++                        (unsigned long long) pool->profile_caller_reserved_core_samples,
++                        pool->profile_caller_thread_id, (unsigned long long) pool->profile_caller_other_thread_samples,
++                        pool->worker_affinity_successes.load(std::memory_order_relaxed),
++                        pool->worker_affinity_failures.load(std::memory_order_relaxed));
++                pool->profile_calls = pool->profile_jobs = pool->profile_weight_bytes = 0;
++                for (auto & count : pool->profile_group_counts) {
++                    count = 0;
++                }
++                pool->profile_setup_us = pool->profile_gate_up_us = pool->profile_down_quant_us = pool->profile_down_us = 0;
++                pool->profile_caller_samples = pool->profile_caller_worker_core_samples = 0;
++                pool->profile_caller_reserved_core_samples = pool->profile_caller_other_thread_samples = 0;
++                pool->profile_caller_thread_id = 0;
++            }
++        }
++        return true;
++    } catch (const std::exception & ex) {
++        pool->error = ex.what();
++        return false;
++    } catch (...) {
++        pool->error = "Unknown MoE CPU expert failure";
++        return false;
++    }
++}
++
++
++
++
++
+diff --git a/ggml/src/ggml-cuda/moe-hybrid.cu b/ggml/src/ggml-cuda/moe-hybrid.cu
+new file mode 100644
+--- /dev/null
++++ b/ggml/src/ggml-cuda/moe-hybrid.cu
+@@ -0,0 +1,1815 @@
++#include "moe-hybrid.cuh"
++#include "mmvq.cuh"
++#include "ggml-cpu-moe.h"
++
++#include <array>
++#include <atomic>
++#include <cmath>
++#include <cstring>
++#include <functional>
++#include <numeric>
++#include <string>
++
++// Declared here to avoid importing the MMQ kernel templates into this unit.
++void ggml_cuda_mul_mat_q(ggml_backend_cuda_context & ctx, const ggml_tensor * src0,
++        const ggml_tensor * src1, const ggml_tensor * ids, ggml_tensor * dst);
++void ggml_cuda_mul_mat_q_bounded(ggml_backend_cuda_context & ctx, const ggml_tensor * src0,
++        const ggml_tensor * src1, const ggml_tensor * ids, ggml_tensor * dst, int64_t max_expert_rows);
++
++namespace {
++
++constexpr size_t WEIGHT_PADDING = 4096;
++constexpr size_t BULK_LAYER_LIMIT = 1024ull * 1024 * 1024;
++
++void submit_stream(cudaStream_t stream) {
++#if defined(_WIN32)
++    const cudaError_t status = cudaStreamQuery(stream);
++    if (status != cudaSuccess && status != cudaErrorNotReady) {
++        CUDA_CHECK(status);
++    }
++#else
++    (void) stream;
++#endif
++}
++
++int env_int(const char * name, int fallback, int low, int high) {
++    const char * value = std::getenv(name);
++    if (!value || !*value) {
++        return fallback;
++    }
++    char * end = nullptr;
++    const long parsed = std::strtol(value, &end, 10);
++    if (*end || parsed < low || parsed > high) {
++        GGML_ABORT("invalid %s: %s (expected %d..%d)", name, value, low, high);
++    }
++    return static_cast<int>(parsed);
++}
++
++template<typename T> struct pinned_array {
++    T * data = nullptr;
++    size_t capacity = 0;
++
++    ~pinned_array() {
++        if (data) {
++            CUDA_CHECK(cudaFreeHost(data));
++        }
++    }
++
++    void reserve(size_t count) {
++        if (count <= capacity) {
++            return;
++        }
++        if (data) {
++            CUDA_CHECK(cudaFreeHost(data));
++        }
++        capacity = std::max(count, capacity * 2);
++        CUDA_CHECK(cudaHostAlloc(reinterpret_cast<void **>(&data), capacity * sizeof(T), cudaHostAllocPortable));
++    }
++};
++
++struct device_weights {
++    ggml_backend_buffer_t buffer = nullptr;
++    size_t capacity = 0;
++
++    ~device_weights() {
++        clear();
++    }
++
++    void clear() {
++        if (buffer) {
++            ggml_backend_buffer_free(buffer);
++        }
++        buffer = nullptr;
++        capacity = 0;
++    }
++
++    void reserve(int device, size_t bytes, cudaStream_t stream) {
++        if (capacity >= bytes) {
++            return;
++        }
++        if (buffer) {
++            ggml_backend_buffer_free(buffer);
++        }
++        buffer = ggml_backend_buft_alloc_buffer(ggml_backend_cuda_buffer_type(device), bytes + WEIGHT_PADDING);
++        GGML_ASSERT(buffer);
++        ggml_backend_buffer_set_usage(buffer, GGML_BACKEND_BUFFER_USAGE_WEIGHTS);
++        capacity = bytes;
++        CUDA_CHECK(cudaMemsetAsync(ggml_backend_buffer_get_base(buffer), 0, bytes + WEIGHT_PADDING, stream));
++    }
++
++    char * data() const {
++        return static_cast<char *>(ggml_backend_buffer_get_base(buffer));
++    }
++};
++
++struct layer_cache {
++    std::array<device_weights, 3> weights;
++    std::array<const ggml_tensor *, 3> source;
++    std::vector<int> expert_slot;
++    std::vector<int> slot_expert;
++    std::vector<double> heat;
++    std::vector<uint64_t> decode_frequency;
++    size_t expert_bytes = 0;
++    int slots = 0;
++    bool was_prefill = false;
++    int decode_tokens_since_promotion = 0;
++    double previous_cpu_ms = 0.0;
++    double previous_cached_gpu_ms = 0.0;
++    cudaEvent_t cached_start = nullptr;
++    cudaEvent_t cached_end = nullptr;
++    bool cached_timing_pending = false;
++
++    ~layer_cache() {
++        if (cached_start) {
++            CUDA_CHECK(cudaEventDestroy(cached_start));
++            CUDA_CHECK(cudaEventDestroy(cached_end));
++        }
++    }
++};
++
++struct transfer_bank {
++    std::array<device_weights, 3> weights;
++    cudaEvent_t ready = nullptr;
++    cudaEvent_t consumed = nullptr;
++    bool used = false;
++
++    transfer_bank() {
++        CUDA_CHECK(cudaEventCreateWithFlags(&ready, cudaEventDisableTiming));
++        CUDA_CHECK(cudaEventCreateWithFlags(&consumed, cudaEventDisableTiming));
++    }
++
++    ~transfer_bank() {
++        CUDA_CHECK(cudaEventDestroy(ready));
++        CUDA_CHECK(cudaEventDestroy(consumed));
++    }
++};
++
++struct expert_group {
++    std::vector<int> experts;
++    size_t first = 0;
++    size_t count = 0;
++};
++
++struct profile_totals {
++    uint64_t calls = 0;
++    uint64_t layer_tokens = 0;
++    uint64_t cache_hits = 0;
++    uint64_t cache_misses = 0;
++    uint64_t h2d_weight_bytes = 0;
++    double cpu_fused_ms = 0.0;
++    double entry_wait_ms = 0.0;
++    double readback_wait_ms = 0.0;
++    double host_prepare_submit_ms = 0.0;
++    double gpu_cached_ms = 0.0;
++    double gpu_streamed_ms = 0.0;
++    double gpu_copy_ms = 0.0;
++    double gpu_refresh_ms = 0.0;
++    double gpu_attention_ms = 0.0;
++    double gpu_cpu_wait_ms = 0.0;
++    double gpu_between_moe_readback_ms = 0.0;
++    uint64_t budgeted_refresh_calls = 0;
++    uint64_t budgeted_refresh_bytes = 0;
++
++    void report(const char * mode, int layers) {
++        GGML_LOG_INFO("CUDA hybrid MoE profile [%s]: layer_calls=%llu target_tokens_per_layer=%.1f "
++                "cache_hits=%llu cache_misses=%llu h2d_weight_MiB=%.2f "
++                "cpu_fused_ms=%.2f entry_event_wait_ms=%.2f readback_wait_ms=%.2f host_prepare_submit_ms=%.2f "
++                "gpu_cached_interval_ms=%.2f gpu_streamed_interval_ms=%.2f "
++                "gpu_weight_copy_interval_ms=%.2f gpu_cache_refresh_interval_ms=%.2f gpu_attention_interval_ms=%.2f "
++                "gpu_cpu_wait_interval_ms=%.2f gpu_between_moe_readback_interval_ms=%.2f\n",
++                mode, static_cast<unsigned long long>(calls), double(layer_tokens) / layers,
++                static_cast<unsigned long long>(cache_hits), static_cast<unsigned long long>(cache_misses),
++                double(h2d_weight_bytes) / (1024 * 1024), cpu_fused_ms, entry_wait_ms, readback_wait_ms, host_prepare_submit_ms,
++                gpu_cached_ms, gpu_streamed_ms, gpu_copy_ms, gpu_refresh_ms, gpu_attention_ms, gpu_cpu_wait_ms,
++                gpu_between_moe_readback_ms);
++        if (budgeted_refresh_calls) {
++            GGML_LOG_INFO("CUDA hybrid MoE cache admission [%s]: budgeted_refresh_calls=%llu budgeted_refresh_MiB=%.2f\n",
++                    mode, static_cast<unsigned long long>(budgeted_refresh_calls),
++                    double(budgeted_refresh_bytes) / (1024 * 1024));
++        }
++        *this = {};
++    }
++};
++
++struct gpu_interval {
++    cudaEvent_t first;
++    cudaEvent_t last;
++    profile_totals * totals;
++    double profile_totals::* metric;
++    bool timeline = false;
++    uint64_t epoch = 0;
++    std::string label;
++};
++
++struct hybrid_state {
++    std::mutex mutex;
++    ggml_cpu_moe_pool * cpu;
++    cudaEvent_t last_use = nullptr;
++    bool pending = false;
++    int device;
++    int layers;
++    int decode_max;
++    int promote_max;
++    int stream_experts;
++    int gpu_misses_per_token;
++    size_t budget;
++    size_t active_budget;
++    bool phase_buffers;
++    bool saw_prefill = false;
++    bool decode_budget_set = false;
++    bool profile_enabled;
++    bool timeline_enabled;
++    bool readback_span_enabled;
++    cudaEvent_t decode_gap_start = nullptr;
++    cudaEvent_t decode_gap_end = nullptr;
++    bool decode_gap_pending = false;
++    bool mapped_metadata = false;
++    bool cpu_doorbell = false;
++    bool budgeted_admission = false;
++    cudaEvent_t copy_probe_start = nullptr;
++    cudaEvent_t copy_probe_end = nullptr;
++    bool copy_probe_pending = false;
++    uint64_t copy_probe_bytes = 0;
++    double host_copy_bytes_per_ms = 0.0;
++    bool adaptive_enabled;
++    profile_totals prefill_profile;
++    profile_totals decode_profile;
++    std::vector<gpu_interval> gpu_intervals;
++    cudaEvent_t timeline_reference = nullptr;
++    uint64_t timeline_epoch = 0;
++    pinned_array<int32_t> ids;
++    pinned_array<int32_t> gpu_ids;
++    pinned_array<int32_t> entries;
++    pinned_array<int32_t> transfer_ids;
++    pinned_array<float> x;
++    pinned_array<float> cpu_result;
++    pinned_array<uint64_t> cpu_ready;
++    pinned_array<uint64_t> cpu_completed;
++    uint64_t cpu_generation = 0;
++    std::vector<uint8_t> cpu_mask;
++    std::array<transfer_bank, 4> staging;
++    transfer_bank bulk;
++    transfer_bank bulk_next;
++    bool bulk_active = false;
++    bool bulk_direct = false;
++    bool bulk_fused = false;
++    const void * bulk_key = nullptr;
++    const void * bulk_next_key = nullptr;
++    std::vector<std::array<const ggml_tensor *, 3>> prefill_layers;
++    cudaStream_t copy_stream = nullptr;
++    std::unordered_map<const void *, std::unique_ptr<layer_cache>> cache;
++    uint64_t decode_calls = 0;
++    uint64_t gpu_selections = 0;
++    uint64_t cpu_selections = 0;
++
++    explicit hybrid_state(int device_) :
++            device(device_),
++            layers(env_int("GGML_CUDA_MOE_LAYERS", 47, 1, 1024)),
++            decode_max(env_int("GGML_CUDA_MOE_DECODE_MAX", 32, 1, 256)),
++            promote_max(env_int("GGML_CUDA_MOE_PROMOTE", 1, 0, 256)),
++            stream_experts(env_int("GGML_CUDA_MOE_STREAM_EXPERTS", 32, 1, 256)),
++            gpu_misses_per_token(env_int("GGML_CUDA_MOE_GPU_MISSES", 0, 0, 10)),
++            budget(size_t(env_int("GGML_CUDA_MOE_CACHE_MB", 4096, 64, 1048576)) * 1024 * 1024),
++            active_budget(budget),
++            phase_buffers(env_int("GGML_MOE_PHASE_BUFFERS", 0, 0, 1) != 0),
++            profile_enabled(env_int("GGML_CUDA_MOE_PROFILE", 0, 0, 1) != 0),
++            timeline_enabled(profile_enabled && env_int("GGML_CUDA_MOE_TIMELINE", 0, 0, 1) != 0),
++            readback_span_enabled(profile_enabled && env_int("GGML_CUDA_MOE_PROFILE_READBACK_SPAN", 0, 0, 1) != 0),
++            adaptive_enabled(env_int("GGML_CUDA_MOE_ADAPTIVE", 0, 0, 1) != 0) {
++        const int threads = env_int("GGML_CUDA_MOE_THREADS", 16, 1, 1024);
++        int unified_addressing = 0;
++        CUDA_CHECK(cudaDeviceGetAttribute(&unified_addressing, cudaDevAttrUnifiedAddressing, device));
++        mapped_metadata = unified_addressing != 0;
++        cpu_doorbell = mapped_metadata && env_int("GGML_CUDA_MOE_CPU_DOORBELL", 1, 0, 1) != 0;
++        if (cpu_doorbell) {
++            GGML_LOG_INFO("CUDA hybrid MoE: bounded mapped CPU completion enabled\n");
++        }
++        budgeted_admission = env_int("GGML_CUDA_MOE_BUDGETED_ADMISSION", 1, 0, 1) != 0;
++        if (budgeted_admission) {
++            CUDA_CHECK(cudaEventCreate(&copy_probe_start));
++            CUDA_CHECK(cudaEventCreate(&copy_probe_end));
++            GGML_LOG_INFO("CUDA hybrid MoE: cache admission uses measured CPU/GPU overlap and upload throughput\n");
++        }
++        cpu = ggml_cpu_moe_pool_new(threads);
++        GGML_ASSERT(cpu);
++        CUDA_CHECK(cudaEventCreateWithFlags(&last_use, cudaEventDisableTiming));
++        CUDA_CHECK(cudaStreamCreateWithFlags(&copy_stream, cudaStreamNonBlocking));
++        if (readback_span_enabled) {
++            CUDA_CHECK(cudaEventCreate(&decode_gap_start));
++            CUDA_CHECK(cudaEventCreate(&decode_gap_end));
++        }
++        if (mapped_metadata) {
++            GGML_LOG_INFO("CUDA hybrid MoE prefill metadata: kernel staging from mapped pinned RAM\n");
++        }
++        GGML_LOG_INFO("CUDA hybrid MoE: %zu MiB cache, %d layers, %d CPU threads, decode <= %d tokens\n",
++                budget / 1024 / 1024, layers, threads, decode_max);
++        GGML_LOG_INFO("CUDA hybrid MoE: two %d-expert transfer banks, bounded 4096-selection tiles, "
++                "up to %d GPU misses per decode token\n", stream_experts, gpu_misses_per_token);
++        if (adaptive_enabled) {
++            GGML_LOG_INFO("CUDA hybrid MoE adaptive cache: cap prefill history at 8 tokens on decode entry; "
++                    "decode decay 0.97 per evaluated token; promotion limit %d per layer call\n", promote_max);
++        }
++        if (profile_enabled) {
++            GGML_LOG_INFO("CUDA hybrid MoE profile: per-mode windows of %d layer calls; "
++                    "tokens count target evaluations, not accepted output tokens. "
++                    "CPU wall time overlaps GPU work; waits include preceding queued work. "
++                    "GPU intervals include internal queue gaps and overlap each other.\n", layers * 16);
++        }
++    }
++
++    ~hybrid_state() {
++        if (pending) {
++            CUDA_CHECK(cudaEventSynchronize(last_use));
++        }
++        CUDA_CHECK(cudaStreamSynchronize(copy_stream));
++        finish_gpu_intervals();
++        if (timeline_reference) {
++            CUDA_CHECK(cudaEventDestroy(timeline_reference));
++        }
++        if (decode_gap_start) {
++            CUDA_CHECK(cudaEventDestroy(decode_gap_start));
++            CUDA_CHECK(cudaEventDestroy(decode_gap_end));
++        }
++        if (copy_probe_start) {
++            CUDA_CHECK(cudaEventDestroy(copy_probe_start));
++            CUDA_CHECK(cudaEventDestroy(copy_probe_end));
++        }
++        CUDA_CHECK(cudaEventDestroy(last_use));
++        CUDA_CHECK(cudaStreamDestroy(copy_stream));
++        ggml_cpu_moe_pool_free(cpu);
++    }
++
++    void read_copy_probe() {
++        if (!copy_probe_pending) { return; }
++        const cudaError_t status = cudaEventQuery(copy_probe_end);
++        if (status == cudaErrorNotReady) { return; }
++        CUDA_CHECK(status);
++        float ms = 0.0f;
++        CUDA_CHECK(cudaEventElapsedTime(&ms, copy_probe_start, copy_probe_end));
++        if (ms > 0.0f && copy_probe_bytes) {
++            host_copy_bytes_per_ms = double(copy_probe_bytes) / ms;
++            GGML_LOG_INFO("CUDA hybrid MoE cache admission: upload calibration %.2f MiB in %.2f ms, %.2f GiB/s\n",
++                    double(copy_probe_bytes) / (1024 * 1024), double(ms),
++                    host_copy_bytes_per_ms * 1000 / (1024 * 1024 * 1024));
++        }
++        copy_probe_pending = false;
++    }
++
++    void begin_timeline(cudaStream_t stream) {
++        if (!timeline_enabled) {
++            return;
++        }
++        GGML_ASSERT(gpu_intervals.empty());
++        if (timeline_reference) {
++            CUDA_CHECK(cudaEventDestroy(timeline_reference));
++        }
++        CUDA_CHECK(cudaEventCreate(&timeline_reference));
++        CUDA_CHECK(cudaEventRecord(timeline_reference, stream));
++        CUDA_CHECK(cudaStreamWaitEvent(copy_stream, timeline_reference, 0));
++        ++timeline_epoch;
++        GGML_LOG_INFO("CUDA hybrid MoE timeline start: epoch=%llu\n",
++                static_cast<unsigned long long>(timeline_epoch));
++    }
++
++    size_t begin_gpu_interval(profile_totals * totals, double profile_totals::* metric, cudaStream_t stream,
++            const char * label = nullptr) {
++        gpu_interval interval = {nullptr, nullptr, totals, metric};
++        interval.timeline = timeline_enabled && timeline_reference && totals == &prefill_profile;
++        interval.epoch = timeline_epoch;
++        if (interval.timeline && label) {
++            interval.label = label;
++        }
++        CUDA_CHECK(cudaEventCreate(&interval.first));
++        CUDA_CHECK(cudaEventCreate(&interval.last));
++        CUDA_CHECK(cudaEventRecord(interval.first, stream));
++        gpu_intervals.push_back(interval);
++        return gpu_intervals.size() - 1;
++    }
++
++    void end_gpu_interval(size_t index, cudaStream_t stream) {
++        CUDA_CHECK(cudaEventRecord(gpu_intervals[index].last, stream));
++    }
++
++    void finish_gpu_intervals() {
++        size_t remaining = 0;
++        for (const auto & interval : gpu_intervals) {
++            const auto status = cudaEventQuery(interval.last);
++            if (status == cudaErrorNotReady) {
++                gpu_intervals[remaining++] = interval;
++                continue;
++            }
++            CUDA_CHECK(status);
++            float elapsed = 0.0f;
++            CUDA_CHECK(cudaEventElapsedTime(&elapsed, interval.first, interval.last));
++            if (interval.metric) {
++                interval.totals->*(interval.metric) += elapsed;
++            }
++            if (interval.timeline) {
++                GGML_ASSERT(interval.epoch == timeline_epoch);
++                float first = 0.0f, last = 0.0f;
++                CUDA_CHECK(cudaEventElapsedTime(&first, timeline_reference, interval.first));
++                CUDA_CHECK(cudaEventElapsedTime(&last, timeline_reference, interval.last));
++                const char * kind = interval.metric == &profile_totals::gpu_copy_ms ? "copy" :
++                        interval.metric == &profile_totals::gpu_streamed_ms ? "expert" :
++                        interval.metric == &profile_totals::gpu_cached_ms ? "cached" :
++                        interval.metric == &profile_totals::gpu_refresh_ms ? "refresh" :
++                        interval.metric == &profile_totals::gpu_attention_ms ? "attention" : "ready";
++                GGML_LOG_INFO("CUDA hybrid MoE timeline: epoch=%llu kind=%s layer=%s first_ms=%.3f last_ms=%.3f\n",
++                        static_cast<unsigned long long>(interval.epoch), kind,
++                        interval.label.empty() ? "-" : interval.label.c_str(), first, last);
++            }
++            CUDA_CHECK(cudaEventDestroy(interval.first));
++            CUDA_CHECK(cudaEventDestroy(interval.last));
++        }
++        gpu_intervals.resize(remaining);
++    }
++};
++
++std::mutex states_mutex;
++std::unordered_map<ggml_backend_cuda_context *, std::unique_ptr<hybrid_state>> states;
++
++hybrid_state & get_state(ggml_backend_cuda_context & ctx) {
++    std::lock_guard<std::mutex> lock(states_mutex);
++    auto & state = states[&ctx];
++    if (!state) {
++        state.reset(new hybrid_state(ctx.device));
++    }
++    return *state;
++}
++
++ggml_tensor tensor_view(enum ggml_type type, int64_t n0, int64_t n1, int64_t n2, void * data) {
++    ggml_tensor result = {};
++    result.type = type;
++    result.ne[0] = n0;
++    result.ne[1] = n1;
++    result.ne[2] = n2;
++    result.ne[3] = 1;
++    result.nb[0] = ggml_type_size(type);
++    result.nb[1] = ggml_row_size(type, n0);
++    result.nb[2] = result.nb[1] * n1;
++    result.nb[3] = result.nb[2] * n2;
++    result.data = data;
++    return result;
++}
++
++ggml_tensor weight_view(const ggml_tensor * source, device_weights & storage, int slots) {
++    ggml_tensor result = *source;
++    result.ne[2] = slots;
++    result.nb[3] = result.nb[2] * slots;
++    result.data = storage.data();
++    result.buffer = storage.buffer;
++    result.view_src = nullptr;
++    result.view_offs = 0;
++    result.extra = nullptr;
++    return result;
++}
++
++layer_cache & get_layer(hybrid_state & state, const std::array<const ggml_tensor *, 3> & weights, cudaStream_t stream) {
++    auto & layer = state.cache[weights[0]->data];
++    if (layer) {
++        // Source tensors themselves can differ between graph rebuilds.
++        layer->source = weights;
++        return *layer;
++    }
++    GGML_ASSERT(state.cache.size() <= size_t(state.layers));
++    layer.reset(new layer_cache());
++    layer->source = weights;
++    if (state.budgeted_admission) {
++        CUDA_CHECK(cudaEventCreate(&layer->cached_start));
++        CUDA_CHECK(cudaEventCreate(&layer->cached_end));
++    }
++    const size_t triplet = weights[0]->nb[2] + weights[1]->nb[2] + weights[2]->nb[2];
++    layer->expert_bytes = triplet;
++    const size_t per_layer = state.active_budget / state.layers;
++    GGML_ASSERT(per_layer > 3 * WEIGHT_PADDING + triplet);
++    layer->slots = int(std::min<size_t>(weights[0]->ne[2] + 1, (per_layer - 3 * WEIGHT_PADDING) / triplet));
++    GGML_ASSERT(layer->slots >= 2);
++    layer->expert_slot.assign(weights[0]->ne[2], -1);
++    layer->slot_expert.assign(layer->slots, -1);
++    layer->heat.assign(weights[0]->ne[2], 0.0);
++    layer->decode_frequency.assign(weights[0]->ne[2], 0);
++    for (int p = 0; p < 3; ++p) {
++        layer->weights[p].reserve(state.device, weights[p]->nb[2] * layer->slots, stream);
++        // Slot zero contributes exactly zero for every supported quantized type.
++        CUDA_CHECK(cudaMemsetAsync(layer->weights[p].data(), 0, weights[p]->nb[2], stream));
++    }
++    GGML_LOG_INFO("CUDA hybrid MoE: %s, %d/%lld expert triplets cached\n",
++            weights[0]->name, layer->slots - 1, static_cast<long long>(weights[0]->ne[2]));
++    return *layer;
++}
++
++bool bulk_eligible(const std::array<const ggml_tensor *, 3> & weights) {
++    size_t bytes = 0;
++    for (const auto * weight : weights) {
++        bytes += ggml_nbytes(weight);
++        if (!ggml_is_contiguous(weight) || weight->nb[2] % sizeof(uint4) != 0) {
++            return false;
++        }
++    }
++    return bytes <= BULK_LAYER_LIMIT;
++}
++
++void enqueue_bulk(hybrid_state & state, const std::array<const ggml_tensor *, 3> & weights,
++        transfer_bank * target = nullptr) {
++    auto & atlas = target ? *target : state.bulk;
++    if (atlas.used) {
++        CUDA_CHECK(cudaStreamWaitEvent(state.copy_stream, atlas.consumed, 0));
++    }
++    const bool measure_copy = state.budgeted_admission &&
++            !state.copy_probe_pending && state.host_copy_bytes_per_ms == 0.0;
++    if (measure_copy) {
++        state.copy_probe_bytes = 0;
++        CUDA_CHECK(cudaEventRecord(state.copy_probe_start, state.copy_stream));
++    }
++    const size_t timer = state.profile_enabled ?
++            state.begin_gpu_interval(&state.prefill_profile, &profile_totals::gpu_copy_ms, state.copy_stream, weights[0]->name) : 0;
++    for (int p = 0; p < 3; ++p) {
++        const size_t bytes = ggml_nbytes(weights[p]);
++        if (state.bulk_fused && p < 2) {
++            const size_t expert_bytes = weights[p]->nb[2];
++            GGML_ASSERT(atlas.weights[0].capacity >= 2 * bytes);
++            CUDA_CHECK(cudaMemcpy2DAsync(atlas.weights[0].data() + size_t(p) * expert_bytes,
++                    2 * expert_bytes, weights[p]->data, expert_bytes,
++                    expert_bytes, weights[p]->ne[2], cudaMemcpyHostToDevice, state.copy_stream));
++        } else {
++            GGML_ASSERT(atlas.weights[p].capacity >= bytes);
++            CUDA_CHECK(cudaMemcpyAsync(atlas.weights[p].data(), weights[p]->data,
++                    bytes, cudaMemcpyHostToDevice, state.copy_stream));
++        }
++        if (state.profile_enabled) {
++            state.prefill_profile.h2d_weight_bytes += bytes;
++        }
++        if (measure_copy) { state.copy_probe_bytes += bytes; }
++    }
++    if (state.profile_enabled) {
++        state.end_gpu_interval(timer, state.copy_stream);
++    }
++    if (measure_copy) {
++        CUDA_CHECK(cudaEventRecord(state.copy_probe_end, state.copy_stream));
++        state.copy_probe_pending = true;
++    }
++    CUDA_CHECK(cudaEventRecord(atlas.ready, state.copy_stream));
++    (target == &state.bulk_next ? state.bulk_next_key : state.bulk_key) = weights[0]->data;
++    submit_stream(state.copy_stream);
++}
++
++void release_bulk(hybrid_state & state) {
++    CUDA_CHECK(cudaStreamSynchronize(state.copy_stream));
++    state.finish_gpu_intervals();
++    for (auto & weights : state.bulk.weights) {
++        weights.clear();
++    }
++    for (auto & weights : state.bulk_next.weights) {
++        weights.clear();
++    }
++    for (auto & bank : state.staging) {
++        for (auto & weights : bank.weights) {
++            weights.clear();
++        }
++        bank.used = false;
++    }
++    state.bulk_active = false;
++    state.bulk_direct = false;
++    state.bulk_fused = false;
++    state.bulk.used = false;
++    state.bulk_next.used = false;
++    state.bulk_key = nullptr;
++    state.bulk_next_key = nullptr;
++    state.prefill_layers.clear();
++}
++
++__global__ void gather_expert_weights(uint4 * output, const uint4 * atlas, const int32_t * experts,
++        size_t vectors_per_expert, size_t count) {
++    const size_t i = size_t(blockIdx.x) * blockDim.x + threadIdx.x;
++    if (i < count) {
++        const size_t slot = i / vectors_per_expert;
++        output[i] = slot == 0 ? make_uint4(0, 0, 0, 0) :
++                atlas[size_t(experts[slot - 1]) * vectors_per_expert + i % vectors_per_expert];
++    }
++}
++
++__global__ void swiglu_normalize(float * gate, const float * up, float * scales, int width,
++        const float * packed = nullptr) {
++    const int column = blockIdx.x;
++    float * g = gate + int64_t(column) * width;
++    const float * source = packed ? packed + int64_t(column) * 2 * width : g;
++    const float * u = packed ? source + width : up + int64_t(column) * width;
++    float sum = 0.0f;
++    for (int i = threadIdx.x; i < width; i += blockDim.x) {
++        const float value = (source[i] / (1.0f + expf(-source[i]))) * u[i];
++        g[i] = value;
++        sum += value * value;
++    }
++    __shared__ float partial[256];
++    partial[threadIdx.x] = sum;
++    __syncthreads();
++    for (int stride = blockDim.x / 2; stride > 0; stride /= 2) {
++        if (threadIdx.x < stride) {
++            partial[threadIdx.x] += partial[threadIdx.x + stride];
++        }
++        __syncthreads();
++    }
++    const float norm = fminf(fmaxf(sqrtf(partial[0]), 1.0e-8f), 1.0e30f);
++    if (threadIdx.x == 0) {
++        scales[column] = norm;
++    }
++    for (int i = threadIdx.x; i < width; i += blockDim.x) {
++        g[i] = (g[i] * 32768.0f) / norm;
++    }
++}
++
++__global__ void stage_prefill_metadata(int32_t * ids, int32_t * entries,
++        const int32_t * host_ids, const int32_t * host_entries, size_t count) {
++    const size_t i = size_t(blockIdx.x) * blockDim.x + threadIdx.x;
++    if (i < count) {
++        ids[i] = host_ids[i];
++        entries[i] = host_entries[i];
++    }
++}
++
++__global__ void gather_inputs(float * output, const float * input, const int32_t * entries,
++        int64_t count, int width, int topk) {
++    const int64_t i = int64_t(blockIdx.x) * blockDim.x + threadIdx.x;
++    if (i < count) {
++        const int token = entries[i / width] / topk;
++        output[i] = input[int64_t(token) * width + i % width];
++    }
++}
++
++__global__ void scatter_weighted(float * output, const float * parts, const float * scales,
++        const float * weights, const int32_t * entries, int64_t count, int width, int topk) {
++    const int64_t i = int64_t(blockIdx.x) * blockDim.x + threadIdx.x;
++    if (i < count) {
++        const int entry = entries[i / width];
++        const float value = ((parts[i] * scales[i / width]) * (1.0f / 32768.0f)) * weights[entry];
++        atomicAdd(output + int64_t(entry / topk) * width + i % width, value);
++    }
++}
++
++__global__ void reduce_weighted(float * output, const float * parts, const float * scales,
++        const float * weights, int64_t count, int width, int topk) {
++    const int64_t i = int64_t(blockIdx.x) * blockDim.x + threadIdx.x;
++    if (i < count) {
++        const int64_t first = (i / width) * topk;
++        float sum = 0.0f;
++        for (int k = 0; k < topk; ++k) {
++            float value = parts[(first + k) * width + i % width];
++            if (scales) {
++                value = (value * scales[first + k]) * (1.0f / 32768.0f);
++            }
++            sum += value * weights[first + k];
++        }
++        output[i] += sum;
++    }
++}
++
++template<bool wait_for_cpu>
++__global__ void reduce_cpu_mapped(float * output, const volatile float * parts,
++        const float * weights, int64_t count, int width, int topk,
++        const volatile uint64_t * cpu_ready, volatile uint64_t * completed, uint64_t generation) {
++    __shared__ int run;
++    if (threadIdx.x == 0) {
++        if (wait_for_cpu) {
++            uint64_t start;
++            asm volatile("mov.u64 %0, %%globaltimer;" : "=l"(start));
++            while (*cpu_ready != generation) {
++                uint64_t now;
++                asm volatile("mov.u64 %0, %%globaltimer;" : "=l"(now));
++                if (now - start >= 10000000ull) {
++                    break;
++                }
++#if __CUDA_ARCH__ >= 700
++                __nanosleep(1024);
++#endif
++            }
++            run = *cpu_ready == generation;
++            if (run) {
++                __threadfence_system();
++            }
++        } else {
++            run = completed[blockIdx.x] != generation;
++        }
++    }
++    __syncthreads();
++    if (!run) {
++        return;
++    }
++    for (int64_t i = int64_t(blockIdx.x) * blockDim.x + threadIdx.x;
++            i < count; i += int64_t(blockDim.x) * gridDim.x) {
++        const int64_t first = (i / width) * topk;
++        float sum = 0.0f;
++        for (int k = 0; k < topk; ++k) {
++            sum += parts[(first + k) * width + i % width] * weights[first + k];
++        }
++        output[i] += sum;
++    }
++    if (wait_for_cpu) {
++        __syncthreads();
++        if (threadIdx.x == 0) {
++            completed[blockIdx.x] = generation;
++        }
++    }
++}
++
++void project(ggml_backend_cuda_context & ctx, const ggml_tensor * weight,
++        const ggml_tensor * input, const ggml_tensor * ids, ggml_tensor * output, bool masked,
++        int64_t max_expert_rows = 0) {
++    const int cc = ggml_cuda_info().devices[ctx.device].cc;
++    const int max_batch = std::max(1, get_mmvq_mmid_max_batch(weight->type, cc));
++    if (masked) {
++        // MMQ's ID compaction assumes unique expert IDs within each token.
++        // CPU misses share the zero slot, so use MMVQ on bounded token chunks.
++        for (int64_t first = 0; first < input->ne[2]; first += max_batch) {
++            const int64_t count = std::min<int64_t>(max_batch, input->ne[2] - first);
++            ggml_tensor input_chunk = *input;
++            ggml_tensor ids_chunk = *ids;
++            ggml_tensor output_chunk = *output;
++            input_chunk.ne[2] = count;
++            ids_chunk.ne[1] = count;
++            output_chunk.ne[2] = count;
++            input_chunk.data = static_cast<char *>(input->data) + first * input->nb[2];
++            ids_chunk.data = static_cast<char *>(ids->data) + first * ids->nb[1];
++            output_chunk.data = static_cast<char *>(output->data) + first * output->nb[2];
++            ggml_cuda_mul_mat_vec_q(ctx, weight, &input_chunk, &ids_chunk, &output_chunk);
++        }
++    } else if (input->ne[2] <= max_batch) {
++        ggml_cuda_mul_mat_vec_q(ctx, weight, input, ids, output);
++    } else {
++        if (max_expert_rows > 0) {
++            ggml_cuda_mul_mat_q_bounded(ctx, weight, input, ids, output, max_expert_rows);
++        } else {
++            ggml_cuda_mul_mat_q(ctx, weight, input, ids, output);
++        }
++    }
++}
++
++void project_prefill(ggml_backend_cuda_context & ctx, const ggml_tensor * weight,
++        const ggml_tensor * input, const ggml_tensor * ids, ggml_tensor * output, int64_t max_expert_rows) {
++    if (weight->ne[2] == 1) {
++        ggml_tensor dense_input = tensor_view(GGML_TYPE_F32, input->ne[0], input->ne[2], 1, input->data);
++        ggml_tensor dense_output = tensor_view(GGML_TYPE_F32, output->ne[0], output->ne[2], 1, output->data);
++        ggml_cuda_mul_mat_q(ctx, weight, &dense_input, nullptr, &dense_output);
++    } else {
++        project(ctx, weight, input, ids, output, false, max_expert_rows);
++    }
++}
++
++// Populate hottest experts only. Promoting a decode miss is capped to avoid
++// turning ordinary CPU misses into synchronous PCIe weight transfers.
++uint64_t promote(layer_cache & layer, const std::vector<int> & staged_slot,
++        std::array<device_weights, 3> * staging, int limit, cudaStream_t stream, bool fused_gate_up = false) {
++    std::vector<int> ranked(layer.heat.size());
++    std::iota(ranked.begin(), ranked.end(), 0);
++    std::sort(ranked.begin(), ranked.end(), [&](int a, int b) { return layer.heat[a] > layer.heat[b]; });
++    int moved = 0;
++    uint64_t h2d_weight_bytes = 0;
++    for (int expert : ranked) {
++        if (moved >= limit || layer.heat[expert] <= 0.0) {
++            break;
++        }
++        if (layer.expert_slot[expert] >= 0 || (staging && staged_slot[expert] < 0)) {
++            continue;
++        }
++        int victim_slot = 1;
++        double victim_heat = 0.0;
++        for (int slot = 1; slot < layer.slots; ++slot) {
++            const int victim = layer.slot_expert[slot];
++            if (victim < 0) {
++                victim_slot = slot;
++                victim_heat = -1.0;
++                break;
++            }
++            if (slot == 1 || layer.heat[victim] < victim_heat) {
++                victim_slot = slot;
++                victim_heat = layer.heat[victim];
++            }
++        }
++        if (victim_heat >= 0.0 && layer.heat[expert] <= victim_heat * 1.10) {
++            continue;
++        }
++        const int old = layer.slot_expert[victim_slot];
++        if (old >= 0) {
++            layer.expert_slot[old] = -1;
++        }
++        for (int p = 0; p < 3; ++p) {
++            const size_t bytes = layer.source[p]->nb[2];
++            const char * from;
++            if (staging && fused_gate_up && p < 2) {
++                const size_t stride = layer.source[0]->nb[2] + layer.source[1]->nb[2];
++                from = (*staging)[0].data() + size_t(staged_slot[expert]) * stride +
++                        (p == 1 ? layer.source[0]->nb[2] : 0);
++            } else {
++                from = staging ? (*staging)[p].data() + size_t(staged_slot[expert]) * bytes :
++                        static_cast<const char *>(layer.source[p]->data) + size_t(expert) * bytes;
++            }
++            CUDA_CHECK(cudaMemcpyAsync(layer.weights[p].data() + size_t(victim_slot) * bytes,
++                    from, bytes, staging ? cudaMemcpyDeviceToDevice : cudaMemcpyHostToDevice, stream));
++            if (!staging) {
++                h2d_weight_bytes += bytes;
++            }
++        }
++        layer.slot_expert[victim_slot] = expert;
++        layer.expert_slot[expert] = victim_slot;
++        ++moved;
++    }
++    return h2d_weight_bytes;
++}
++
++void report_cache_capacity(hybrid_state & state) {
++    struct candidate {
++        uint64_t frequency;
++        size_t bytes;
++        size_t layer;
++    };
++    std::vector<candidate> candidates;
++    std::vector<int> capacities;
++    uint64_t observed = 0;
++    uint64_t best_fixed = 0;
++    uint64_t greedy_global = 0;
++    size_t reserved = 0;
++    for (auto & item : state.cache) {
++        auto & layer = *item.second;
++        auto frequencies = layer.decode_frequency;
++        observed += std::accumulate(frequencies.begin(), frequencies.end(), uint64_t(0));
++        std::sort(frequencies.begin(), frequencies.end(), std::greater<uint64_t>());
++        const size_t cached = std::min<size_t>(frequencies.size(), size_t(layer.slots - 1));
++        best_fixed += std::accumulate(frequencies.begin(), frequencies.begin() + cached, uint64_t(0));
++        greedy_global += frequencies.front();
++        // Reserve the zero slot, one resident expert, and all buffer padding.
++        reserved += 2 * layer.expert_bytes + 3 * WEIGHT_PADDING;
++        const size_t index = capacities.size();
++        capacities.push_back(1);
++        for (size_t expert = 1; expert < frequencies.size(); ++expert) {
++            candidates.push_back({frequencies[expert], layer.expert_bytes, index});
++        }
++        std::fill(layer.decode_frequency.begin(), layer.decode_frequency.end(), 0);
++    }
++    if (!observed) {
++        return;
++    }
++    std::sort(candidates.begin(), candidates.end(), [](const candidate & a, const candidate & b) {
++        return double(a.frequency) / a.bytes > double(b.frequency) / b.bytes;
++    });
++    size_t remaining = state.active_budget > reserved ? state.active_budget - reserved : 0;
++    for (const auto & item : candidates) {
++        if (item.frequency && item.bytes <= remaining) {
++            remaining -= item.bytes;
++            greedy_global += item.frequency;
++            ++capacities[item.layer];
++        }
++    }
++    GGML_LOG_INFO("CUDA hybrid MoE cache capacity [retrospective]: observed=%llu actual_hits=%llu "
++            "best_fixed_capacity_hits=%llu greedy_global_capacity_hits=%llu "
++            "budget_MiB=%zu global_experts_per_layer_min=%d global_experts_per_layer_max=%d; "
++            "estimates use this past window, not future routing\n",
++            static_cast<unsigned long long>(observed), static_cast<unsigned long long>(state.decode_profile.cache_hits),
++            static_cast<unsigned long long>(best_fixed), static_cast<unsigned long long>(greedy_global),
++            state.active_budget / (1024 * 1024), *std::min_element(capacities.begin(), capacities.end()),
++            *std::max_element(capacities.begin(), capacities.end()));
++}
++
++void refresh_sources(hybrid_state & state, ggml_cgraph * graph) {
++    for (int i = 0; i < graph->n_nodes; ++i) {
++        const auto * node = graph->nodes[i];
++        if (node->op != GGML_OP_MOE_HYBRID) {
++            continue;
++        }
++        const auto found = state.cache.find(node->src[0]->data);
++        if (found != state.cache.end()) {
++            found->second->source = {node->src[0], node->src[1], node->src[2]};
++        }
++    }
++}
++
++void resize_cache(hybrid_state & state, size_t budget, bool populate, cudaStream_t stream) {
++    const int64_t started = ggml_time_us();
++    const size_t per_layer = budget / state.layers;
++    uint64_t uploaded = 0;
++    for (auto & item : state.cache) {
++        auto & layer = *item.second;
++        const auto & weights = layer.source;
++        const size_t triplet = weights[0]->nb[2] + weights[1]->nb[2] + weights[2]->nb[2];
++        GGML_ASSERT(per_layer > 3 * WEIGHT_PADDING + triplet);
++        const int slots = int(std::min<size_t>(weights[0]->ne[2] + 1, (per_layer - 3 * WEIGHT_PADDING) / triplet));
++        if (slots == layer.slots) {
++            continue;
++        }
++        std::vector<int> resident;
++        for (int expert : layer.slot_expert) {
++            if (expert >= 0) {
++                resident.push_back(expert);
++            }
++        }
++        std::stable_sort(resident.begin(), resident.end(), [&](int a, int b) { return layer.heat[a] > layer.heat[b]; });
++        resident.resize(std::min<size_t>(resident.size(), size_t(slots - 1)));
++        std::array<device_weights, 3> replacement;
++        for (int p = 0; p < 3; ++p) {
++            const size_t bytes = weights[p]->nb[2];
++            replacement[p].reserve(state.device, size_t(slots) * bytes, stream);
++            for (size_t i = 0; i < resident.size(); ++i) {
++                CUDA_CHECK(cudaMemcpyAsync(replacement[p].data() + (i + 1) * bytes,
++                        layer.weights[p].data() + size_t(layer.expert_slot[resident[i]]) * bytes,
++                        bytes, cudaMemcpyDeviceToDevice, stream));
++            }
++        }
++        CUDA_CHECK(cudaStreamSynchronize(stream));
++        for (int p = 0; p < 3; ++p) {
++            std::swap(layer.weights[p].buffer, replacement[p].buffer);
++            std::swap(layer.weights[p].capacity, replacement[p].capacity);
++            replacement[p].clear();
++        }
++        layer.slots = slots;
++        std::fill(layer.expert_slot.begin(), layer.expert_slot.end(), -1);
++        layer.slot_expert.assign(slots, -1);
++        for (size_t i = 0; i < resident.size(); ++i) {
++            layer.expert_slot[resident[i]] = int(i + 1);
++            layer.slot_expert[i + 1] = resident[i];
++        }
++        if (populate) {
++            const std::vector<int> unused_slots;
++            uploaded += promote(layer, unused_slots, nullptr, slots - 1, stream);
++            CUDA_CHECK(cudaStreamSynchronize(stream));
++        }
++    }
++    state.active_budget = budget;
++    GGML_LOG_INFO("CUDA hybrid MoE phase cache: %zu MiB budget, %.2f MiB hot experts uploaded, %.2f ms transition\n",
++            budget / (1024 * 1024), double(uploaded) / (1024 * 1024), double(ggml_time_us() - started) / 1000.0);
++}
++
++} // namespace
++
++size_t ggml_cuda_moe_hybrid_attention_begin(ggml_backend_cuda_context & ctx, const ggml_tensor * node) {
++    static const bool profile = env_int("GGML_CUDA_MOE_PROFILE", 0, 0, 1) != 0;
++    static const bool timeline = env_int("GGML_CUDA_MOE_TIMELINE", 0, 0, 1) != 0;
++    static const bool readback_span = env_int("GGML_CUDA_MOE_PROFILE_READBACK_SPAN", 0, 0, 1) != 0;
++    const bool decode = node->src[0]->ne[1] <= 32;
++    if (!profile || (decode ? !readback_span : !timeline)) {
++        return size_t(-1);
++    }
++    cudaStreamCaptureStatus capture;
++    CUDA_CHECK(cudaStreamIsCapturing(ctx.stream(), &capture));
++    if (capture != cudaStreamCaptureStatusNone) {
++        return size_t(-1);
++    }
++    std::lock_guard<std::mutex> states_lock(states_mutex);
++    const auto found = states.find(&ctx);
++    if (found == states.end()) {
++        return size_t(-1);
++    }
++    hybrid_state & state = *found->second;
++    std::lock_guard<std::mutex> state_lock(state.mutex);
++    if (decode ? !state.readback_span_enabled : (!state.timeline_enabled || !state.timeline_reference)) {
++        return size_t(-1);
++    }
++    const auto * q = node->src[0];
++    const auto * k = node->src[1];
++    const std::string label = std::string(node->name) + "_qh" + std::to_string(q->ne[2]) +
++            "_kvh" + std::to_string(k->ne[2]) + "_nq" + std::to_string(q->ne[1]) +
++            "_nk" + std::to_string(k->ne[1]);
++    return state.begin_gpu_interval(decode ? &state.decode_profile : &state.prefill_profile, &profile_totals::gpu_attention_ms,
++            ctx.stream(), label.c_str());
++}
++
++void ggml_cuda_moe_hybrid_attention_end(ggml_backend_cuda_context & ctx, size_t interval) {
++    if (interval == size_t(-1)) {
++        return;
++    }
++    std::lock_guard<std::mutex> states_lock(states_mutex);
++    const auto found = states.find(&ctx);
++    GGML_ASSERT(found != states.end());
++    hybrid_state & state = *found->second;
++    std::lock_guard<std::mutex> state_lock(state.mutex);
++    GGML_ASSERT(interval < state.gpu_intervals.size());
++    state.end_gpu_interval(interval, ctx.stream());
++}
++
++void ggml_cuda_moe_hybrid_prepare_graph(ggml_backend_cuda_context & ctx, ggml_cgraph * graph) {
++    hybrid_state * state = nullptr;
++    {
++        std::lock_guard<std::mutex> lock(states_mutex);
++        const auto found = states.find(&ctx);
++        if (found == states.end()) {
++            return;
++        }
++        state = found->second.get();
++    }
++    if (!state->phase_buffers) {
++        return;
++    }
++    std::lock_guard<std::mutex> lock(state->mutex);
++    bool prefill = false;
++    for (int i = 0; i < graph->n_nodes; ++i) {
++        const auto * node = graph->nodes[i];
++        if (node->op == GGML_OP_MOE_HYBRID && node->src[3]->ne[2] > state->decode_max) {
++            prefill = true;
++            break;
++        }
++    }
++    if (!prefill || state->cache.empty()) {
++        return;
++    }
++    const size_t budget = state->budget - std::min<size_t>(state->budget / 3, 1024ull * 1024 * 1024);
++    if (state->active_budget != budget) {
++        CUDA_CHECK(cudaStreamSynchronize(ctx.stream()));
++        CUDA_CHECK(cudaStreamSynchronize(state->copy_stream));
++        if (state->pending) {
++            CUDA_CHECK(cudaEventSynchronize(state->last_use));
++            state->pending = false;
++        }
++        if (state->bulk_active) {
++            release_bulk(*state);
++        }
++        state->finish_gpu_intervals();
++        refresh_sources(*state, graph);
++        resize_cache(*state, budget, false, ctx.stream());
++    }
++    state->decode_budget_set = false;
++}
++
++void ggml_cuda_moe_hybrid_prefill_begin(ggml_backend_cuda_context & ctx, ggml_cgraph * graph) {
++    std::vector<std::array<const ggml_tensor *, 3>> layers;
++    bool has_hybrid = false;
++    bool has_prefill = false;
++    for (int i = 0; i < graph->n_nodes; ++i) {
++        const auto * node = graph->nodes[i];
++        if (node->op == GGML_OP_MOE_HYBRID) {
++            has_hybrid = true;
++            has_prefill |= node->src[3]->ne[2] > 32;
++            if (node->src[3]->ne[2] >= 1024) {
++                layers.push_back({node->src[0], node->src[1], node->src[2]});
++            }
++        }
++    }
++    if (has_hybrid && !has_prefill) {
++        hybrid_state & state = get_state(ctx);
++        std::lock_guard<std::mutex> lock(state.mutex);
++        if (state.phase_buffers && state.saw_prefill && !state.decode_budget_set) {
++            if (state.pending) {
++                CUDA_CHECK(cudaEventSynchronize(state.last_use));
++                state.pending = false;
++            }
++            CUDA_CHECK(cudaStreamSynchronize(state.copy_stream));
++            if (state.bulk_active) {
++                release_bulk(state);
++            }
++            state.finish_gpu_intervals();
++            refresh_sources(state, graph);
++            size_t free_bytes = 0, total_bytes = 0;
++            CUDA_CHECK(cudaMemGetInfo(&free_bytes, &total_bytes));
++            const size_t safety = 768ull * 1024 * 1024;
++            const size_t available = free_bytes > safety ? free_bytes - safety : 0;
++            const size_t maximum = state.budget + 2048ull * 1024 * 1024;
++            const size_t budget = std::min(maximum, state.active_budget + available);
++            if (budget > state.active_budget) {
++                resize_cache(state, budget, true, ctx.stream());
++            }
++            state.decode_budget_set = true;
++        }
++        if (state.readback_span_enabled) {
++            CUDA_CHECK(cudaEventRecord(state.decode_gap_start, ctx.stream()));
++            state.decode_gap_pending = true;
++        }
++    }
++    if (layers.empty() || !bulk_eligible(layers.front())) {
++        return;
++    }
++    hybrid_state & state = get_state(ctx);
++    std::lock_guard<std::mutex> lock(state.mutex);
++    if (state.pending) {
++        CUDA_CHECK(cudaEventSynchronize(state.last_use));
++        state.pending = false;
++    }
++    if (state.bulk_active) {
++        release_bulk(state);
++    }
++    state.finish_gpu_intervals();
++    std::array<size_t, 3> sizes = {};
++    std::array<size_t, 3> expert_sizes = {};
++    for (const auto & weights : layers) {
++        if (!bulk_eligible(weights)) {
++            continue;
++        }
++        for (int p = 0; p < 3; ++p) {
++            sizes[p] = std::max(sizes[p], ggml_nbytes(weights[p]));
++            expert_sizes[p] = std::max(expert_sizes[p], weights[p]->nb[2]);
++        }
++    }
++    size_t required = 0;
++    for (int p = 0; p < 3; ++p) {
++        required += sizes[p] + WEIGHT_PADDING;
++        const size_t bank_bytes = size_t(state.stream_experts + 1) * expert_sizes[p];
++        for (const auto & bank : state.staging) {
++            required += bank_bytes > bank.weights[p].capacity ? bank_bytes - bank.weights[p].capacity + WEIGHT_PADDING : 0;
++        }
++    }
++    size_t cache_reserved = 0;
++    for (const auto & item : state.cache) {
++        for (const auto & weights : item.second->weights) {
++            cache_reserved += weights.capacity + WEIGHT_PADDING;
++        }
++    }
++    required += state.active_budget > cache_reserved ? state.active_budget - cache_reserved : 0;
++    size_t free_bytes = 0, total_bytes = 0;
++    CUDA_CHECK(cudaMemGetInfo(&free_bytes, &total_bytes));
++    const size_t layer_bytes = std::accumulate(sizes.begin(), sizes.end(), size_t(0));
++    const size_t direct_required = 2 * layer_bytes + 6 * WEIGHT_PADDING +
++            (state.active_budget > cache_reserved ? state.active_budget - cache_reserved : 0);
++    state.bulk_direct = direct_required + 512 * 1024 * 1024 <= free_bytes;
++    if (!state.bulk_direct && required + 512 * 1024 * 1024 > free_bytes) {
++        GGML_LOG_INFO("CUDA hybrid MoE bulk prefill: insufficient temporary VRAM; retaining expert-bank streaming\n");
++        return;
++    }
++    state.bulk_fused = state.bulk_direct && std::all_of(layers.begin(), layers.end(), [](const auto & weights) {
++        return !bulk_eligible(weights) || (weights[0]->type == weights[1]->type &&
++                weights[0]->nb[2] == weights[1]->nb[2] && weights[0]->ne[0] >= weights[0]->ne[1]);
++    });
++    for (int p = 0; p < 3; ++p) {
++        if (state.bulk_fused && p == 1) {
++            continue;
++        }
++        const size_t bytes = state.bulk_fused && p == 0 ? sizes[0] + sizes[1] : sizes[p];
++        state.bulk.weights[p].reserve(ctx.device, bytes, state.copy_stream);
++        if (state.bulk_direct) {
++            state.bulk_next.weights[p].reserve(ctx.device, bytes, state.copy_stream);
++        } else {
++            for (auto & bank : state.staging) {
++                bank.weights[p].reserve(ctx.device, size_t(state.stream_experts + 1) * expert_sizes[p], state.copy_stream);
++                bank.used = false;
++            }
++        }
++    }
++    state.bulk_active = true;
++    state.prefill_layers = std::move(layers);
++    GGML_LOG_INFO("CUDA hybrid MoE bulk prefill: %.1f MiB layer atlas, %s, three uploads per layer\n",
++            double(layer_bytes) / (1024 * 1024),
++            state.bulk_fused ? "two layer buffers with fused gate/up projections" :
++            state.bulk_direct ? "two layer buffers with direct matrix reads" : "four transfer banks");
++    state.begin_timeline(ctx.stream());
++    enqueue_bulk(state, state.prefill_layers.front());
++    if (state.bulk_direct && state.prefill_layers.size() > 1 && bulk_eligible(state.prefill_layers[1])) {
++        enqueue_bulk(state, state.prefill_layers[1], &state.bulk_next);
++    }
++}
++
++void ggml_cuda_op_moe_hybrid(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
++    ggml_cuda_set_device(ctx.device);
++    hybrid_state & state = get_state(ctx);
++    std::lock_guard<std::mutex> lock(state.mutex);
++    double entry_wait_ms = 0.0;
++    if (state.pending) {
++        const int64_t start = state.profile_enabled ? ggml_time_us() : 0;
++        CUDA_CHECK(cudaEventSynchronize(state.last_use));
++        if (state.profile_enabled) {
++            entry_wait_ms = double(ggml_time_us() - start) / 1000.0;
++        }
++        state.pending = false;
++    }
++    state.finish_gpu_intervals();
++    for (auto * completed : {&state.prefill_profile, &state.decode_profile}) {
++        if (completed->calls >= uint64_t(state.layers) * 16) {
++            if (completed == &state.decode_profile) {
++                report_cache_capacity(state);
++            }
++            completed->report(completed == &state.prefill_profile ? "prefill" : "decode", state.layers);
++        }
++    }
++    const cudaStream_t stream = ctx.stream();
++    const std::array<const ggml_tensor *, 3> weights = { dst->src[0], dst->src[1], dst->src[2] };
++    const ggml_tensor * input = dst->src[3];
++    const ggml_tensor * ids = dst->src[4];
++    const ggml_tensor * routing = dst->src[5];
++    const int64_t hidden = input->ne[0];
++    const int64_t tokens = input->ne[2];
++    const int64_t topk = ids->ne[0];
++    const int64_t ff = weights[0]->ne[1];
++    const int n_experts = int(weights[0]->ne[2]);
++    GGML_ASSERT(tokens > 0 && topk > 0 && topk <= n_experts);
++    const size_t selections = size_t(topk * tokens);
++    const size_t output_count = size_t(hidden * tokens);
++    GGML_ASSERT(selections <= INT32_MAX);
++    GGML_ASSERT(input->type == GGML_TYPE_F32 && ggml_is_contiguous(input));
++    GGML_ASSERT(ids->type == GGML_TYPE_I32 && ggml_is_contiguous(ids));
++    GGML_ASSERT(dst->type == GGML_TYPE_F32 && ggml_is_contiguous(dst));
++    GGML_ASSERT(routing->type == GGML_TYPE_F32 && ggml_is_contiguous(routing));
++    GGML_ASSERT(input->ne[1] == 1 && input->ne[3] == 1 && ids->ne[1] == tokens);
++    GGML_ASSERT(dst->ne[0] == hidden && dst->ne[1] == tokens && dst->ne[2] == 1);
++    GGML_ASSERT(routing->ne[0] == 1 && routing->ne[1] == topk && routing->ne[2] == tokens);
++    for (const ggml_tensor * weight : weights) {
++        GGML_ASSERT(ggml_is_quantized(weight->type) && ggml_is_contiguous(weight));
++        GGML_ASSERT(weight->ne[2] == n_experts && weight->ne[3] == 1);
++    }
++    GGML_ASSERT(weights[0]->ne[0] == hidden && weights[1]->ne[0] == hidden);
++    GGML_ASSERT(weights[1]->ne[1] == ff && weights[2]->ne[0] == ff && weights[2]->ne[1] == hidden);
++
++    const bool prefill = tokens > state.decode_max;
++    if (prefill) {
++        state.saw_prefill = true;
++    }
++    if (state.bulk_active && (!prefill || !bulk_eligible(weights))) {
++        release_bulk(state);
++    }
++    const bool bulk_prefill = prefill && state.bulk_active;
++    if (!prefill && state.prefill_profile.calls) {
++        state.prefill_profile.report("prefill", state.layers);
++    }
++    profile_totals * profile = state.profile_enabled ?
++            (prefill ? &state.prefill_profile : &state.decode_profile) : nullptr;
++    state.ids.reserve(selections);
++    CUDA_CHECK(cudaMemcpyAsync(state.ids.data, ids->data, selections * sizeof(int32_t), cudaMemcpyDeviceToHost, stream));
++    if (!prefill) {
++        state.x.reserve(output_count);
++        CUDA_CHECK(cudaMemcpyAsync(state.x.data, input->data, output_count * sizeof(float), cudaMemcpyDeviceToHost, stream));
++    }
++    const int64_t readback_start = profile ? ggml_time_us() : 0;
++    if (state.timeline_enabled && prefill) {
++        const size_t point = state.begin_gpu_interval(profile, nullptr, stream, weights[0]->name);
++        state.end_gpu_interval(point, stream);
++    }
++    const bool measure_gap = !prefill && state.readback_span_enabled && state.decode_gap_pending;
++    if (measure_gap) {
++        CUDA_CHECK(cudaEventRecord(state.decode_gap_end, stream));
++    }
++    CUDA_CHECK(cudaStreamSynchronize(stream));
++    state.pending = false;
++    if (profile) {
++        profile->entry_wait_ms += entry_wait_ms;
++        profile->readback_wait_ms += double(ggml_time_us() - readback_start) / 1000.0;
++        if (measure_gap) {
++            float elapsed = 0.0f;
++            CUDA_CHECK(cudaEventElapsedTime(&elapsed, state.decode_gap_start, state.decode_gap_end));
++            profile->gpu_between_moe_readback_ms += elapsed;
++        }
++    }
++    state.decode_gap_pending = false;
++    const int64_t dispatch_start = profile ? ggml_time_us() : 0;
++    const double dispatch_cpu_start = profile ? profile->cpu_fused_ms : 0.0;
++    // These arrays feed asynchronous GPU reads from the preceding layer.
++    state.gpu_ids.reserve(prefill ? selections : 2 * selections);
++    state.entries.reserve(selections);
++    layer_cache & layer = get_layer(state, weights, stream);
++    if (state.budgeted_admission) {
++        state.read_copy_probe();
++        if (layer.cached_timing_pending) {
++            const cudaError_t status = cudaEventQuery(layer.cached_end);
++            if (status != cudaErrorNotReady) {
++                CUDA_CHECK(status);
++                float ms = 0.0f;
++                CUDA_CHECK(cudaEventElapsedTime(&ms, layer.cached_start, layer.cached_end));
++                layer.previous_cached_gpu_ms = ms;
++                layer.cached_timing_pending = false;
++            }
++        }
++        if (!prefill && layer.was_prefill) {
++            layer.previous_cpu_ms = 0.0;
++            layer.previous_cached_gpu_ms = 0.0;
++        }
++    }
++    double decay = state.adaptive_enabled ? std::pow(0.97, double(tokens)) : 0.995;
++    if (state.adaptive_enabled && !prefill) {
++        if (layer.was_prefill) {
++            layer.decode_tokens_since_promotion = 16;
++            const double history = std::accumulate(layer.heat.begin(), layer.heat.end(), 0.0);
++            const double limit = double(topk) * 8.0;
++            if (history > limit) {
++                decay *= limit / history;
++            }
++        }
++    }
++    for (double & value : layer.heat) {
++        value *= decay;
++    }
++    layer.was_prefill = prefill;
++    std::vector<double> recency;
++    if (state.adaptive_enabled) {
++        recency.resize(tokens);
++        double weight = 1.0;
++        for (int64_t token = tokens - 1; token >= 0; --token) {
++            recency[token] = weight;
++            weight *= 0.97;
++        }
++    }
++    std::vector<std::vector<int32_t>> by_expert(n_experts);
++    for (size_t i = 0; i < selections; ++i) {
++        const int expert = state.ids.data[i];
++        GGML_ASSERT(expert >= 0 && expert < n_experts);
++        by_expert[expert].push_back(int32_t(i));
++        layer.heat[expert] += state.adaptive_enabled ? recency[i / topk] : 1.0;
++        if (profile) {
++            if (!prefill) {
++                ++layer.decode_frequency[expert];
++            }
++            if (layer.expert_slot[expert] >= 0) {
++                ++profile->cache_hits;
++            } else {
++                ++profile->cache_misses;
++            }
++        }
++    }
++
++    if (bulk_prefill && state.bulk_direct) {
++        auto & atlas = weights[0]->data == state.bulk_next_key ? state.bulk_next : state.bulk;
++        if (weights[0]->data != state.bulk_key && weights[0]->data != state.bulk_next_key) {
++            enqueue_bulk(state, weights, &atlas);
++        }
++        size_t metadata_count = 0;
++        for (int expert = 0; expert < n_experts; ++expert) {
++            for (int32_t entry : by_expert[expert]) {
++                state.entries.data[metadata_count] = entry;
++                state.gpu_ids.data[metadata_count++] = expert;
++            }
++        }
++        GGML_ASSERT(metadata_count == selections);
++        const size_t tile_capacity = std::min<size_t>(4096, selections);
++        struct tile_geometry { int first_expert, slots, max_rows; };
++        std::vector<tile_geometry> tiles;
++        for (size_t first = 0; first < selections; first += tile_capacity) {
++            const size_t count = std::min(tile_capacity, selections - first);
++            const int first_expert = state.gpu_ids.data[first];
++            const int slots = state.gpu_ids.data[first + count - 1] - first_expert + 1;
++            int max_rows = 0, rows = 0, previous = -1;
++            for (size_t i = first; i < first + count; ++i) {
++                const int expert = state.gpu_ids.data[i];
++                rows = expert == previous ? rows + 1 : 1;
++                max_rows = std::max(max_rows, rows);
++                previous = expert;
++                state.gpu_ids.data[i] -= first_expert;
++            }
++            tiles.push_back({first_expert, slots, max_rows});
++        }
++        ggml_cuda_pool_alloc<int32_t> gpu_ids(ctx.pool(), selections);
++        ggml_cuda_pool_alloc<int32_t> entries(ctx.pool(), selections);
++        ggml_cuda_pool_alloc<float> gathered(ctx.pool(), size_t(hidden) * tile_capacity);
++        ggml_cuda_pool_alloc<float> gate(ctx.pool(), size_t(ff) * tile_capacity * (state.bulk_fused ? 2 : 1));
++        ggml_cuda_pool_alloc<float> up(ctx.pool(), state.bulk_fused ? 1 : size_t(ff) * tile_capacity);
++        ggml_cuda_pool_alloc<float> scales(ctx.pool(), tile_capacity);
++        ggml_cuda_pool_alloc<float> parts(ctx.pool(), size_t(hidden) * tile_capacity);
++        if (state.mapped_metadata) {
++            // Avoid queueing small metadata transfers behind lookahead weight uploads.
++            stage_prefill_metadata<<<unsigned((selections + 255) / 256), 256, 0, stream>>>(
++                    gpu_ids.get(), entries.get(), state.gpu_ids.data, state.entries.data, selections);
++            CUDA_CHECK(cudaGetLastError());
++        } else {
++            CUDA_CHECK(cudaMemcpyAsync(gpu_ids.get(), state.gpu_ids.data, selections * sizeof(int32_t), cudaMemcpyHostToDevice, stream));
++            CUDA_CHECK(cudaMemcpyAsync(entries.get(), state.entries.data, selections * sizeof(int32_t), cudaMemcpyHostToDevice, stream));
++        }
++        CUDA_CHECK(cudaMemsetAsync(dst->data, 0, output_count * sizeof(float), stream));
++        CUDA_CHECK(cudaStreamWaitEvent(stream, atlas.ready, 0));
++        const size_t timer = profile ? state.begin_gpu_interval(profile, &profile_totals::gpu_streamed_ms, stream, weights[0]->name) : 0;
++        for (size_t first = 0; first < selections; first += tile_capacity) {
++            const size_t count = std::min(tile_capacity, selections - first);
++            const auto & tile = tiles[first / tile_capacity];
++            ggml_tensor down_weight = weight_view(weights[2], atlas.weights[2], tile.slots);
++            down_weight.data = atlas.weights[2].data() + size_t(tile.first_expert) * weights[2]->nb[2];
++            const size_t values = size_t(hidden) * count;
++            gather_inputs<<<unsigned((values + 255) / 256), 256, 0, stream>>>(gathered.get(),
++                    static_cast<const float *>(input->data), entries.get() + first, values, int(hidden), int(topk));
++            ggml_tensor compact_input = tensor_view(GGML_TYPE_F32, hidden, 1, count, gathered.get());
++            ggml_tensor ids_gpu = tensor_view(GGML_TYPE_I32, 1, count, 1, gpu_ids.get() + first);
++            ggml_tensor gate_output = tensor_view(GGML_TYPE_F32, ff, 1, count, state.bulk_fused ? gathered.get() : gate.get());
++            ggml_tensor down_output = tensor_view(GGML_TYPE_F32, hidden, 1, count, parts.get());
++            if (state.bulk_fused) {
++                ggml_tensor combined_weight = tensor_view(weights[0]->type, hidden, 2 * ff, tile.slots,
++                        atlas.weights[0].data() + size_t(tile.first_expert) * 2 * weights[0]->nb[2]);
++                combined_weight.buffer = atlas.weights[0].buffer;
++                ggml_tensor combined_output = tensor_view(GGML_TYPE_F32, 2 * ff, 1, count, gate.get());
++                project_prefill(ctx, &combined_weight, &compact_input, &ids_gpu, &combined_output, tile.max_rows);
++                // The gathered inputs are dead after the combined projection.
++                swiglu_normalize<<<unsigned(count), 256, 0, stream>>>(gathered.get(), nullptr, scales.get(), int(ff), gate.get());
++            } else {
++                ggml_tensor gate_weight = weight_view(weights[0], atlas.weights[0], tile.slots);
++                ggml_tensor up_weight = weight_view(weights[1], atlas.weights[1], tile.slots);
++                gate_weight.data = atlas.weights[0].data() + size_t(tile.first_expert) * weights[0]->nb[2];
++                up_weight.data = atlas.weights[1].data() + size_t(tile.first_expert) * weights[1]->nb[2];
++                ggml_tensor up_output = tensor_view(GGML_TYPE_F32, ff, 1, count, up.get());
++                project_prefill(ctx, &gate_weight, &compact_input, &ids_gpu, &gate_output, tile.max_rows);
++                project_prefill(ctx, &up_weight, &compact_input, &ids_gpu, &up_output, tile.max_rows);
++                swiglu_normalize<<<unsigned(count), 256, 0, stream>>>(gate.get(), up.get(), scales.get(), int(ff));
++            }
++            project_prefill(ctx, &down_weight, &gate_output, &ids_gpu, &down_output, tile.max_rows);
++            scatter_weighted<<<unsigned((values + 255) / 256), 256, 0, stream>>>(static_cast<float *>(dst->data),
++                    parts.get(), scales.get(), static_cast<const float *>(routing->data), entries.get() + first,
++                    values, int(hidden), int(topk));
++            CUDA_CHECK(cudaGetLastError());
++        }
++        if (profile) {
++            state.end_gpu_interval(timer, stream);
++        }
++        std::vector<int> staged_slot(n_experts);
++        std::iota(staged_slot.begin(), staged_slot.end(), 0);
++        const size_t refresh_timer = profile ? state.begin_gpu_interval(profile, &profile_totals::gpu_refresh_ms, stream, weights[0]->name) : 0;
++        promote(layer, staged_slot, &atlas.weights, layer.slots - 1, stream, state.bulk_fused);
++        if (profile) {
++            state.end_gpu_interval(refresh_timer, stream);
++        }
++        CUDA_CHECK(cudaEventRecord(atlas.consumed, stream));
++        atlas.used = true;
++        const auto current = std::find_if(state.prefill_layers.begin(), state.prefill_layers.end(),
++                [&](const auto & candidate) { return candidate[0]->data == weights[0]->data; });
++        if (current != state.prefill_layers.end() && state.prefill_layers.end() - current > 2 &&
++                bulk_eligible(*(current + 2))) {
++            enqueue_bulk(state, *(current + 2), &atlas);
++        }
++        submit_stream(stream);
++        if (profile) {
++            profile->layer_tokens += uint64_t(tokens);
++            ++profile->calls;
++        }
++        CUDA_CHECK(cudaEventRecord(state.last_use, stream));
++        state.pending = true;
++        if (profile) {
++            profile->host_prepare_submit_ms += double(ggml_time_us() - dispatch_start) / 1000.0;
++        }
++        return;
++    }
++
++    expert_group cached;
++    std::vector<int> misses;
++    for (int expert = 0; expert < n_experts; ++expert) {
++        if (by_expert[expert].empty()) {
++            continue;
++        }
++        if (layer.expert_slot[expert] >= 0) {
++            cached.experts.push_back(expert);
++        } else {
++            misses.push_back(expert);
++        }
++    }
++    // Prefer misses reused by several verified tokens, then the hotter expert.
++    std::stable_sort(misses.begin(), misses.end(), [&](int a, int b) {
++        if (by_expert[a].size() != by_expert[b].size()) {
++            return by_expert[a].size() > by_expert[b].size();
++        }
++        return layer.heat[a] > layer.heat[b];
++    });
++    if (!prefill) {
++        const size_t limit = std::min<size_t>(state.stream_experts, size_t(tokens) * state.gpu_misses_per_token);
++        if (misses.size() > limit) {
++            misses.resize(limit);
++        }
++    }
++    std::vector<expert_group> groups;
++    for (size_t first = 0; first < misses.size(); first += state.stream_experts) {
++        expert_group group;
++        const size_t end = std::min(misses.size(), first + state.stream_experts);
++        group.experts.assign(misses.begin() + first, misses.begin() + end);
++        groups.push_back(std::move(group));
++    }
++    size_t gpu_count = 0;
++    size_t cpu_count = 0;
++    size_t metadata_count = 0;
++    if (prefill) {
++        auto append = [&](expert_group & group, bool resident) {
++            group.first = metadata_count;
++            for (size_t slot = 0; slot < group.experts.size(); ++slot) {
++                const int expert = group.experts[slot];
++                for (int32_t entry : by_expert[expert]) {
++                    state.entries.data[metadata_count] = entry;
++                    state.gpu_ids.data[metadata_count++] = resident ? layer.expert_slot[expert] : int(slot + 1);
++                }
++            }
++            group.count = metadata_count - group.first;
++        };
++        append(cached, true);
++        for (auto & group : groups) {
++            append(group, false);
++        }
++        GGML_ASSERT(metadata_count == selections);
++        gpu_count = selections;
++    } else {
++        std::vector<int> staged_slot(n_experts, 0);
++        for (size_t i = 0; i < misses.size(); ++i) {
++            staged_slot[misses[i]] = int(i + 1);
++        }
++        state.cpu_mask.resize(selections);
++        for (size_t i = 0; i < selections; ++i) {
++            const int expert = state.ids.data[i];
++            const int hit = layer.expert_slot[expert];
++            state.gpu_ids.data[i] = hit >= 0 ? hit : 0;
++            state.gpu_ids.data[selections + i] = staged_slot[expert];
++            state.cpu_mask[i] = hit < 0 && staged_slot[expert] == 0;
++            cpu_count += state.cpu_mask[i];
++            cached.count += hit >= 0;
++        }
++        metadata_count = groups.empty() ? selections : 2 * selections;
++        gpu_count = selections - cpu_count;
++        ++state.decode_calls;
++        state.gpu_selections += gpu_count;
++        state.cpu_selections += cpu_count;
++    }
++
++    // Transfer banks are independent of the graph pool and remain valid until last_use.
++    // Reusing a bank waits on all its matrix reads and cache promotions.
++    const size_t bank_count = bulk_prefill ? state.staging.size() : 2;
++    ggml_cuda_pool_alloc<int32_t> transfer_ids(ctx.pool(), bulk_prefill ? std::max<size_t>(1, misses.size()) : 1);
++    if (bulk_prefill) {
++        if (!misses.empty()) {
++            state.transfer_ids.reserve(misses.size());
++            std::copy(misses.begin(), misses.end(), state.transfer_ids.data);
++            CUDA_CHECK(cudaMemcpyAsync(transfer_ids.get(), state.transfer_ids.data,
++                    misses.size() * sizeof(int32_t), cudaMemcpyHostToDevice, stream));
++        }
++        if (state.bulk_key != weights[0]->data) {
++            enqueue_bulk(state, weights);
++        }
++    }
++    auto enqueue_transfer = [&](size_t index) {
++        transfer_bank & bank = state.staging[index % bank_count];
++        const expert_group & group = groups[index];
++        if (bulk_prefill) {
++            CUDA_CHECK(cudaStreamWaitEvent(stream, state.bulk.ready, 0));
++            for (int p = 0; p < 3; ++p) {
++                const size_t vectors = weights[p]->nb[2] / sizeof(uint4);
++                const size_t count = vectors * (group.experts.size() + 1);
++                gather_expert_weights<<<unsigned((count + 255) / 256), 256, 0, stream>>>(
++                        reinterpret_cast<uint4 *>(bank.weights[p].data()),
++                        reinterpret_cast<const uint4 *>(state.bulk.weights[p].data()),
++                        transfer_ids.get() + index * state.stream_experts, vectors, count);
++            }
++            CUDA_CHECK(cudaGetLastError());
++            CUDA_CHECK(cudaEventRecord(bank.ready, stream));
++            if (index + 1 == groups.size()) {
++                CUDA_CHECK(cudaEventRecord(state.bulk.consumed, stream));
++                state.bulk.used = true;
++                const auto current = std::find_if(state.prefill_layers.begin(), state.prefill_layers.end(),
++                        [&](const auto & candidate) { return candidate[0]->data == weights[0]->data; });
++                if (current != state.prefill_layers.end() && current + 1 != state.prefill_layers.end() &&
++                        bulk_eligible(*(current + 1))) {
++                    enqueue_bulk(state, *(current + 1));
++                }
++            }
++            submit_stream(stream);
++            return;
++        }
++        if (bank.used) {
++            CUDA_CHECK(cudaStreamWaitEvent(state.copy_stream, bank.consumed, 0));
++        }
++        const size_t timer = profile ? state.begin_gpu_interval(profile, &profile_totals::gpu_copy_ms, state.copy_stream, weights[0]->name) : 0;
++        for (int p = 0; p < 3; ++p) {
++            const size_t bytes = weights[p]->nb[2];
++            bank.weights[p].reserve(ctx.device, (state.stream_experts + 1) * bytes, state.copy_stream);
++            CUDA_CHECK(cudaMemsetAsync(bank.weights[p].data(), 0, bytes, state.copy_stream));
++            for (size_t slot = 0; slot < group.experts.size(); ++slot) {
++                const char * from = static_cast<const char *>(weights[p]->data) + size_t(group.experts[slot]) * bytes;
++                CUDA_CHECK(cudaMemcpyAsync(bank.weights[p].data() + (slot + 1) * bytes,
++                        from, bytes, cudaMemcpyHostToDevice, state.copy_stream));
++                if (profile) {
++                    profile->h2d_weight_bytes += bytes;
++                }
++            }
++        }
++        if (profile) {
++            state.end_gpu_interval(timer, state.copy_stream);
++        }
++        CUDA_CHECK(cudaEventRecord(bank.ready, state.copy_stream));
++        submit_stream(state.copy_stream);
++    };
++    if (!bulk_prefill) {
++        for (size_t i = 0; i < std::min(bank_count, groups.size()); ++i) {
++            enqueue_transfer(i);
++        }
++    }
++
++    ggml_cuda_pool_alloc<int32_t> gpu_ids(ctx.pool(), metadata_count);
++    CUDA_CHECK(cudaMemcpyAsync(gpu_ids.get(), state.gpu_ids.data, metadata_count * sizeof(int32_t), cudaMemcpyHostToDevice, stream));
++    const size_t tile_capacity = prefill ? std::min<size_t>(4096, selections) : selections;
++    ggml_cuda_pool_alloc<int32_t> entries(ctx.pool(), prefill ? selections : 1);
++    ggml_cuda_pool_alloc<float> gathered(ctx.pool(), prefill ? size_t(hidden) * tile_capacity : 1);
++    ggml_cuda_pool_alloc<float> gate(ctx.pool(), size_t(ff) * tile_capacity);
++    ggml_cuda_pool_alloc<float> up(ctx.pool(), size_t(ff) * tile_capacity);
++    ggml_cuda_pool_alloc<float> scales(ctx.pool(), tile_capacity);
++    ggml_cuda_pool_alloc<float> parts(ctx.pool(), size_t(hidden) * tile_capacity);
++    if (prefill) {
++        CUDA_CHECK(cudaMemcpyAsync(entries.get(), state.entries.data, selections * sizeof(int32_t), cudaMemcpyHostToDevice, stream));
++    }
++    CUDA_CHECK(cudaMemsetAsync(dst->data, 0, output_count * sizeof(float), stream));
++    const auto * router_weights = static_cast<const float *>(routing->data);
++    auto * output = static_cast<float *>(dst->data);
++
++    auto execute = [&](const expert_group & group, std::array<device_weights, 3> & storage,
++                       int slots, size_t id_offset) {
++        ggml_tensor gate_weight = weight_view(weights[0], storage[0], slots);
++        ggml_tensor up_weight = weight_view(weights[1], storage[1], slots);
++        ggml_tensor down_weight = weight_view(weights[2], storage[2], slots);
++        const size_t work_count = prefill ? group.count : selections;
++        for (size_t first = 0; first < work_count; first += tile_capacity) {
++            const size_t count = std::min(tile_capacity, work_count - first);
++            const size_t metadata_offset = prefill ? group.first + first : id_offset;
++            ggml_tensor compact_input = tensor_view(GGML_TYPE_F32, hidden, 1, count, gathered.get());
++            if (prefill) {
++                const size_t values = size_t(hidden) * count;
++                gather_inputs<<<unsigned((values + 255) / 256), 256, 0, stream>>>(
++                        gathered.get(), static_cast<const float *>(input->data), entries.get() + metadata_offset,
++                        values, int(hidden), int(topk));
++            }
++            const int64_t k = prefill ? 1 : topk;
++            const int64_t n = prefill ? int64_t(count) : tokens;
++            ggml_tensor ids_gpu = tensor_view(GGML_TYPE_I32, k, n, 1, gpu_ids.get() + metadata_offset);
++            ggml_tensor gate_output = tensor_view(GGML_TYPE_F32, ff, k, n, gate.get());
++            ggml_tensor up_output = tensor_view(GGML_TYPE_F32, ff, k, n, up.get());
++            ggml_tensor down_output = tensor_view(GGML_TYPE_F32, hidden, k, n, parts.get());
++            int64_t max_expert_rows = 0;
++            if (prefill) {
++                std::vector<int64_t> rows(slots, 0);
++                for (size_t i = 0; i < count; ++i) {
++                    max_expert_rows = std::max(max_expert_rows, ++rows[state.gpu_ids.data[metadata_offset + i]]);
++                }
++            }
++            project(ctx, &gate_weight, prefill ? &compact_input : input, &ids_gpu, &gate_output, !prefill, max_expert_rows);
++            project(ctx, &up_weight, prefill ? &compact_input : input, &ids_gpu, &up_output, !prefill, max_expert_rows);
++            swiglu_normalize<<<unsigned(count), 256, 0, stream>>>(gate.get(), up.get(), scales.get(), int(ff));
++            project(ctx, &down_weight, &gate_output, &ids_gpu, &down_output, !prefill, max_expert_rows);
++            if (prefill) {
++                const size_t values = size_t(hidden) * count;
++                scatter_weighted<<<unsigned((values + 255) / 256), 256, 0, stream>>>(
++                        output, parts.get(), scales.get(), router_weights, entries.get() + metadata_offset,
++                        values, int(hidden), int(topk));
++            } else {
++                reduce_weighted<<<unsigned((output_count + 255) / 256), 256, 0, stream>>>(
++                        output, parts.get(), scales.get(), router_weights, output_count, int(hidden), int(topk));
++            }
++            CUDA_CHECK(cudaGetLastError());
++        }
++    };
++    if (cached.count) {
++        const size_t timer = profile ? state.begin_gpu_interval(profile, &profile_totals::gpu_cached_ms, stream, weights[0]->name) : 0;
++        const bool measure_cached = !prefill && state.budgeted_admission && !layer.cached_timing_pending;
++        if (measure_cached) { CUDA_CHECK(cudaEventRecord(layer.cached_start, stream)); }
++        execute(cached, layer.weights, layer.slots, 0);
++        if (measure_cached) {
++            CUDA_CHECK(cudaEventRecord(layer.cached_end, stream));
++            layer.cached_timing_pending = true;
++        }
++        if (profile) {
++            state.end_gpu_interval(timer, stream);
++        }
++        if (prefill) {
++            submit_stream(stream);
++        }
++    }
++    if (bulk_prefill) {
++        for (size_t i = 0; i < std::min(bank_count, groups.size()); ++i) {
++            enqueue_transfer(i);
++        }
++    }
++    for (size_t i = 0; i < groups.size(); ++i) {
++        transfer_bank & bank = state.staging[i % bank_count];
++        const expert_group & group = groups[i];
++        CUDA_CHECK(cudaStreamWaitEvent(stream, bank.ready, 0));
++        const size_t timer = profile ? state.begin_gpu_interval(profile, &profile_totals::gpu_streamed_ms, stream, weights[0]->name) : 0;
++        execute(group, bank.weights, int(group.experts.size() + 1), selections);
++        if (profile) {
++            state.end_gpu_interval(timer, stream);
++        }
++        std::vector<int> staged_slot(n_experts, -1);
++        for (size_t slot = 0; slot < group.experts.size(); ++slot) {
++            staged_slot[group.experts[slot]] = int(slot + 1);
++        }
++        // Cached reads precede every promotion. Each uploaded miss can be admitted
++        // from VRAM without an additional RAM transfer.
++        const size_t refresh_timer = profile ? state.begin_gpu_interval(profile, &profile_totals::gpu_refresh_ms, stream, weights[0]->name) : 0;
++        promote(layer, staged_slot, &bank.weights, prefill ? layer.slots - 1 : state.promote_max, stream);
++        if (profile) {
++            state.end_gpu_interval(refresh_timer, stream);
++        }
++        CUDA_CHECK(cudaEventRecord(bank.consumed, stream));
++        bank.used = true;
++        submit_stream(stream);
++        if (i + bank_count < groups.size()) {
++            enqueue_transfer(i + bank_count);
++        }
++    }
++    if (bulk_prefill && groups.empty()) {
++        CUDA_CHECK(cudaStreamWaitEvent(stream, state.bulk.ready, 0));
++        CUDA_CHECK(cudaEventRecord(state.bulk.consumed, stream));
++        state.bulk.used = true;
++    }
++
++    bool budgeted_refresh_queued = false;
++    if (!prefill && state.gpu_misses_per_token == 0 && state.budgeted_admission &&
++            state.host_copy_bytes_per_ms > 0.0 && layer.previous_cpu_ms > 0.0 && cpu_count) {
++        // Current GPU slot reads precede these overwrites on the same stream.
++        // This node's IDs and CPU mask are already fixed; promote() only changes
++        // the cache available to future nodes. No expert result is omitted.
++        const double overlap_ms = std::max(0.0, layer.previous_cpu_ms - layer.previous_cached_gpu_ms);
++        const double upload_bytes = overlap_ms * state.host_copy_bytes_per_ms;
++        const int limit = int(std::min(double(layer.slots - 1), std::floor(upload_bytes / layer.expert_bytes)));
++        if (limit > 0) {
++            const std::vector<int> unused_slots;
++            const size_t timer = profile ? state.begin_gpu_interval(profile, &profile_totals::gpu_refresh_ms, stream, weights[0]->name) : 0;
++            const uint64_t bytes = promote(layer, unused_slots, nullptr, limit, stream);
++            if (profile) {
++                state.end_gpu_interval(timer, stream);
++                profile->h2d_weight_bytes += bytes;
++                profile->budgeted_refresh_bytes += bytes;
++                profile->budgeted_refresh_calls += bytes > 0;
++            }
++            if (bytes) {
++                layer.decode_tokens_since_promotion = 0;
++                budgeted_refresh_queued = true;
++            }
++        }
++    }
++
++    if (cpu_count) {
++        const size_t part_count = size_t(hidden) * selections;
++        state.cpu_result.reserve(part_count);
++        std::memset(state.cpu_result.data, 0, part_count * sizeof(float));
++        const size_t cpu_wait_timer = profile ?
++                state.begin_gpu_interval(profile, &profile_totals::gpu_cpu_wait_ms, stream, weights[0]->name) : 0;
++        const bool mapped_cpu = !prefill && state.cpu_doorbell;
++        const unsigned cpu_blocks = unsigned(std::min<size_t>((output_count + 255) / 256, 64));
++        const uint64_t cpu_generation = ++state.cpu_generation;
++        if (mapped_cpu) {
++            if (state.cpu_ready.capacity == 0) {
++                state.cpu_ready.reserve(1);
++                state.cpu_ready.data[0] = 0;
++            }
++            if (state.cpu_completed.capacity < cpu_blocks) {
++                state.cpu_completed.reserve(cpu_blocks);
++                std::memset(state.cpu_completed.data, 0, state.cpu_completed.capacity * sizeof(uint64_t));
++            }
++            std::atomic_thread_fence(std::memory_order_seq_cst);
++            reduce_cpu_mapped<true><<<cpu_blocks, 256, 0, stream>>>(
++                    output, state.cpu_result.data, router_weights, output_count, int(hidden), int(topk),
++                    state.cpu_ready.data, state.cpu_completed.data, cpu_generation);
++            CUDA_CHECK(cudaGetLastError());
++        }
++        for (cudaStream_t submitted : {state.copy_stream, stream}) {
++            submit_stream(submitted);
++        }
++        const int64_t cpu_start = profile || state.budgeted_admission ? ggml_time_us() : 0;
++        if (!ggml_cpu_moe_compute_fused(state.cpu, weights[0], weights[1], weights[2], state.x.data,
++                state.ids.data, state.cpu_mask.data(), topk, tokens, state.cpu_result.data)) {
++            GGML_ABORT("hybrid CPU experts failed: %s", ggml_cpu_moe_pool_error(state.cpu));
++        }
++        if (mapped_cpu) {
++            std::atomic_thread_fence(std::memory_order_release);
++            *reinterpret_cast<volatile uint64_t *>(state.cpu_ready.data) = cpu_generation;
++        }
++        const double cpu_ms = profile || state.budgeted_admission ? double(ggml_time_us() - cpu_start) / 1000.0 : 0.0;
++        if (state.budgeted_admission) { layer.previous_cpu_ms = cpu_ms; }
++        if (profile) {
++            profile->cpu_fused_ms += cpu_ms;
++            state.end_gpu_interval(cpu_wait_timer, stream);
++        }
++        if (mapped_cpu) {
++            // Blocks that timed out reduce after the CPU is done. Both launches
++            // use the same partition, so each output receives its CPU sum once.
++            reduce_cpu_mapped<false><<<cpu_blocks, 256, 0, stream>>>(
++                    output, state.cpu_result.data, router_weights, output_count, int(hidden), int(topk),
++                    state.cpu_ready.data, state.cpu_completed.data, cpu_generation);
++        } else {
++            ggml_cuda_pool_alloc<float> cpu_output(ctx.pool(), part_count);
++            CUDA_CHECK(cudaMemcpyAsync(cpu_output.get(), state.cpu_result.data, part_count * sizeof(float), cudaMemcpyHostToDevice, stream));
++            reduce_weighted<<<unsigned((output_count + 255) / 256), 256, 0, stream>>>(
++                    output, cpu_output.get(), nullptr, router_weights, output_count, int(hidden), int(topk));
++        }
++        CUDA_CHECK(cudaGetLastError());
++    } else if (state.budgeted_admission) {
++        layer.previous_cpu_ms = 0.0;
++    }
++    if (!prefill && state.gpu_misses_per_token == 0) {
++        if (!budgeted_refresh_queued) { layer.decode_tokens_since_promotion += int(tokens); }
++        if (layer.decode_tokens_since_promotion >= 16) {
++            // Amortize cache refreshes over several verification batches.
++            // Ordinary misses execute on the CPU without per-token uploads.
++            const std::vector<int> unused_slots;
++            const size_t timer = profile ? state.begin_gpu_interval(profile, &profile_totals::gpu_refresh_ms, stream, weights[0]->name) : 0;
++            const uint64_t bytes = promote(layer, unused_slots, nullptr, state.promote_max, stream);
++            if (profile) {
++                state.end_gpu_interval(timer, stream);
++                profile->h2d_weight_bytes += bytes;
++            }
++            layer.decode_tokens_since_promotion = 0;
++        }
++    }
++    if (profile) {
++        profile->layer_tokens += uint64_t(tokens);
++        ++profile->calls;
++    }
++    if (!prefill && state.decode_calls % (uint64_t(state.layers) * 128) == 0) {
++        const uint64_t all = state.gpu_selections + state.cpu_selections;
++        GGML_LOG_INFO("CUDA hybrid MoE: GPU handled %.1f%% of %llu decode selections (cached and streamed); "
++                "CPU handled the rest\n", all ? 100.0 * state.gpu_selections / all : 0.0,
++                static_cast<unsigned long long>(all));
++    }
++    if (!prefill && state.readback_span_enabled) {
++        CUDA_CHECK(cudaEventRecord(state.decode_gap_start, stream));
++        state.decode_gap_pending = true;
++    }
++    CUDA_CHECK(cudaEventRecord(state.last_use, stream));
++    state.pending = true;
++    if (profile) {
++        profile->host_prepare_submit_ms += double(ggml_time_us() - dispatch_start) / 1000.0 -
++                (profile->cpu_fused_ms - dispatch_cpu_start);
++    }
++}
++
++void ggml_cuda_moe_hybrid_cleanup(ggml_backend_cuda_context & ctx) {
++    std::lock_guard<std::mutex> lock(states_mutex);
++    const auto it = states.find(&ctx);
++    if (it != states.end()) {
++        ggml_cuda_set_device(ctx.device);
++        states.erase(it);
++    }
++}
+diff --git a/ggml/src/ggml-cuda/moe-hybrid.cuh b/ggml/src/ggml-cuda/moe-hybrid.cuh
+new file mode 100644
+--- /dev/null
++++ b/ggml/src/ggml-cuda/moe-hybrid.cuh
+@@ -0,0 +1,10 @@
++#pragma once
++
++#include "common.cuh"
++
++void ggml_cuda_op_moe_hybrid(ggml_backend_cuda_context & ctx, ggml_tensor * dst);
++void ggml_cuda_moe_hybrid_prepare_graph(ggml_backend_cuda_context & ctx, ggml_cgraph * graph);
++void ggml_cuda_moe_hybrid_prefill_begin(ggml_backend_cuda_context & ctx, ggml_cgraph * graph);
++size_t ggml_cuda_moe_hybrid_attention_begin(ggml_backend_cuda_context & ctx, const ggml_tensor * node);
++void ggml_cuda_moe_hybrid_attention_end(ggml_backend_cuda_context & ctx, size_t interval);
++void ggml_cuda_moe_hybrid_cleanup(ggml_backend_cuda_context & ctx);

@@ -1,0 +1,119 @@
+{
+  "timestamp": "2026-10-11T08:29:52.8172341-05:00",
+  "backup_directory": "E:\\poolside\\backups\\before-accepted-heat-20261011-082952",
+  "build_log": "E:\\poolside\\logs\\accepted-heat-build-20261011-082952.log",
+  "build_status": "complete",
+  "candidate_flag": "GGML_CUDA_MOE_ACCEPTED_HEAT",
+  "candidate_default": false,
+  "test_authoring": false,
+  "stopped_native_pids": [
+    31552
+  ],
+  "original_sources": [
+    {
+      "file": "ggml/src/ggml-cuda/moe-hybrid.cu",
+      "sha256": "AF3E081FB5C00FA2135AE0858895074F2937D17FB69FAB89D6B70E5271246A5B"
+    },
+    {
+      "file": "ggml/src/ggml-cuda/moe-hybrid.cuh",
+      "sha256": "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772"
+    },
+    {
+      "file": "ggml/src/ggml-cuda/ggml-cuda.cu",
+      "sha256": "29BF88D604B7551B765F4C0464220B78501CDDA9AFC30036739598C83984BDC6"
+    },
+    {
+      "file": "common/speculative.cpp",
+      "sha256": "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9"
+    },
+    {
+      "file": "src/llama-ext.h",
+      "sha256": "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3"
+    },
+    {
+      "file": "src/llama-context.cpp",
+      "sha256": "FD1094FD6EA5F29FD71CE8E1A1355B6550BEC5E5F611A427D9F06D6958C56E97"
+    }
+  ],
+  "original_binaries": [
+    {
+      "file": "cublas64_12.dll",
+      "sha256": "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142"
+    },
+    {
+      "file": "cublasLt64_12.dll",
+      "sha256": "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49"
+    },
+    {
+      "file": "cudart64_12.dll",
+      "sha256": "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746"
+    },
+    {
+      "file": "ggml-base.dll",
+      "sha256": "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA"
+    },
+    {
+      "file": "ggml-cpu.dll",
+      "sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E"
+    },
+    {
+      "file": "ggml-cuda.dll",
+      "sha256": "465D152C90671D4CF70D9DCFD0B99A5135B7DB7D71691CFADBFEC45B68006EC2"
+    },
+    {
+      "file": "ggml.dll",
+      "sha256": "47DD2E6AE7538D27DC4F94C4EC5569EBEA4E78579D72A34BEF1F8468A798DBA2"
+    },
+    {
+      "file": "llama-common.dll",
+      "sha256": "4CE650D500D57370A8DBDA23C04CC022EA6F3019ED08B7CE33915F655475B5DD"
+    },
+    {
+      "file": "llama-server-impl.dll",
+      "sha256": "515F3B1C23DC1F91C61BFA3A3E364F5400F651FA679DF080E22A162E10EB4160"
+    },
+    {
+      "file": "llama-server.exe",
+      "sha256": "56A839707A3EF9DCA966905221357F71EF4A37DBCF54574CD32F432E4B834A7E"
+    },
+    {
+      "file": "llama.dll",
+      "sha256": "03AF4A1A15ABEA96C088BDB06622EFDFE905ED853B4855A2A7CBDB5658DCF718"
+    },
+    {
+      "file": "mtmd.dll",
+      "sha256": "53AA3EB603D218828CE5E3F393559471092133080900B1CACDE645614650B3B1"
+    }
+  ],
+  "candidate_sources": [
+    {
+      "file": "ggml/src/ggml-cuda/moe-hybrid.cu",
+      "sha256": "0DE4667E5F3E5226AB7BA2A6599ACC00DDDDDC4427701817F6471AE221E69359"
+    },
+    {
+      "file": "ggml/src/ggml-cuda/moe-hybrid.cuh",
+      "sha256": "2C5506B92EAD07BB1C055D055C2B338C0F7FAE469DD421F4B27550013B6B3F2E"
+    },
+    {
+      "file": "ggml/src/ggml-cuda/ggml-cuda.cu",
+      "sha256": "FE7A3555CAFEC19362A38374E29E11416C315A451B0D6561E385F6200B1881DD"
+    },
+    {
+      "file": "common/speculative.cpp",
+      "sha256": "B5C74E305422991D13B76D811D4DBB09F81CF5BA5D0B75E74184DB0CCF608C9D"
+    },
+    {
+      "file": "src/llama-ext.h",
+      "sha256": "3AC9BDAE4B18A660B9223B2E3B8487047F5ADC4B7902BE5858ED51242834F2E8"
+    },
+    {
+      "file": "src/llama-context.cpp",
+      "sha256": "54653D544BBDB489D632E24FE5FABF9B3911BDFC2AC18B90B0D0F0B4FC53AA91"
+    }
+  ],
+  "build_exit_code": 0,
+  "cpu_dll_sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E",
+  "cuda_dll_sha256": "266366BFF85206B4C860DB943965A77DA95CDC17C5D9A6F2715B01717404E7C7",
+  "llama_dll_sha256": "B7FF3D964B9EC176861F72432C4CF50D1F8CA7ADF53D074A8AD3CDB87591493F",
+  "server_sha256": "96692B7908E2BE1AAE4E3B16E9736ED2D1C52438BC6281ED17DE1AAA02B03E66"
+}

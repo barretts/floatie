@@ -912,6 +912,7 @@ struct common_speculative_impl_draft_dflash : public common_speculative_impl {
     int32_t n_embd_dec = 0;  // draft hidden size
     int32_t n_embd_enc = 0;  // target_layer_ids_n * target_hidden_size
     int32_t n_embd_tgt = 0;  // target model hidden size
+    int32_t n_swa_all  = 0;
 
     int32_t     block_size    = 0;
     llama_token mask_token_id = 0;
@@ -941,6 +942,7 @@ struct common_speculative_impl_draft_dflash : public common_speculative_impl {
         n_embd_tgt    = llama_model_n_embd(model_tgt);
         n_embd_dec    = llama_model_n_embd(model_dft);
         n_embd_enc    = (int32_t) target_layer_ids_n * n_embd_tgt;
+        n_swa_all     = llama_model_n_swa_all(model_dft);
 
         // read the trained block size from the dflash.block_size metadata key
         block_size = 16;
@@ -1062,7 +1064,36 @@ struct common_speculative_impl_draft_dflash : public common_speculative_impl {
             }
             const int32_t n_rows = i_batch_end[seq_id] - i_batch_beg[seq_id] + 1;
 
-            for (int32_t offset = 0; offset < n_rows; offset += n_ubatch) {
+            // Feature fusion and KV injection are token-independent. Only trim
+            // prefill batches; verification may roll back anywhere in its block.
+            int32_t offset_begin = 0;
+            if (n_swa_all > 0 && n_rows > n_swa_all && n_rows > params.n_max + 1) {
+                bool consecutive = true;
+                for (int32_t i = 1; i < n_rows; ++i) {
+                    const int32_t idx = i_batch_beg[seq_id] + i;
+                    if (batch_in.pos[idx] != batch_in.pos[idx - 1] + 1) {
+                        consecutive = false;
+                        break;
+                    }
+                }
+                if (consecutive) {
+                    // Preserve the original chunks and their matrix shapes.
+                    offset_begin = ((n_rows - n_swa_all) / n_ubatch) * n_ubatch;
+                }
+            }
+            if (offset_begin > 0) {
+                // The retained suffix replaces the entire all-SWA draft window.
+                // Clear this sequence so its absolute positions can skip the
+                // omitted prefix without violating cache continuity.
+                if (!llama_memory_seq_rm(llama_get_memory(ctx_dft), seq_id, -1, -1)) {
+                    LOG_ERR("%s: failed to reset draft cache for trimmed prefill, seq_id=%d\n",
+                            __func__, (int) seq_id);
+                    return false;
+                }
+            }
+            const int64_t injection_start = offset_begin > 0 ? ggml_time_us() : 0;
+
+            for (int32_t offset = offset_begin; offset < n_rows; offset += n_ubatch) {
                 const int32_t n_chunk = std::min(n_ubatch, n_rows - offset);
 
                 // gather this chunk's target features, interleaved by extract layer
@@ -1141,6 +1172,11 @@ struct common_speculative_impl_draft_dflash : public common_speculative_impl {
                             __func__, rc, (int) n_chunk, (int) offset);
                     return false;
                 }
+            }
+            if (offset_begin > 0) {
+                LOG_INF("%s: injected %d target rows for seq %d, skipped %d outside the %d-token window (%.2f ms)\n",
+                        __func__, n_rows - offset_begin, (int) seq_id, offset_begin, n_swa_all,
+                        (ggml_time_us() - injection_start) / 1000.0);
             }
         }
 
@@ -2321,6 +2357,17 @@ common_speculative_init_result::common_speculative_init_result(
     //       the extra memory for small models is likely negligible?
     cparams.n_rs_seq  = 0;
     cparams.ctx_other = ctx_tgt;
+
+    if (std::find(params.speculative.types.begin(), params.speculative.types.end(),
+                  COMMON_SPECULATIVE_TYPE_DRAFT_DFLASH) != params.speculative.types.end()) {
+        // Feature injection already chunks by the draft ubatch. Reserving the
+        // target prefill batch also reserves unused noise-block logits.
+        const uint32_t noise_tokens = params.n_parallel * (uint32_t(std::max(0, params.speculative.draft.n_max)) + 1);
+        const uint32_t draft_batch = std::max<uint32_t>(512, noise_tokens);
+        cparams.n_batch = std::min(cparams.n_batch, draft_batch);
+        cparams.n_ubatch = cparams.n_ubatch == 0 ? cparams.n_batch : std::min(cparams.n_ubatch, cparams.n_batch);
+        LOG_INF("%s: DFlash working batch = %u, ubatch = %u\n", __func__, cparams.n_batch, cparams.n_ubatch);
+    }
 
     std::string model_path;
     if (has_draft) {

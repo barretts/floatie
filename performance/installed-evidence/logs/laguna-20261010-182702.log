@@ -1,0 +1,23 @@
+0.00.062.157 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.168.448 I srv          init: The UI is disabled
+0.00.168.458 I srv          init: Use --ui/--no-ui (or deprecated --webui/--no-webui) to enable/disable
+0.00.179.303 I srv    load_model: loading model 'E:\poolside\models\Laguna-S-2.1-UD-IQ3_S.gguf'
+0.00.393.977 W load: special_eos_id is not in special_eog_ids - the tokenizer config may be incorrect
+0.00.393.991 W load: special_eot_id is not in special_eog_ids - the tokenizer config may be incorrect
+0.20.352.318 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 131072, kv_unified = 'false'
+0.20.352.474 W srv          init: --cache-idle-slots requires --cache-ram, disabling
+0.20.375.689 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+0.20.375.720 I srv  llama_server: model loaded
+0.20.375.723 I srv  llama_server: listening on http://127.0.0.1:1235
+0.36.259.726 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.36.259.872 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.45.056.251 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    512, progress = 0.00, t =   8.80 s / 58.21 tokens per second
+0.51.724.885 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1024, progress = 0.01, t =  15.46 s / 66.21 tokens per second
+0.58.248.319 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1536, progress = 0.01, t =  21.99 s / 69.85 tokens per second
+1.04.901.946 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   2048, progress = 0.02, t =  28.64 s / 71.50 tokens per second
+1.11.432.023 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   2560, progress = 0.02, t =  35.17 s / 72.78 tokens per second
+1.17.901.433 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   3072, progress = 0.02, t =  41.64 s / 73.77 tokens per second
+1.24.301.114 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   3584, progress = 0.03, t =  48.04 s / 74.60 tokens per second
+1.31.089.142 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   4096, progress = 0.03, t =  54.83 s / 74.70 tokens per second
+1.37.807.194 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   4608, progress = 0.04, t =  61.55 s / 74.87 tokens per second
+1.44.285.444 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   5120, progress = 0.04, t =  68.03 s / 75.27 tokens per second

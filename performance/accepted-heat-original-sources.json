@@ -1,0 +1,26 @@
+﻿[
+    {
+        "file":  "ggml/src/ggml-cuda/moe-hybrid.cu",
+        "sha256":  "AF3E081FB5C00FA2135AE0858895074F2937D17FB69FAB89D6B70E5271246A5B"
+    },
+    {
+        "file":  "ggml/src/ggml-cuda/moe-hybrid.cuh",
+        "sha256":  "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772"
+    },
+    {
+        "file":  "ggml/src/ggml-cuda/ggml-cuda.cu",
+        "sha256":  "29BF88D604B7551B765F4C0464220B78501CDDA9AFC30036739598C83984BDC6"
+    },
+    {
+        "file":  "common/speculative.cpp",
+        "sha256":  "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9"
+    },
+    {
+        "file":  "src/llama-ext.h",
+        "sha256":  "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3"
+    },
+    {
+        "file":  "src/llama-context.cpp",
+        "sha256":  "FD1094FD6EA5F29FD71CE8E1A1355B6550BEC5E5F611A427D9F06D6958C56E97"
+    }
+]

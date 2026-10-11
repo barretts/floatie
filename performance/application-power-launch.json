@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-11T01:10:53.1064087-05:00",
+  "stopped_native_pid": 18264,
+  "wrapper_pid": 33044,
+  "stdout": "E:\\poolside\\logs\\core8k-application-power-20261011-011053.stdout.log",
+  "stderr": "E:\\poolside\\logs\\core8k-application-power-20261011-011053.stderr.log",
+  "settings": "8192 context; 6144 MiB base cache; 8192 batch; DFlash4 q8; phase memory; profile; pinned; adaptive; GPU misses0",
+  "application_power_policy": "prefer maximum performance",
+  "source_sha256": "7EA4B2B7192835BD744972D5934CB0D666FF538B933E0E62C10166605CA53BAD",
+  "cuda_dll_sha256": "5B54E8045667AEF5030BB0CF8F2A0AEF327C7648E73E0BCDECDCE314C4148F12"
+}

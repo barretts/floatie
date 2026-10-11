@@ -1095,9 +1095,10 @@ static const char * GGML_OP_NAME[GGML_OP_COUNT] = {
     "OPT_STEP_SGD",
 
     "GLU",
+    "MOE_HYBRID",
 };
 
-static_assert(GGML_OP_COUNT == 98, "GGML_OP_COUNT != 98");
+static_assert(GGML_OP_COUNT == 99, "GGML_OP_COUNT != 99");
 
 static const char * GGML_OP_SYMBOL[GGML_OP_COUNT] = {
     "none",
@@ -1207,9 +1208,10 @@ static const char * GGML_OP_SYMBOL[GGML_OP_COUNT] = {
     "sgd(x)",
 
     "glu(x)",
+    "moe_hybrid(gate,up,down,x,ids)",
 };
 
-static_assert(GGML_OP_COUNT == 98, "GGML_OP_COUNT != 98");
+static_assert(GGML_OP_COUNT == 99, "GGML_OP_COUNT != 99");
 
 static_assert(GGML_OP_POOL_COUNT == 2, "GGML_OP_POOL_COUNT != 2");
 
@@ -3343,6 +3345,32 @@ struct ggml_tensor * ggml_mul_mat_id(
     result->src[1] = b;
     result->src[2] = ids;
 
+    return result;
+}
+
+struct ggml_tensor * ggml_moe_hybrid(
+        struct ggml_context * ctx,
+        struct ggml_tensor * gate, struct ggml_tensor * up, struct ggml_tensor * down,
+        struct ggml_tensor * x, struct ggml_tensor * ids, struct ggml_tensor * routing_weights) {
+    GGML_ASSERT(ggml_are_same_shape(gate, up));
+    GGML_ASSERT(gate->ne[3] == 1 && down->ne[3] == 1);
+    GGML_ASSERT(down->ne[0] == gate->ne[1] && down->ne[1] == gate->ne[0]);
+    GGML_ASSERT(down->ne[2] == gate->ne[2]);
+    GGML_ASSERT(x->type == GGML_TYPE_F32 && x->ne[0] == gate->ne[0]);
+    GGML_ASSERT(x->ne[1] == 1 && x->ne[3] == 1 && ggml_is_contiguous(x));
+    GGML_ASSERT(ids->type == GGML_TYPE_I32 && ids->ne[1] == x->ne[2]);
+    GGML_ASSERT(ids->ne[2] == 1 && ids->ne[3] == 1 && ggml_is_contiguous(ids));
+    GGML_ASSERT(routing_weights->type == GGML_TYPE_F32 && ggml_is_contiguous(routing_weights));
+    GGML_ASSERT(routing_weights->ne[0] == 1 && routing_weights->ne[1] == ids->ne[0]);
+    GGML_ASSERT(routing_weights->ne[2] == x->ne[2] && routing_weights->ne[3] == 1);
+    struct ggml_tensor * result = ggml_new_tensor_2d(ctx, GGML_TYPE_F32, down->ne[1], x->ne[2]);
+    result->op = GGML_OP_MOE_HYBRID;
+    result->src[0] = gate;
+    result->src[1] = up;
+    result->src[2] = down;
+    result->src[3] = x;
+    result->src[4] = ids;
+    result->src[5] = routing_weights;
     return result;
 }
 

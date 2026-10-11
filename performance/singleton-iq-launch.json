@@ -1,0 +1,6 @@
+{
+  "stderr": "E:\\poolside\\logs\\core8k-singleton-iq-20261011-000434.stderr.log",
+  "wrapper_pid": 32852,
+  "stdout": "E:\\poolside\\logs\\core8k-singleton-iq-20261011-000434.stdout.log",
+  "settings": "8192 context; 6144 MiB cache; 8192 batch; DFlash4 q8; profile; pinned; adaptive; GPU misses0"
+}

@@ -1,0 +1,7 @@
+{
+  "stdout": "E:\\poolside\\logs\\core8k-gpu-spans-debug-20261010-235310.stdout.log",
+  "wrapper_pid": 20052,
+  "stderr": "E:\\poolside\\logs\\core8k-gpu-spans-debug-20261010-235310.stderr.log",
+  "backup": "E:\\poolside\\backups\\before-debug-gpu-20261010-235310",
+  "settings": "8192 context; 6144 MiB cache; 8192 batch; DFlash4 q8; profile; debug GPU; pinned; adaptive; GPU misses0"
+}

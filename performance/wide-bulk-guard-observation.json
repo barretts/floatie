@@ -1,0 +1,21 @@
+﻿{
+    "timestamp":  "2026-10-11T08:59:16.3091622-05:00",
+    "candidate_source_sha256":  "25B2C0188879CF5EFC247C08C73B16CA61AA8763D902906E1F48CAC03F374BE2",
+    "receipt":  "core8k-wide-bulk-on-dflash4-q8-cache6144.json",
+    "timings":  {
+                    "cache_n":  0,
+                    "prompt_n":  8064,
+                    "prompt_ms":  10772.253,
+                    "prompt_per_token_ms":  1.3358448660714286,
+                    "prompt_per_second":  748.589918933393,
+                    "predicted_n":  80,
+                    "predicted_ms":  5316.435,
+                    "predicted_per_token_ms":  66.4554375,
+                    "predicted_per_second":  15.047677626078377,
+                    "draft_n":  100,
+                    "draft_n_accepted":  53
+                },
+    "bulk_selection":  "0.23.736.027 I CUDA hybrid MoE bulk prefill: 900.0 MiB layer atlas, two layer buffers with fused gate/up projections, three uploads per layer, eligible_layers=45/47",
+    "wide_path_exercised":  false,
+    "conclusion":  "The existing memory guard chose 45/47 layers. This run does not measure larger-atlas performance. Next revision computes the required prefill-cache reclaim before allocation."
+}

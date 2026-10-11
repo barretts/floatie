@@ -1,0 +1,104 @@
+{
+  "research_directory": "E:\\poolside\\research\\laguna-research-20261011",
+  "classification": "Research claims reconciled to local source and saved receipts; no new throughput measured in this artifact.",
+  "last_measured_8k": {
+    "prefill_tok_s": 775.690491029203,
+    "generation_tok_s": 15.32044921855176,
+    "receipt": "performance/core8k-after-wide-bulk-production-dflash4-q8-cache6144.json"
+  },
+  "local_corrections": [
+    {
+      "claim": "Static layer split with no expert cache; n_tokens==1 gate may disable it under DFlash.",
+      "observed": "Custom GGML_OP_MOE_HYBRID adaptive expert cache supports tokens<=decode_max (default32), including 5-token DFlash verification.",
+      "source": "core-engine/ggml/src/ggml-cuda/moe-hybrid.cu:1204",
+      "profile_evidence": "performance/budgeted-admission-profile-comparison.json; 19203 cache hits across 752 layer calls and 76 evaluated rows/layer."
+    },
+    {
+      "claim": "Expert buffers are pageable; NUMA and pinning absent.",
+      "observed": "CUDA hybrid log reports 41.91GiB pinned expert RAM, launch uses --no-mmap, worker affinity has 15 successes/0 failures. Previously measured one visible NUMA node.",
+      "source": [
+        "E:/poolside/launch.ps1",
+        "performance/budgeted-admission-profile-comparison.json"
+      ]
+    },
+    {
+      "claim": "No grouped CPU kernel; each verification pair re-reads weights.",
+      "observed": "Grouped2-4-token IQ2_S/IQ3_S/IQ4_XS paths already reuse row unpacking; singleton uses standard GGML kernels. Q6_K uses the scalar-per-pair fallback.",
+      "source": "core-engine/ggml/src/ggml-cpu/moe.cpp:352"
+    },
+    {
+      "claim": "Quantized KV DFlash rotation fix is missing.",
+      "observed": "DFlash K/V injection applies each cache Hadamard basis before writes, in both ISWA and non-ISWA paths.",
+      "source": "core-engine/src/models/dflash.cpp:218"
+    },
+    {
+      "claim": "Draft is BF16 2.2GB at width15; prefill ubatch512.",
+      "observed": "Corrected Q8_0 draft (~1129.96MiB GPU weights), q8_0 KV, DraftMax4, Batch/ubatch8192.",
+      "source": "performance/after-wide-bulk-production-launch.json"
+    },
+    {
+      "claim": "DFlash necessarily slows this local engine 2-4x.",
+      "observed": "Earlier local same-request no-draft runs measured 9.44/9.56 tok/s; early draft4 measured11.22, newest engine draft4 15.32. Builds differ, so these are not a controlled current comparison. One new same-build draft-on/off comparison is warranted."
+    },
+    {
+      "claim": "128k global KV is 12.9GB F16.",
+      "observed": "12*131072*8*128*2*2=6GiB. q8_0 requires34/32bytes/element; current SWA cell count derives from window+8192 ubatch, not window+512."
+    },
+    {
+      "claim": "5.1PFLOPs global attention divided by22TFLOPs establishes a hard prefill floor.",
+      "observed": "22TFLOPs is shader performance per NVIDIA; local CUDA flash attention uses MMA tensor cores. The full-square estimate also omits causal triangular savings. This calculation does not prove the target attainable or impossible."
+    },
+    {
+      "claim": "0.26% worker overhead proves weight work is memory-bound and every fusion is capped at1.0026x.",
+      "observed": "The measured0.26% only bounds worker phase/wakeup overhead. It does not distinguish weight dequantization from memory bandwidth. Paired kernel failures are retained separately."
+    }
+  ],
+  "derived_exact_quant_payload": {
+    "iq2_iq2_iq4_triplet_bytes": 3686400.0,
+    "iq2_iq2_q6_triplet_bytes": 4595712.0,
+    "iq3_iq3_q6_triplet_bytes": 5283840.0,
+    "routed_top10_bytes_single_token_all_47_layers": 1757675520.0,
+    "routed_top10_GiB_single_token": 1.636962890625,
+    "limitation": "Payload only. Cache hit rate, grouping, repeated reads, DMA, dequant cost and accepted speculative outputs determine real bytes/output and throughput."
+  },
+  "derived_kv_128k_payload": {
+    "f16": {
+      "global_128k_GiB": 6.0,
+      "swa_cells_at_ub8192": 8704,
+      "swa_GiB": 1.1953125,
+      "total_GiB": 7.1953125
+    },
+    "q8_0": {
+      "global_128k_GiB": 3.1875,
+      "swa_cells_at_ub8192": 8704,
+      "swa_GiB": 0.635009765625,
+      "total_GiB": 3.822509765625
+    },
+    "q4_0": {
+      "global_128k_GiB": 1.6875,
+      "swa_cells_at_ub8192": 8704,
+      "swa_GiB": 0.336181640625,
+      "total_GiB": 2.023681640625
+    }
+  },
+  "derived_global_attention": {
+    "full_square_FLOPs": 5066549580791808,
+    "causal_triangle_FLOPs": 2533294117748736,
+    "limitation": "Analytic arithmetic counts, not measured achieved kernel throughput; exclude other model work and kernel overhead."
+  },
+  "primary_sources": [
+    "https://huggingface.co/poolside/Laguna-S-2.1/blob/main/config.json",
+    "https://huggingface.co/poolside/Laguna-S-2.1-DFlash/blob/main/config.json",
+    "https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4060-4060ti/"
+  ],
+  "selected_actions": [
+    "Measure the already-built decode cache fit candidate against its flag0 control on identical binaries and saved8064-token request.",
+    "Make one current same-build DFlash on/off architectural comparison. No width, quantization, NUMA or thread sweep."
+  ],
+  "unchanged_constraints": [
+    "Original Q3 target model",
+    "8k gate before128k",
+    "Use saved performance_probe.py/request; no new tests",
+    "Stop only verified inference paths; no desktop app/driver/system changes"
+  ]
+}

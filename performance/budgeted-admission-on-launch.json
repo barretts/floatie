@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-10-11T07:37:35.7599637-05:00",
+  "wrapper_pid": 17132,
+  "stdout_log": "E:\\poolside\\logs\\core8k-budgeted-admission-on-20261011-073735.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-budgeted-admission-on-20261011-073735.stderr.log",
+  "source_sha256": "2DCE16BB388AE776F4107A78204C30B8EDE84515C55416B30F7A1EC0257AAAD6",
+  "cpu_source_sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+  "cpu_dll_sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E",
+  "cuda_dll_sha256": "64BE1731639C295BBB5356D86E4E590BC06CA09BDD5ECB36B2BE4C39FEB1AC74",
+  "llama_dll_sha256": "03AF4A1A15ABEA96C088BDB06622EFDFE905ED853B4855A2A7CBDB5658DCF718",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "pin_experts": true,
+  "adaptive_cache": true,
+  "profile": true,
+  "readback_span": true,
+  "timeline": false,
+  "budgeted_admission": true
+}

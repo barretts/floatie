@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-10-11T07:27:41.4274322-05:00",
+  "wrapper_pid": 32620,
+  "stdout_log": "E:\\poolside\\logs\\core8k-after-cache-evaluation-production-20261011-072741.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-after-cache-evaluation-production-20261011-072741.stderr.log",
+  "cpu_dll_sha256": "7BC86BE0D91C083B088E7B2DA516FD93784822F48EED2798963290AB77C6C7DB",
+  "cuda_dll_sha256": "941E44CE64569042CA73B5FDA0109F8411E9490816CB9F1FF103956FF797857C",
+  "llama_dll_sha256": "5B8A05BD34E3FFAC76FF56E11E88726362AFB6DD0E74DD613C39BD46E9B0B86E",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "pin_experts": true,
+  "adaptive_cache": true,
+  "profile": false,
+  "readback_span": false,
+  "timeline": false,
+  "cpu_doorbell": "engine default enabled",
+  "decode_bounds": "engine default enabled",
+  "rejected_candidates_removed": [
+    "early cache uploads",
+    "expanded IQ2 CPU weight cache"
+  ]
+}

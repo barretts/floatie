@@ -661,10 +661,10 @@ constexpr __device__ dequantize_V_t get_dequantize_V() {
     }
 }
 
-template <int ncols1>
+template <int ncols1, bool find_min = false>
 __launch_bounds__(FATTN_KQ_STRIDE/2, 1)
 static __global__ void flash_attn_mask_to_KV_max(
-        const half2 * mask_ptr, int * KV_max_ptr, const int ne30, const int64_t s31, const int64_t s33) {
+        const half2 * mask_ptr, int * KV_max_ptr, const int ne30, const int n_queries, const int64_t s31, const int64_t s33) {
     const half2 * GGML_CUDA_RESTRICT mask   = mask_ptr;
     int         * GGML_CUDA_RESTRICT KV_max = KV_max_ptr;
 
@@ -688,8 +688,11 @@ static __global__ void flash_attn_mask_to_KV_max(
 
 #pragma unroll
         for (int j = 0; j < ncols1; ++j) {
+            if (jt*ncols1 + j >= n_queries) {
+                continue;
+            }
             const float2 tmp = __half22float2(mask[j*s31 + KV_max_sj/2 + tid]);
-            all_inf = all_inf && int(isinf(tmp.x)) && int(isinf(tmp.y));
+            all_inf = all_inf && int(tmp.x == -INFINITY) && int(tmp.y == -INFINITY);
         }
 
         all_inf = warp_reduce_all(all_inf);
@@ -711,11 +714,40 @@ static __global__ void flash_attn_mask_to_KV_max(
     // In either case, walk back the decrementation by FATTN_KQ_STRIDE.
     KV_max_sj += FATTN_KQ_STRIDE;
 
+    int KV_min_sj = 0;
+    if constexpr (find_min) {
+        for (; KV_min_sj < KV_max_sj; KV_min_sj += FATTN_KQ_STRIDE) {
+            int all_inf = 1;
+#pragma unroll
+            for (int j = 0; j < ncols1; ++j) {
+                if (jt*ncols1 + j >= n_queries) {
+                    continue;
+                }
+                const float2 tmp = __half22float2(mask[j*s31 + KV_min_sj/2 + tid]);
+                all_inf = all_inf && int(tmp.x == -INFINITY) && int(tmp.y == -INFINITY);
+            }
+            all_inf = warp_reduce_all(all_inf);
+            if (tid % WARP_SIZE == 0) {
+                buf_iw[tid / WARP_SIZE] = all_inf;
+            }
+            __syncthreads();
+            all_inf = buf_iw[tid % WARP_SIZE];
+            __syncthreads();
+            all_inf = warp_reduce_all(all_inf);
+            if (!all_inf) {
+                break;
+            }
+        }
+    }
+
     if (threadIdx.x != 0) {
         return;
     }
 
     KV_max[sequence*ne31 + jt] = KV_max_sj;
+    if constexpr (find_min) {
+        KV_max[gridDim.y*ne31 + sequence*ne31 + jt] = KV_min_sj;
+    }
 }
 
 template<int D, int ncols1, int ncols2> // D == head size
@@ -1088,10 +1120,13 @@ void launch_fattn(
     const int ntiles_z_gqa = ((gqa_ratio + ncols2 - 1) / ncols2);
     const int ntiles_dst   = ntiles_x * ntiles_z_gqa * K->ne[2] * Q->ne[3];
 
-    // Optional optimization where the mask is scanned to determine whether part of the calculation can be skipped.
-    // Only worth the overhead if there is at lease one FATTN_KQ_STRIDE x FATTN_KQ_STRIDE square to be skipped or
-    //     multiple sequences of possibly different lengths.
-    if (mask && K->ne[1] % FATTN_KQ_STRIDE == 0 && (Q->ne[1] >= 1024 || Q->ne[3] > 1)) {
+    static const bool decode_bounds_enabled = [] {
+        const char * value = std::getenv("GGML_CUDA_FATTN_DECODE_BOUNDS");
+        return !value || !*value || std::strcmp(value, "1") == 0;
+    }();
+    // Stream-K can skip leading masked tiles in small sliding-window batches.
+    const bool scan_decode = decode_bounds_enabled && stream_k && Q->ne[1] <= 32 && K->ne[1] >= 1024;
+    if (mask && K->ne[1] % FATTN_KQ_STRIDE == 0 && (Q->ne[1] >= 1024 || Q->ne[3] > 1 || scan_decode)) {
         const int64_t s31 = mask->nb[1] / sizeof(half2);
         const int64_t s33 = mask->nb[3] / sizeof(half2);
 
@@ -1101,10 +1136,16 @@ void launch_fattn(
         const int ne_KV_max = blocks_num_KV_max.x*blocks_num_KV_max.y;
         const int iter_k = K->ne[1] / FATTN_KQ_STRIDE;
 
-        KV_max.alloc(ne_KV_max);
+        KV_max.alloc(ne_KV_max * (stream_k ? 2 : 1));
         ggml_cuda_kernel_launch_params launch_params = ggml_cuda_kernel_launch_params(blocks_num_KV_max, block_dim_KV_max, 0, main_stream);
-        ggml_cuda_kernel_launch(flash_attn_mask_to_KV_max<ncols1>, launch_params,
-            (const half2 *) mask->data, KV_max.ptr, iter_k, s31, s33);
+        if (stream_k) {
+            // The stream-K path stores lower bounds after upper bounds.
+            ggml_cuda_kernel_launch(flash_attn_mask_to_KV_max<ncols1, true>, launch_params,
+                (const half2 *) mask->data, KV_max.ptr, iter_k, int(Q->ne[1]), s31, s33);
+        } else {
+            ggml_cuda_kernel_launch(flash_attn_mask_to_KV_max<ncols1>, launch_params,
+                (const half2 *) mask->data, KV_max.ptr, iter_k, int(Q->ne[1]), s31, s33);
+        }
         CUDA_CHECK(cudaGetLastError());
     }
 

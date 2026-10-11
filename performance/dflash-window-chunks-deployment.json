@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-11T03:33:19.0861498-05:00",
+  "stopped_native_pid": 22272,
+  "backup_directory": "E:\\poolside\\backups\\before-dflash-window-injection-20261011-032840",
+  "source_sha256": "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9",
+  "build_log": "E:\\poolside\\logs\\dflash-window-chunks-build-20261011-033319.log",
+  "build_status": "complete",
+  "build_exit_code": 0,
+  "llama_common_dll_sha256": "F6D0457994F82EAB6C33AE2FFD091C6F1327A0638AB8C3F9A930596453370B58"
+}

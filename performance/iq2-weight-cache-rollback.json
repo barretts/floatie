@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-10-11T07:24:47.3281983-05:00",
+  "stopped_native_pids": [
+    5104
+  ],
+  "backup_directory": "E:\\poolside\\backups\\before-iq2-weight-cache-20261011-071504",
+  "source_files": [
+    {
+      "file": "ggml\\include\\ggml-cpu-moe.h",
+      "sha256": "679B289E25322591854B24BCA95D02FE97CE1CE747BA2678EE9521314C7F9C04"
+    },
+    {
+      "file": "src\\CMakeLists.txt",
+      "sha256": "918ABC450AE62C3A5B7D9B8145C54B920138848F68AE9AC8A1EC08760CE96C55"
+    },
+    {
+      "file": "src\\llama-model.cpp",
+      "sha256": "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB"
+    },
+    {
+      "file": "ggml\\src\\ggml-cpu\\moe.cpp",
+      "sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E"
+    },
+    {
+      "file": "ggml\\src\\ggml-cpu\\moe-iq.cpp",
+      "sha256": "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290"
+    },
+    {
+      "file": "ggml\\src\\ggml-cpu\\moe-iq.h",
+      "sha256": "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4"
+    }
+  ],
+  "cpu_dll_sha256": "7BC86BE0D91C083B088E7B2DA516FD93784822F48EED2798963290AB77C6C7DB",
+  "cuda_dll_sha256": "941E44CE64569042CA73B5FDA0109F8411E9490816CB9F1FF103956FF797857C",
+  "llama_dll_sha256": "5B8A05BD34E3FFAC76FF56E11E88726362AFB6DD0E74DD613C39BD46E9B0B86E",
+  "server_sha256": "8CDE39E7CB520BDDE8A0106AA0DD706A69DBC024F5911C38ACB1C1DA24A39555"
+}

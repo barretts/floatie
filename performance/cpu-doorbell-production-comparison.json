@@ -1,0 +1,45 @@
+﻿{
+    "as_of":  "2026-10-11T04:05:29.5574926-05:00",
+    "before_receipt":  "core8k-mask-lower-bound-production-dflash4-q8-cache6144.json",
+    "after_receipt":  "core8k-cpu-doorbell-production-dflash4-q8-cache6144.json",
+    "same_request":  true,
+    "before_timings":  {
+                           "cache_n":  0,
+                           "prompt_n":  8064,
+                           "prompt_ms":  11959.468,
+                           "prompt_per_token_ms":  1.4830689484126984,
+                           "prompt_per_second":  674.2774845837624,
+                           "predicted_n":  80,
+                           "predicted_ms":  6396.186,
+                           "predicted_per_token_ms":  79.952325,
+                           "predicted_per_second":  12.507453660665904,
+                           "draft_n":  96,
+                           "draft_n_accepted":  54
+                       },
+    "after_timings":  {
+                          "cache_n":  0,
+                          "prompt_n":  8064,
+                          "prompt_ms":  11229.962,
+                          "prompt_per_token_ms":  1.3926044146825396,
+                          "prompt_per_second":  718.0790104187352,
+                          "predicted_n":  80,
+                          "predicted_ms":  5700.684,
+                          "predicted_per_token_ms":  71.25855,
+                          "predicted_per_second":  14.033403710852943,
+                          "draft_n":  96,
+                          "draft_n_accepted":  55
+                      },
+    "prefill_percent_change":  6.4960682858944754365583337100,
+    "generation_percent_change":  12.200325434632044400616774550,
+    "conditions":  "8192 configured context, 8064 prompt tokens, 80 generated tokens, request SHA unchanged, prompt caching disabled, production profiling disabled.",
+    "changed_features":  [
+                             "Window-limited draft feature injection with original chunk boundaries.",
+                             "Mapped CPU completion and weighted result reduction with bounded GPU wait and fallback."
+                         ],
+    "isolated_handoff_comparison":  "cpu-doorbell-comparison.json",
+    "caveats":  [
+                    "One production run per bundle; GPU clocks were not locked.",
+                    "Draft acceptance differs, so these production deltas are cumulative observations rather than isolated effects of one feature.",
+                    "All three checkpoint codes were recalled; 128k and all API features were not verified in these runs."
+                ]
+}

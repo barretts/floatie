@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-10-11T02:56:28.5628854-05:00",
+  "stopped_native_pid": 3804,
+  "backup_directory": "E:\\poolside\\backups\\before-attention-timeline-20261011-025624",
+  "source_hashes": [
+    {
+      "file": "ggml\\src\\ggml-cuda\\moe-hybrid.cu",
+      "sha256": "25D9DA6EAAEE6E51EAAC67DD1F617E5C749914811503114F090C34B97C33D6AE"
+    },
+    {
+      "file": "ggml\\src\\ggml-cuda\\moe-hybrid.cuh",
+      "sha256": "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772"
+    },
+    {
+      "file": "ggml\\src\\ggml-cuda\\fattn.cu",
+      "sha256": "7D85565227A6649BD7196AD10B6F28FA353DB6DAC778DDDD29DBB4E1B5DDBF3C"
+    }
+  ],
+  "build_log": "E:\\poolside\\logs\\attention-timeline-build-20261011-025624.log",
+  "build_status": "complete",
+  "build_exit_code": 0,
+  "cuda_dll_sha256": "B67F08D29DF7788EC217652DDB041594298BA39AA63AB232C9C799069B7CB1E1"
+}

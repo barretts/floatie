@@ -1,0 +1,230 @@
+﻿{
+    "as_of":  "2026-10-11T04:43:25.5246081-05:00",
+    "goal_turn_classification":  "progress",
+    "workload":  {
+                     "prompt_tokens":  8064,
+                     "output_tokens":  80,
+                     "configured_context":  8192,
+                     "request_sha256":  "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+                     "cache_prompt":  false,
+                     "prefill_target_tps":  900,
+                     "generation_target_tps":  30
+                 },
+    "latest_receipt":  "core8k-contiguous-mask-production-dflash4-q8-cache6144.json",
+    "latest_timings":  {
+                           "cache_n":  0,
+                           "prompt_n":  8064,
+                           "prompt_ms":  10403.054,
+                           "prompt_per_token_ms":  1.290061259920635,
+                           "prompt_per_second":  775.1569875538471,
+                           "predicted_n":  80,
+                           "predicted_ms":  5522.063,
+                           "predicted_per_token_ms":  69.0257875,
+                           "predicted_per_second":  14.487339242598283,
+                           "draft_n":  93,
+                           "draft_n_accepted":  54
+                       },
+    "checkpoint_order_correct":  true,
+    "runtime":  {
+                    "native_processes":  [
+                                             {
+                                                 "id":  13580,
+                                                 "path":  "E:\\poolside\\build\\bin\\llama-server.exe",
+                                                 "start_time":  "2026-10-11T04:37:43.9558477-05:00"
+                                             }
+                                         ],
+                    "wrapper_pid":  12664,
+                    "launch_receipt":  "contiguous-mask-production-launch.json",
+                    "health":  {
+                                   "status":  "ok"
+                               },
+                    "model_id":  "laguna-s-2.1-iq3-s",
+                    "cuda_dll_sha256":  "140CC1E7312FF2456D73B79AC160CA362750B6F1024B76102B45E3527FC1DEA1",
+                    "llama_dll_sha256":  "5B8A05BD34E3FFAC76FF56E11E88726362AFB6DD0E74DD613C39BD46E9B0B86E",
+                    "llama_common_dll_sha256":  "F6D0457994F82EAB6C33AE2FFD091C6F1327A0638AB8C3F9A930596453370B58",
+                    "profile":  false,
+                    "timeline":  false,
+                    "cpu_doorbell":  "default enabled",
+                    "input_publication":  "reverted",
+                    "niko_server":  "not launched",
+                    "telemetry_helpers":  "none launched"
+                },
+    "source_integrity":  [
+                             {
+                                 "file":  "ggml/include/ggml.h",
+                                 "staged_sha256":  "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+                                 "deployed_sha256":  "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml.c",
+                                 "staged_sha256":  "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+                                 "deployed_sha256":  "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cpu/CMakeLists.txt",
+                                 "staged_sha256":  "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+                                 "deployed_sha256":  "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cpu/moe.cpp",
+                                 "staged_sha256":  "8D806D616518DF3A34CFC5326D9F03F86B6D8311C0113B8C935CBEECE22CD2FE",
+                                 "deployed_sha256":  "8D806D616518DF3A34CFC5326D9F03F86B6D8311C0113B8C935CBEECE22CD2FE",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cpu/moe-iq.cpp",
+                                 "staged_sha256":  "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+                                 "deployed_sha256":  "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cpu/moe-iq.h",
+                                 "staged_sha256":  "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+                                 "deployed_sha256":  "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/ggml-cuda.cu",
+                                 "staged_sha256":  "1238A6B91AB4860BD353918DA31888334E7E58453C4FB6209D2EE068012CD8C5",
+                                 "deployed_sha256":  "1238A6B91AB4860BD353918DA31888334E7E58453C4FB6209D2EE068012CD8C5",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/moe-hybrid.cu",
+                                 "staged_sha256":  "3191A8F8CFC6D98108AA49B1485D3F5CE871507F533259CCAA180BD4DFCE14F3",
+                                 "deployed_sha256":  "3191A8F8CFC6D98108AA49B1485D3F5CE871507F533259CCAA180BD4DFCE14F3",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/moe-hybrid.cuh",
+                                 "staged_sha256":  "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772",
+                                 "deployed_sha256":  "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/mmq.cu",
+                                 "staged_sha256":  "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+                                 "deployed_sha256":  "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-alloc.c",
+                                 "staged_sha256":  "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+                                 "deployed_sha256":  "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-backend.cpp",
+                                 "staged_sha256":  "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+                                 "deployed_sha256":  "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "src/llama-graph.cpp",
+                                 "staged_sha256":  "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+                                 "deployed_sha256":  "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "src/models/dflash.cpp",
+                                 "staged_sha256":  "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+                                 "deployed_sha256":  "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "common/speculative.cpp",
+                                 "staged_sha256":  "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9",
+                                 "deployed_sha256":  "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/fattn.cu",
+                                 "staged_sha256":  "7D85565227A6649BD7196AD10B6F28FA353DB6DAC778DDDD29DBB4E1B5DDBF3C",
+                                 "deployed_sha256":  "7D85565227A6649BD7196AD10B6F28FA353DB6DAC778DDDD29DBB4E1B5DDBF3C",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/fattn-common.cuh",
+                                 "staged_sha256":  "60D65006A9DD61E47AB4B67CC9C9432430D4B9DA49937D3FD5F50613DFD491E9",
+                                 "deployed_sha256":  "60D65006A9DD61E47AB4B67CC9C9432430D4B9DA49937D3FD5F50613DFD491E9",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/fattn-mma-f16.cuh",
+                                 "staged_sha256":  "35D18179CECC6FB6CF3C0EBAE6B6512AF08342C6336960E2DB72008A5BA2D6D3",
+                                 "deployed_sha256":  "35D18179CECC6FB6CF3C0EBAE6B6512AF08342C6336960E2DB72008A5BA2D6D3",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "src/llama-model.cpp",
+                                 "staged_sha256":  "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB",
+                                 "deployed_sha256":  "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "src/llama-ext.h",
+                                 "staged_sha256":  "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3",
+                                 "deployed_sha256":  "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "src/llama-kv-cache.cpp",
+                                 "staged_sha256":  "062FE7E82FA79841BCC759F68B2A57EF8F57E8089F577DDFDD55D6F79D49CDC7",
+                                 "deployed_sha256":  "062FE7E82FA79841BCC759F68B2A57EF8F57E8089F577DDFDD55D6F79D49CDC7",
+                                 "match":  true
+                             }
+                         ],
+    "retained_changes":  [
+                             "All preceding retained engine and CPU-result doorbell changes remain.",
+                             "Exact contiguous single-sequence causal/standard-window prefill mask fill after validating every query and KV cell; all other masks retain the original generic implementation. Profiling measured 536.233 ms to 27.114 ms."
+                         ],
+    "measured_costs":  {
+                           "mask_comparison":  "contiguous-mask-comparison.json",
+                           "latest_decode_profile":  "input-publication-comparison.json",
+                           "decode_first_16_batches":  {
+                                                           "layer_calls":  752,
+                                                           "target_tokens_per_layer":  76,
+                                                           "cpu_fused_ms":  1628.72,
+                                                           "entry_wait_ms":  240.94,
+                                                           "readback_wait_ms":  930.8,
+                                                           "host_prepare_submit_ms":  267.91,
+                                                           "gpu_cached_ms":  498.91,
+                                                           "gpu_cpu_wait_ms":  1245.39
+                                                       },
+                           "notes":  [
+                                         "CPU/GPU intervals overlap; do not sum them as independent latency.",
+                                         "Readback waiting includes GPU work queued before the transfer.",
+                                         "The mapped CPU-result wait interval includes reduction; it is not pure GPU idle time."
+                                     ]
+                       },
+    "failed_candidate":  {
+                             "comparison":  "input-publication-comparison.json",
+                             "revert_receipt":  "input-publication-revert.json",
+                             "archive":  "candidates/moe-hybrid-input-publication.cu",
+                             "decision":  "reverted",
+                             "reason":  "No isolated handoff speedup. Enabled and disabled equal-size profiling windows have nearly equal combined entry/readback waits, with higher CPU and host time enabled. Overall generation differences include speculative acceptance and different output tokens."
+                         },
+    "production_comparison":  "contiguous-mask-production-comparison.json",
+    "previous_checkpoint":  "checkpoint-core8k-cpu-doorbell.json",
+    "tradeoffs":  [
+                      "Mask acceleration currently excludes wrapped/holey KV layouts and decode batches; those retain correct generic masks.",
+                      "Only the saved 8k checkpoint request was replayed; it does not verify every API/model feature.",
+                      "Performance varies with unlocked clocks and speculative acceptance."
+                  ],
+    "source_corrections":  {
+                               "compact_swa":  "Allocator already computes PAD(min(base, window*sequences+ubatch),256). common_params.swa_full defaults false (common/common.h:571), forwarded by common/common.cpp:1619. Launcher does not pass --swa-full and its parent LLAMA_ARG_SWA_FULL is unset. At future 128k context with current ubatch8192, compact SWA allocation should be 8704 cells. No 128k runtime measurement in this turn.",
+                               "graph_reuse":  "Server reports graph reuse; full target CUDA capture is explicitly disabled at ggml-cuda.cu:2470 for MOE_HYBRID. The reuse log does not prove full target CUDA graph replay."
+                           },
+    "next_action":  "Measure host submission and GPU execution between hybrid MoE nodes to distinguish ordinary CUDA operator launch overhead from dense/attention compute in the remaining readback wait. Compare with Niko graph scheduling; consider graph capture for CUDA spans between CPU expert handoffs if the measured launch cost is material. Do not retry the failed mapped input publication unchanged.",
+    "pending_clock_measurement":  "No administrator clock hold, UAC helper, or manual clock lock was launched. The optional earlier question remains unanswered.",
+    "completion":  {
+                       "goal_status":  "active",
+                       "target_8k_met":  false,
+                       "required_128k_status":  "unverified; wait for 8k speed gate",
+                       "remaining":  "Reach 900/30 at configured 8k, preserve required model/API features, then near-full 128k performance and correctness."
+                   },
+    "stability":  "No other desktop apps or GPU driver were stopped/reset. Prior window disappearance remains unexplained."
+}

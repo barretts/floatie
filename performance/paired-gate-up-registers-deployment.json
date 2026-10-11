@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-10-11T06:31:22.3553820-05:00",
+  "stopped_native_pids": [
+    11840
+  ],
+  "backup_directory": "E:\\poolside\\backups\\before-paired-gate-up-registers-20261011-063122",
+  "build_log": "E:\\poolside\\logs\\paired-gate-up-registers-build-20261011-063122.log",
+  "build_status": "complete",
+  "source_sha256": {
+    "moe.cpp": "5543030D4B018D977936AE29225A79505AD44B1E319AC486D706402C238E9E32",
+    "moe-iq.cpp": "C5FFA9FEB04B87FC31569422752DF98259ABBBC32E871B970CCC94B064E63797",
+    "moe-iq.h": "33175BD7E3CFFEE0AE93785B88E3B7B62AA50B23425332D86589592BB6B0D634"
+  },
+  "scope": "Revised paired IQ2 singleton kernel: shared activation vectors use VPSIGNB, shorter activation lifetimes and two exact integer accumulators reduce vector register pressure. The standard floating-point accumulation and final reduction remain.",
+  "production_restore_receipt": "paired-gate-up-deployment.json",
+  "build_exit_code": 0,
+  "cpu_dll_sha256": "A75954AB51A93ABCE005C9A9D260CF67634F73C67DA017D959195D52CDBA58CC",
+  "cuda_dll_sha256": "F549F69B335A506B252E4CC00F8A36BF5A99553809C7F0F5999BE5BD0ADDE77A"
+}

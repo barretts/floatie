@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-10-11T08:11:27.5619809-05:00",
+  "stopped_native_pids": [
+    2920
+  ],
+  "original_backup_directory": "E:\\poolside\\backups\\before-budgeted-admission-20261011-073614",
+  "build_log": "E:\\poolside\\logs\\budgeted-admission-default-build-20261011-081124.log",
+  "build_status": "complete",
+  "default_budgeted_admission": true,
+  "source_sha256": "AF3E081FB5C00FA2135AE0858895074F2937D17FB69FAB89D6B70E5271246A5B",
+  "retained_evidence": [
+    "budgeted-admission-profile-comparison.json",
+    "budgeted-admission-production-comparison.json"
+  ],
+  "build_exit_code": 0,
+  "cpu_dll_sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E",
+  "cuda_dll_sha256": "465D152C90671D4CF70D9DCFD0B99A5135B7DB7D71691CFADBFEC45B68006EC2",
+  "llama_dll_sha256": "03AF4A1A15ABEA96C088BDB06622EFDFE905ED853B4855A2A7CBDB5658DCF718"
+}

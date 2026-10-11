@@ -1,0 +1,5 @@
+{
+  "backup": "E:\\poolside\\backups\\before-gpu-spans-20261010-234432",
+  "source_sha256": "C389B6CB6F4300F513C451F9CF68C833B98D0E571A00EBEB53FF919ED7020452",
+  "change": "Use the existing CUDA graph implementation for GPU-only decode spans around hybrid expert calls."
+}

@@ -1,0 +1,56 @@
+{
+  "gpu_slot_packing": {
+    "retained": false,
+    "candidate_source": "candidates/moe-hybrid-compact-decode-slots.cu",
+    "source_sha256": "5DB0AB2C6A088B9882854DECE293D9B74AF81D08895BF43C10042B87C6F9D0CB",
+    "observed_gpu_padding_reduction_percent": 67.7,
+    "observed_gpu_cached_interval_reduction_percent": 23.0,
+    "end_to_end_gain_demonstrated": false,
+    "runs": [
+      {
+        "receipt": "core8k-compact-decode-slots-dflash4-q8-cache6144.json",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 8064,
+          "prompt_ms": 15780.058,
+          "prompt_per_token_ms": 1.9568524305555557,
+          "prompt_per_second": 511.02473767840394,
+          "predicted_n": 80,
+          "predicted_ms": 6857.072,
+          "predicted_per_token_ms": 85.71340000000001,
+          "predicted_per_second": 11.666787223467976,
+          "draft_n": 96,
+          "draft_n_accepted": 54
+        },
+        "checkpoint_order_correct": true
+      },
+      {
+        "receipt": "core8k-compact-decode-slots-warm-repeat.json",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 8064,
+          "prompt_ms": 14986.141,
+          "prompt_per_token_ms": 1.858400421626984,
+          "prompt_per_second": 538.0971659081548,
+          "predicted_n": 80,
+          "predicted_ms": 6680.458,
+          "predicted_per_token_ms": 83.505725,
+          "predicted_per_second": 11.975226848219089,
+          "draft_n": 100,
+          "draft_n_accepted": 53
+        },
+        "checkpoint_order_correct": true
+      }
+    ],
+    "comparison_limits": "Warm/cold runs and dynamic GPU clocks differ; the lower GPU interval did not establish an end-to-end throughput improvement."
+  },
+  "cache_capacity": {
+    "observed_selections": 35720,
+    "actual_hits": 17056,
+    "best_fixed_capacity_hits": 24606,
+    "greedy_global_capacity_hits": 24779,
+    "budget_mib": 8192,
+    "note": "Fixed/global estimates use observed past routing and do not guarantee future hits."
+  },
+  "next_change": "Cost-aware admission after each verification batch; original per-layer capacities and one-admission limit retained."
+}

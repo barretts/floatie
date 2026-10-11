@@ -153,3 +153,22 @@ a.out.*
 
 AGENTS.local.md
 .pi/SYSTEM.md
+
+# Floatie portable entry points and local runtime data
+!/build.ps1
+!/Start-Floatie-8k.bat
+!/Start-Floatie-128k.bat
+/cache/
+/logs/
+/temp/
+/credentials/
+/secrets/
+/.aws/
+/.azure/
+/.ssh/
+/.config/gh/
+/.env
+/.env.*
+
+# Historical evidence logs; live server logs remain excluded above
+!/performance/**/*.log

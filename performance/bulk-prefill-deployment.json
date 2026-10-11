@@ -1,0 +1,10 @@
+{
+  "backup": "E:\\poolside\\backups\\before-bulk-prefill-20261010-235949",
+  "status": "deployed; awaiting compilation and live inference",
+  "source_sha256": {
+    "ggml\\src\\ggml-cuda\\ggml-cuda.cu": "24CB571CACD897F8D165AB872F9D4608C4053275DAA26AD78252C902589B3F8D",
+    "ggml\\src\\ggml-cuda\\moe-hybrid.cu": "95B83DA3845996BB8FAE198489FD46BF2470C32CC2C8AB2915740876E4156B38",
+    "ggml\\src\\ggml-cuda\\moe-hybrid.cuh": "85FF02532E328526C280E892EC1BAB8B90849BBBE6F28AE6B777FEEC61680259"
+  },
+  "change": "Remove unhelpful GPU span capture; bulk prefill atlas with next-layer upload overlap and four GPU gather banks."
+}

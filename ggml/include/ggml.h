@@ -586,6 +586,7 @@ extern "C" {
         GGML_OP_OPT_STEP_SGD,
 
         GGML_OP_GLU,
+        GGML_OP_MOE_HYBRID,
 
         GGML_OP_COUNT,
     };
@@ -1439,6 +1440,16 @@ extern "C" {
             enum ggml_op_hint    hint);
 
     // indirect matrix multiplication
+    // Weighted SwiGLU expert sum [embedding, tokens]. CUDA backend only.
+    GGML_API struct ggml_tensor * ggml_moe_hybrid(
+            struct ggml_context * ctx,
+            struct ggml_tensor * gate,
+            struct ggml_tensor * up,
+            struct ggml_tensor * down,
+            struct ggml_tensor * x,
+            struct ggml_tensor * ids,
+            struct ggml_tensor * routing_weights);
+
     GGML_API struct ggml_tensor * ggml_mul_mat_id(
             struct ggml_context * ctx,
             struct ggml_tensor  * as,

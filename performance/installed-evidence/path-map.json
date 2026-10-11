@@ -1,0 +1,25 @@
+{
+  "scope": "Selected historical evidence cited by the supplied records; absolute original paths remain in unchanged JSON receipts. External research originals, target/draft weights, runtime caches and binaries are not included.",
+  "paths": {
+    "E:/poolside/README.md": "performance/installed-evidence/README.md",
+    "E:/poolside/logs/adaptive-cache5120-20261010-184440.stderr.log": "performance/installed-evidence/logs/adaptive-cache5120-20261010-184440.stderr.log",
+    "E:/poolside/logs/build-20261010-183317.log": "performance/installed-evidence/logs/build-20261010-183317.log",
+    "E:/poolside/logs/core8k-budgeted-native-20261010-231807.profiler.log": "performance/installed-evidence/logs/core8k-budgeted-native-20261010-231807.profiler.log",
+    "E:/poolside/logs/core8k-dflash-window-injection-production-20261011-032952.stderr.log": "performance/installed-evidence/logs/core8k-dflash-window-injection-production-20261011-032952.stderr.log",
+    "E:/poolside/logs/core8k-dflash4-q8-20261010-230719.stderr.log": "performance/installed-evidence/logs/core8k-dflash4-q8-20261010-230719.stderr.log",
+    "E:/poolside/logs/core8k-nodraft-20261010-225936.stderr.log": "performance/installed-evidence/logs/core8k-nodraft-20261010-225936.stderr.log",
+    "E:/poolside/logs/core8k-phase-memory-20261011-001937.stderr.log": "performance/installed-evidence/logs/core8k-phase-memory-20261011-001937.stderr.log",
+    "E:/poolside/logs/laguna-20261010-175153.log": "performance/installed-evidence/logs/laguna-20261010-175153.log",
+    "E:/poolside/logs/laguna-20261010-182702.log": "performance/installed-evidence/logs/laguna-20261010-182702.log",
+    "E:/poolside/logs/laguna-20261011-163236.log": "performance/installed-evidence/logs/laguna-20261011-163236.log",
+    "E:/poolside/logs/launch-before-tuning-20261010-182545.ps1": "performance/installed-evidence/logs/launch-before-tuning-20261010-182545.ps1",
+    "E:/poolside/logs/nodraft-b2048-20261010-183437.stderr.log": "performance/installed-evidence/logs/nodraft-b2048-20261010-183437.stderr.log",
+    "E:/poolside/logs/nodraft-short-20261010-182853.stderr.log": "performance/installed-evidence/logs/nodraft-short-20261010-182853.stderr.log",
+    "E:/poolside/logs/pinned-cache5120-20261010-184227.stderr.log": "performance/installed-evidence/logs/pinned-cache5120-20261010-184227.stderr.log",
+    "E:/poolside/logs/submitted-cache5120-20261010-185327.stderr.log": "performance/installed-evidence/logs/submitted-cache5120-20261010-185327.stderr.log",
+    "E:/poolside/model-layout.json": "performance/installed-evidence/model-layout.json",
+    "E:/poolside/models/Laguna-S-2.1-DFlash-Q8_0-swa512.gguf.metadata-repair.json": "performance/installed-evidence/models/Laguna-S-2.1-DFlash-Q8_0-swa512.gguf.metadata-repair.json",
+    "E:/poolside/prepared-state.json": "performance/installed-evidence/prepared-state.json",
+    "E:/poolside/source-manifest.json": "performance/installed-evidence/source-manifest.json"
+  }
+}

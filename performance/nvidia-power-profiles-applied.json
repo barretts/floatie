@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-11T06:10:23.103179+00:00",
+  "global": {
+    "name": "Base Profile",
+    "applications": 0,
+    "predefined": true,
+    "power_status": -160,
+    "power_error": "NVAPI_SETTING_NOT_FOUND"
+  },
+  "applications": [
+    {
+      "application": "E:\\poolside\\build\\bin\\llama-server.exe",
+      "find_status": 0,
+      "matched_application": "e:/poolside/build/bin/llama-server.exe",
+      "profile": {
+        "name": "Poolside Laguna local",
+        "applications": 1,
+        "predefined": false,
+        "power_status": 0,
+        "power_value": 1,
+        "power_location": 0,
+        "power_predefined": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "as_of": "2026-10-11T07:36:58.456469+00:00",
+  "workload": {
+    "configured_context": 8192,
+    "prompt_tokens": 8064,
+    "output_tokens": 80,
+    "cache_prompt": false,
+    "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c"
+  },
+  "production_baseline_receipt": "core8k-production-baseline-dflash4-q8-cache6144.json",
+  "production_baseline_timings": {
+    "prompt_per_second": 509.6622842704593,
+    "predicted_per_second": 12.215241720547334,
+    "prompt_ms": 15822.242,
+    "predicted_ms": 6549.195,
+    "draft_n": 96,
+    "draft_n_accepted": 55
+  },
+  "latest_trace_receipt": "core8k-transfer-timeline-dflash4-q8-cache6144.json",
+  "latest_trace_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 16021.93,
+    "prompt_per_token_ms": 1.9868464781746031,
+    "prompt_per_second": 503.3101505249367,
+    "predicted_n": 80,
+    "predicted_ms": 6403.077,
+    "predicted_per_token_ms": 80.03846250000001,
+    "predicted_per_second": 12.493993122369137,
+    "draft_n": 92,
+    "draft_n_accepted": 55
+  },
+  "checkpoint_order_correct": true,
+  "prefill_timeline": {
+    "epoch": 1,
+    "event_count": 230,
+    "span_ms": 11546.474,
+    "copy_union_ms": 6768.127999999995,
+    "expert_union_ms": 4070.4329999999964,
+    "copy_expert_overlap_ms": 81.82400000000052,
+    "copy_without_measured_expert_ms": 6686.303999999995,
+    "expert_without_copy_ms": 3988.608999999996,
+    "outside_both_interval_ms": 789.7370000000092
+  },
+  "evidence": "core8k-transfer-timeline-analysis.json",
+  "runtime": {
+    "native_pid": 27940,
+    "wrapper_pid": 15988,
+    "server_executable": "E:\\poolside\\build\\bin\\llama-server.exe",
+    "source_sha256": "1E32271CBACD3ACABA0E174989F1578D0C14F9819EBD60E5CADC36BB8FA29B32",
+    "cuda_dll_sha256": "183E597489E0C44BB6F719BF3C5A948B7A25DB1A1D041A5CDC4A3A7383A33633",
+    "launch_receipt": "after-transfer-timeline-production-launch.json",
+    "profiling_enabled": false,
+    "timeline_enabled": false,
+    "api": {
+      "health": {
+        "status": "ok"
+      },
+      "model_ids": [
+        "laguna-s-2.1-iq3-s"
+      ]
+    }
+  },
+  "source_integrity": [
+    {
+      "file": "ggml/include/ggml.h",
+      "staged_sha256": "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+      "deployed_sha256": "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml.c",
+      "staged_sha256": "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+      "deployed_sha256": "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/CMakeLists.txt",
+      "staged_sha256": "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+      "deployed_sha256": "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/moe.cpp",
+      "staged_sha256": "8D806D616518DF3A34CFC5326D9F03F86B6D8311C0113B8C935CBEECE22CD2FE",
+      "deployed_sha256": "8D806D616518DF3A34CFC5326D9F03F86B6D8311C0113B8C935CBEECE22CD2FE",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/moe-iq.cpp",
+      "staged_sha256": "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+      "deployed_sha256": "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/moe-iq.h",
+      "staged_sha256": "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+      "deployed_sha256": "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/ggml-cuda.cu",
+      "staged_sha256": "1238A6B91AB4860BD353918DA31888334E7E58453C4FB6209D2EE068012CD8C5",
+      "deployed_sha256": "1238A6B91AB4860BD353918DA31888334E7E58453C4FB6209D2EE068012CD8C5",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/moe-hybrid.cu",
+      "staged_sha256": "1E32271CBACD3ACABA0E174989F1578D0C14F9819EBD60E5CADC36BB8FA29B32",
+      "deployed_sha256": "1E32271CBACD3ACABA0E174989F1578D0C14F9819EBD60E5CADC36BB8FA29B32",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/moe-hybrid.cuh",
+      "staged_sha256": "C1053A8F1EBF17D58E71B9D490179CEF9011A7D4CB0968E8A535A5387D027BC5",
+      "deployed_sha256": "C1053A8F1EBF17D58E71B9D490179CEF9011A7D4CB0968E8A535A5387D027BC5",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/mmq.cu",
+      "staged_sha256": "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+      "deployed_sha256": "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-alloc.c",
+      "staged_sha256": "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+      "deployed_sha256": "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-backend.cpp",
+      "staged_sha256": "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+      "deployed_sha256": "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+      "match": true
+    },
+    {
+      "file": "src/llama-graph.cpp",
+      "staged_sha256": "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+      "deployed_sha256": "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+      "match": true
+    },
+    {
+      "file": "src/models/dflash.cpp",
+      "staged_sha256": "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+      "deployed_sha256": "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+      "match": true
+    },
+    {
+      "file": "common/speculative.cpp",
+      "staged_sha256": "4D3BE7625EB35D8C2FD2BE849E1FFED056D6D9B5A89AF6240DD54AFD855F0B8B",
+      "deployed_sha256": "4D3BE7625EB35D8C2FD2BE849E1FFED056D6D9B5A89AF6240DD54AFD855F0B8B",
+      "match": true
+    }
+  ],
+  "archived_measurement_source": "candidates/moe-hybrid-transfer-timeline.cu",
+  "measured_finding": "Weight copy intervals and expert compute intervals overlap by only 81.824 ms during the 8k prefill. This does not measure overlap with other GPU operations.",
+  "next_action": "Locate the stream-ordering or allocation barrier that serializes prefill weight transfers with expert execution, remove it, and compare the same saved 8k request. Then address measured decode CPU/GPU waits. Keep all ten routed experts.",
+  "hypotheses": [
+    "Lazy per-layer device allocations or internal temporary allocation may impose stream synchronization; not established as the cause yet.",
+    "Windows transfer submission may impose additional synchronization; unmeasured."
+  ],
+  "pending_clock_measurement": "User UAC availability answer pending; no direct GPU clock hold applied.",
+  "completion": {
+    "prefill_target_tps": 900,
+    "generation_target_tps": 30,
+    "targets_met": false,
+    "current_128k_performance_verified": false
+  },
+  "stability": "User reported app windows closed while desktop stayed visible. Prior event logs did not identify the cause. This continuation stopped only explicitly verified Laguna native server processes."
+}

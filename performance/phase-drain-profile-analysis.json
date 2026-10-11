@@ -1,0 +1,45 @@
+﻿{
+    "timestamp":  "2026-10-11T06:20:15.5698261-05:00",
+    "request_sha256":  "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+    "timings":  {
+                    "cache_n":  0,
+                    "prompt_n":  8064,
+                    "prompt_ms":  10553.635,
+                    "prompt_per_token_ms":  1.3087344990079366,
+                    "prompt_per_second":  764.0969201606839,
+                    "predicted_n":  80,
+                    "predicted_ms":  5042.786,
+                    "predicted_per_token_ms":  63.034825,
+                    "predicted_per_second":  15.864246470106009,
+                    "draft_n":  89,
+                    "draft_n_accepted":  55
+                },
+    "checkpoint_order_correct":  true,
+    "drain_profile":  {
+                          "gate_up_wall_ms":  1033.78,
+                          "gate_up_longest_drain_ms":  1018.12,
+                          "gate_up_drain_span_ms":  1031.77,
+                          "down_quant_wall_ms":  19.88,
+                          "down_quant_longest_drain_ms":  17.92,
+                          "down_quant_drain_span_ms":  18.66,
+                          "down_wall_ms":  643.64,
+                          "down_longest_drain_ms":  642.22,
+                          "down_drain_span_ms":  642.41
+                      },
+    "total_phase_wall_ms":  1697.3000000000002,
+    "total_active_drain_span_ms":  1692.8400000000001,
+    "outside_active_drain_ms":  4.4600000000000364,
+    "outside_active_drain_percent":  0.26277028221292853,
+    "gpu_profile_lines":  [
+                              "0.35.816.355 I CUDA hybrid MoE CPU profile: calls=752 jobs=18674 groups_1_2_3_4=(10765,2769,597,145) scheduled_weight_MiB=51095.74 setup_ms=61.23 gate_up_ms=1034.21 down_quant_ms=20.27 down_ms=644.43",
+                              "0.35.816.381 I CUDA hybrid MoE CPU placement: samples=1504 worker_core_samples=1133 reserved_core_samples=371 caller_thread_id=27636 other_thread_samples=0 worker_affinity_successes=15 worker_affinity_failures=0",
+                              "0.35.816.593 I CUDA hybrid launch profile: calls=16 target_tokens=76 hybrid_nodes=752 ordinary_dispatches=23776 fused_nodes=12112 host_hybrid_ms=2904.93 host_outside_hybrid_ms=408.16",
+                              "0.35.834.546 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=76.0 cache_hits=17046 cache_misses=18674 h2d_weight_MiB=670.50 cpu_fused_ms=1761.21 entry_event_wait_ms=227.10 readback_wait_ms=595.51 host_prepare_submit_ms=289.20 gpu_cached_interval_ms=508.10 gpu_streamed_interval_ms=0.00 gpu_weight_copy_interval_ms=0.00 gpu_cache_refresh_interval_ms=129.77 gpu_attention_interval_ms=223.89 gpu_cpu_wait_interval_ms=1343.30 gpu_between_moe_readback_interval_ms=770.76"
+                          ],
+    "decision":  "Worker wakeup and phase boundary overhead are too small to be the main optimization target. Focus on CPU matrix kernels, beginning with singleton gate/up calculations.",
+    "limitations":  [
+                        "Active drain duration includes atomic task acquisition, matrix decoding/dot products, activation arithmetic and memory stalls. It is not a pure floating-point arithmetic measurement.",
+                        "Per-phase longest worker time and total active span are parallel intervals and must not be summed as independent latency.",
+                        "CPU placement and speculative acceptance vary across runs. This is a bottleneck measurement, not a demonstrated speed improvement."
+                    ]
+}

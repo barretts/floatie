@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-10-11T04:18:15.0020522-05:00",
+  "wrapper_pid": 17516,
+  "stdout_log": "E:\\poolside\\logs\\core8k-contiguous-mask-20261011-041814.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-contiguous-mask-20261011-041814.stderr.log",
+  "mask_source_sha256": "062FE7E82FA79841BCC759F68B2A57EF8F57E8089F577DDFDD55D6F79D49CDC7",
+  "llama_dll_sha256": "5B8A05BD34E3FFAC76FF56E11E88726362AFB6DD0E74DD613C39BD46E9B0B86E",
+  "cuda_dll_sha256": "140CC1E7312FF2456D73B79AC160CA362750B6F1024B76102B45E3527FC1DEA1",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "profile": true,
+  "timeline": false,
+  "verbosity": 4,
+  "cpu_doorbell": "engine default enabled",
+  "pin_experts": true,
+  "adaptive_cache": true
+}

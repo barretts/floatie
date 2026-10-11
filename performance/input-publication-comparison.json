@@ -1,0 +1,78 @@
+﻿{
+    "as_of":  "2026-10-11T04:36:48.9945696-05:00",
+    "workload":  "Saved 8064-token prompt, 80 generated tokens, fresh server, ctx8192/cache6144/batch8192/DFlash4/q8",
+    "request_sha256":  "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+    "cuda_dll_sha256":  "4FD758684E079929B7D4DE48A500D19DED657AE69CB04B7717FC98405A6E445B",
+    "enabled_timings":  {
+                            "cache_n":  0,
+                            "prompt_n":  8064,
+                            "prompt_ms":  10739.149,
+                            "prompt_per_token_ms":  1.3317397073412698,
+                            "prompt_per_second":  750.8974873148701,
+                            "predicted_n":  80,
+                            "predicted_ms":  5319.443,
+                            "predicted_per_token_ms":  66.4930375,
+                            "predicted_per_second":  15.03916857460452,
+                            "draft_n":  88,
+                            "draft_n_accepted":  57
+                        },
+    "disabled_timings":  {
+                             "cache_n":  0,
+                             "prompt_n":  8064,
+                             "prompt_ms":  10421.541,
+                             "prompt_per_token_ms":  1.2923537946428572,
+                             "prompt_per_second":  773.7819195836778,
+                             "predicted_n":  80,
+                             "predicted_ms":  5601.427,
+                             "predicted_per_token_ms":  70.0178375,
+                             "predicted_per_second":  14.282074906983524,
+                             "draft_n":  93,
+                             "draft_n_accepted":  54
+                         },
+    "enabled_checkpoint_order_correct":  true,
+    "disabled_checkpoint_order_correct":  true,
+    "output_tokens_identical":  false,
+    "decode_profile_first_16_batches":  {
+                                            "enabled":  {
+                                                            "layer_calls":  752,
+                                                            "target_tokens_per_layer":  76,
+                                                            "cache_hits":  17057,
+                                                            "cache_misses":  18663,
+                                                            "cpu_fused_ms":  1765.59,
+                                                            "entry_event_wait_ms":  0,
+                                                            "readback_wait_ms":  1175.48,
+                                                            "host_prepare_submit_ms":  307.23,
+                                                            "gpu_cached_interval_ms":  490.87,
+                                                            "gpu_streamed_interval_ms":  0,
+                                                            "gpu_weight_copy_interval_ms":  0,
+                                                            "gpu_cache_refresh_interval_ms":  129.31,
+                                                            "gpu_attention_interval_ms":  0,
+                                                            "gpu_cpu_wait_interval_ms":  1373.22,
+                                                            "h2d_weight_MiB":  670.5
+                                                        },
+                                            "disabled":  {
+                                                             "layer_calls":  752,
+                                                             "target_tokens_per_layer":  76,
+                                                             "cache_hits":  17169,
+                                                             "cache_misses":  18551,
+                                                             "cpu_fused_ms":  1628.72,
+                                                             "entry_event_wait_ms":  240.94,
+                                                             "readback_wait_ms":  930.8,
+                                                             "host_prepare_submit_ms":  267.91,
+                                                             "gpu_cached_interval_ms":  498.91,
+                                                             "gpu_streamed_interval_ms":  0,
+                                                             "gpu_weight_copy_interval_ms":  0,
+                                                             "gpu_cache_refresh_interval_ms":  135.01,
+                                                             "gpu_attention_interval_ms":  0,
+                                                             "gpu_cpu_wait_interval_ms":  1245.39,
+                                                             "h2d_weight_MiB":  670.5
+                                                         }
+                                        },
+    "decision":  "revert",
+    "reason":  "Aggregate generation differs with speculative acceptance and output tokens. For equal 752 layer calls and 76 target tokens per layer, enabled combined entry/readback waiting is 1175.48 ms versus 1171.74 ms disabled, with higher CPU and host preparation time. No isolated gain established.",
+    "caveats":  [
+                    "One live run per setting, unlocked clocks, and different expert cache trajectories.",
+                    "GPU-to-CPU waiting includes preceding attention and dense GPU work, not just data transfer.",
+                    "Checkpoint recall does not establish every required model/API feature."
+                ]
+}

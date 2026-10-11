@@ -9,6 +9,7 @@
 #include <cassert>
 #include <cmath>
 #include <cstring>
+#include <cstdlib>
 #include <limits>
 #include <map>
 #include <stdexcept>
@@ -1528,6 +1529,53 @@ struct args_set_input_kq_mask {
     int64_t n_tps;
 };
 
+template<typename T>
+static bool set_input_kq_mask_contiguous(const args_set_input_kq_mask & args, T * data, bool causal_attn) {
+    const auto & ubatch = args.ubatch;
+    if (!causal_attn || args.n_stream != 1 || args.n_kv <= 0 || args.n_tps <= 32 || args.hparams.use_alibi ||
+            ubatch->is_pos_2d() ||
+            (args.swa_type != LLAMA_SWA_TYPE_NONE && args.swa_type != LLAMA_SWA_TYPE_STANDARD)) {
+        return false;
+    }
+    const llama_seq_id seq_id = ubatch->seq_id[0][0];
+    for (uint32_t i = 0; i < ubatch->n_tokens; ++i) {
+        if (ubatch->n_seq_id[i] != 1 || ubatch->seq_id[i][0] != seq_id || ubatch->pos[i] < 0) {
+            return false;
+        }
+    }
+    const auto & cells = args.v_cells.at(args.seq_to_stream[seq_id]);
+    if (args.n_kv > cells.size()) {
+        return false;
+    }
+    int64_t n_valid = 0;
+    const int64_t pos_first = cells.is_empty(0) ? 0 : cells.pos_get(0);
+    while (n_valid < args.n_kv && !cells.is_empty(n_valid)) {
+        if (!cells.seq_has(n_valid, seq_id) || int64_t(cells.pos_get(n_valid)) != pos_first + n_valid) {
+            return false;
+        }
+        ++n_valid;
+    }
+    for (int64_t j = n_valid; j < args.n_kv; ++j) {
+        if (!cells.is_empty(j)) {
+            return false;
+        }
+    }
+
+    const T mask_keep = llama_cast<T>(0.0f);
+    const T mask_drop = llama_cast<T>(-INFINITY);
+    for (uint32_t i = 0; i < ubatch->n_tokens; ++i) {
+        const int64_t pos = int64_t(ubatch->pos[i]) - pos_first;
+        const int64_t hi = std::clamp<int64_t>(pos + 1, 0, n_valid);
+        const int64_t lo = args.swa_type == LLAMA_SWA_TYPE_STANDARD ?
+                std::clamp<int64_t>(pos - int64_t(args.n_swa) + 1, 0, hi) : 0;
+        T * row = data + args.n_kv * i;
+        std::fill(row, row + lo, mask_drop);
+        std::fill(row + lo, row + hi, mask_keep);
+        std::fill(row + hi, row + args.n_kv, mask_drop);
+    }
+    return true;
+}
+
 template<typename T, bool causal, bool swa, bool is_2d, bool alibi>
 static void set_input_kq_mask_impl(const args_set_input_kq_mask & args, T * data) {
   //const auto & hparams = args.hparams;
@@ -1729,7 +1777,12 @@ void llama_kv_cache::set_input_kq_mask(ggml_tensor * dst, const llama_ubatch * u
     // n_tps == n_tokens_per_stream
     const int64_t n_tps = n_tokens/n_stream;
 
-    //const int64_t t_start = ggml_time_us();
+    static const bool profile_masks = [] {
+        const char * value = std::getenv("GGML_CUDA_MOE_PROFILE");
+        return value && std::atoi(value) != 0;
+    }();
+    const bool measure = profile_masks && n_tokens > 32;
+    const int64_t t_start = measure ? ggml_time_us() : 0;
 
     const args_set_input_kq_mask args = {
         /*.hparams          =*/ hparams,
@@ -1743,15 +1796,26 @@ void llama_kv_cache::set_input_kq_mask(ggml_tensor * dst, const llama_ubatch * u
         /*.n_tps            =*/ n_tps,
     };
 
+    bool contiguous = false;
     if (dst->type == GGML_TYPE_F16) {
-        set_input_kq_mask_impl<ggml_fp16_t>(args, (ggml_fp16_t *) dst->data, causal_attn);
+        auto * data = (ggml_fp16_t *) dst->data;
+        contiguous = set_input_kq_mask_contiguous(args, data, causal_attn);
+        if (!contiguous) {
+            set_input_kq_mask_impl<ggml_fp16_t>(args, data, causal_attn);
+        }
     } else {
-        set_input_kq_mask_impl<float>(args, (float *) dst->data, causal_attn);
+        auto * data = (float *) dst->data;
+        contiguous = set_input_kq_mask_contiguous(args, data, causal_attn);
+        if (!contiguous) {
+            set_input_kq_mask_impl<float>(args, data, causal_attn);
+        }
     }
 
-    //const int64_t t_end = ggml_time_us();
-
-    //LLAMA_LOG_ERROR("%s: kq mask time: %0.3f ms\n", __func__, (t_end - t_start)/1000.0);
+    if (measure) {
+        LLAMA_LOG_INFO("KV mask profile: tokens=%u cells=%lld window=%u type=%s fill_ms=%.3f path=%s\n",
+                n_tokens, (long long) n_kv, n_swa, ggml_type_name(dst->type),
+                (ggml_time_us() - t_start) / 1000.0, contiguous ? "contiguous" : "generic");
+    }
 }
 
 void llama_kv_cache::set_input_pos_bucket(ggml_tensor * dst, const llama_ubatch * ubatch) const {

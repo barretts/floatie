@@ -1,0 +1,95 @@
+{
+  "timestamp": "2026-10-11T14:16:03.165276-05:00",
+  "expert": "expert-performance-knuth",
+  "goal_status": "active",
+  "objective": "Laguna S 2.1 Q3 local API, 900 tok/s prefill and 30 tok/s generation; 8k performance gate before near-full 128k.",
+  "Metric": {
+    "latest_receipt": "performance/core8k-after-research-production-dflash4-q8-cache6144.json",
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 8064,
+      "prompt_ms": 10605.158,
+      "prompt_per_token_ms": 1.315123759920635,
+      "prompt_per_second": 760.3847109114264,
+      "predicted_n": 80,
+      "predicted_ms": 5383.023,
+      "predicted_per_token_ms": 67.28778750000001,
+      "predicted_per_second": 14.861537838497068,
+      "draft_n": 101,
+      "draft_n_accepted": 53
+    },
+    "checkpoint_order_correct": true,
+    "targets_met": false
+  },
+  "Bottleneck": {
+    "cpu_gate_up": "Baseline control profile: 929.31ms in the first752 layer calls; four-output-row candidate:1072.63ms. Counts differ slightly with adaptive admission; this is not an isolated kernel microbenchmark.",
+    "cache": "Largest new cache reduced CPU work about5% but did not improve end-to-end generation. Least-Stale shared-cache collision mechanism is already excluded by per-layer local cache ownership.",
+    "scope": "Remaining speed gap is not an unimplemented UI or missing flag; existing cache/batching/overlap/attention mechanisms are present."
+  },
+  "OptimizationPlan": {
+    "next_concrete_change": "Port the actual lossless IQ2_S R4 packed layout and its AVX2 kernel. Preserve original CPU/GPU GGUF weights and route/math, use a model-owned CPU-only mirror prepared before requests, and reuse the existing request/probe for a single on/off comparison.",
+    "why_distinct": "The rejected candidate gathered fields from four original rows at runtime. The published R4 kernel expects interleaved fields loaded together. The earlier rejected144-byte expanded cache increases traffic; R4 stays82 bytes per original256 weights.",
+    "source": "https://github.com/ikawrakow/ik_llama.cpp/blob/89bba35c8841618502b2be8273fb5265b405aca1/ggml/src/iqk/iqk_gemm_iquants.cpp#L1396",
+    "local_source_receipt": "performance/research-20261011/ik-source-audit/source-receipt.json",
+    "lifecycle_reference": [
+      "performance/candidates/rejected-iq2-cache-ggml-src-ggml-cpu-moe.cpp",
+      "performance/candidates/rejected-iq2-cache-src-llama-model.cpp",
+      "performance/candidates/rejected-iq2-cache-ggml-include-ggml-cpu-moe.h",
+      "performance/candidates/rejected-iq2-cache-src-CMakeLists.txt"
+    ],
+    "required_changes": [
+      "Packed328-byte block for four original82-byte IQ2_S blocks, no dequantization or requantization.",
+      "Preparation after immutable host tensor load with model-owned handles, registry lifetime validation and24GiB physical RAM reserve.",
+      "CPU kernel dispatch for singleton and repeated-token groups; unsupported or missing mirrors keep the original standard/grouped paths.",
+      "Only the saved8064-token request and existing performance_probe.py; no new tests or settings sweeps.",
+      "Adopt only after measured speed gain and existing checkpoint recall; otherwise archive and restore."
+    ]
+  },
+  "Tradeoffs": {
+    "expected_additional_mirror_bytes": 23731372032,
+    "expected_additional_mirror_gib": 22.1015625,
+    "formula": "46IQ2 routed layers *2gate/up tensors *256experts *1024rows *12blocks *82bytes =22.1015625GiB, plus small metadata.",
+    "current_free_ram_gib": 65.077,
+    "startup_cost": "Packing and RAM initialization move before requests; measure and report startup time separately.",
+    "floating_math": "Weight encoding preserves quantized values; reduction ordering may still change greedy text. No broad quality equivalence claim from recall alone.",
+    "unproven": "No speedup yet established for persistent R4 packing."
+  },
+  "Verification": {
+    "active_state": "performance/research-20261011-active-state.json",
+    "staged_source_count": 24,
+    "verified_binary_count": 12,
+    "api_health": {
+      "status": "ok"
+    },
+    "servers": [
+      {
+        "ProcessId": 12448,
+        "ExecutablePath": "E:\\poolside\\build\\bin\\llama-server.exe",
+        "CreationDate": "2026-10-11T14:11:02.780944-05:00"
+      }
+    ],
+    "builds": [],
+    "profiling_off": true,
+    "sources_and_binaries_restored": true,
+    "current_launch": "performance/after-research-production-launch.json",
+    "research_audits": [
+      "performance/research-20261011-local-reconciliation.json",
+      "performance/research-20261011-added-sources-reconciliation.json"
+    ],
+    "measurements": [
+      "performance/research-cache-fit-comparison.json",
+      "performance/research-dflash-on-off-comparison.json",
+      "performance/iq2-rows4-comparison.json"
+    ],
+    "rollback": "performance/iq2-rows4-rollback.json"
+  },
+  "remaining": [
+    "900/30 at8k unmet;128k throughput remains unmeasured in this stage.",
+    "Full non-UI feature completion remains unfinished.",
+    "Earlier desktop windows closing remains unexplained; no claimed fix."
+  ],
+  "constraints": [
+    "No UI, new tests, parameter sweeps, commits, pushes, PRs or external messages.",
+    "Only exact verified inference server executables may be stopped. No desktop-app stops, GPU/driver resets, UAC helpers or system configuration changes."
+  ]
+}

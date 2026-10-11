@@ -1,0 +1,5 @@
+{
+  "backup": "E:\\poolside\\backups\\before-decode-upload-budget-20261010-231121",
+  "source_sha256": "8F53E243C61D768DB3414B9177CCB3A35DA259DEF03F978E79E17AE4BFB6667C",
+  "policy": "CPU executes ordinary decode misses; refresh up to one expert per layer every 16 evaluated tokens."
+}

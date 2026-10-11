@@ -1,0 +1,262 @@
+{
+  "timestamp": "2026-10-11T07:30:22.5626350-05:00",
+  "goal_status": "active",
+  "previous_goal_turn_classification": "progress: worker phase timing and paired IQ2 kernels were measured, rejected and restored.",
+  "this_goal_turn_classification": "progress: measured two different cache candidates with same-binary controls, rejected both, restored sources and binaries, and replayed the saved request on the retained engine.",
+  "representative_request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+  "latest_production_receipt": "core8k-after-cache-evaluation-production-dflash4-q8-cache6144.json",
+  "latest_production_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 10224.315,
+    "prompt_per_token_ms": 1.267896205357143,
+    "prompt_per_second": 788.7080943808949,
+    "predicted_n": 80,
+    "predicted_ms": 5266.722,
+    "predicted_per_token_ms": 65.834025,
+    "predicted_per_second": 15.18971382958888,
+    "draft_n": 97,
+    "draft_n_accepted": 53
+  },
+  "checkpoint_order_correct": true,
+  "checkpoint_codes": [
+    "COBALT-17",
+    "MAPLE-42",
+    "VIOLET-89"
+  ],
+  "launch": {
+    "timestamp": "2026-10-11T07:27:41.4274322-05:00",
+    "wrapper_pid": 32620,
+    "stdout_log": "E:\\poolside\\logs\\core8k-after-cache-evaluation-production-20261011-072741.stdout.log",
+    "stderr_log": "E:\\poolside\\logs\\core8k-after-cache-evaluation-production-20261011-072741.stderr.log",
+    "cpu_dll_sha256": "7BC86BE0D91C083B088E7B2DA516FD93784822F48EED2798963290AB77C6C7DB",
+    "cuda_dll_sha256": "941E44CE64569042CA73B5FDA0109F8411E9490816CB9F1FF103956FF797857C",
+    "llama_dll_sha256": "5B8A05BD34E3FFAC76FF56E11E88726362AFB6DD0E74DD613C39BD46E9B0B86E",
+    "context_size": 8192,
+    "cache_mib": 6144,
+    "batch_size": 8192,
+    "draft_max": 4,
+    "draft_kv_type": "q8_0",
+    "gpu_misses_per_token": 0,
+    "pin_experts": true,
+    "adaptive_cache": true,
+    "profile": false,
+    "readback_span": false,
+    "timeline": false,
+    "cpu_doorbell": "engine default enabled",
+    "decode_bounds": "engine default enabled",
+    "rejected_candidates_removed": [
+      "early cache uploads",
+      "expanded IQ2 CPU weight cache"
+    ]
+  },
+  "healthy": "ok",
+  "api_model_ids": [
+    "laguna-s-2.1-iq3-s"
+  ],
+  "servers": [
+    {
+      "ProcessId": 32660,
+      "ExecutablePath": "E:\\poolside\\build\\bin\\llama-server.exe"
+    }
+  ],
+  "free_ram_gib": 67.3209457397461,
+  "source_integrity": [
+    {
+      "file": "ggml/include/ggml.h",
+      "staged_sha256": "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+      "deployed_sha256": "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml.c",
+      "staged_sha256": "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+      "deployed_sha256": "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/CMakeLists.txt",
+      "staged_sha256": "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+      "deployed_sha256": "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/moe.cpp",
+      "staged_sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+      "deployed_sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/moe-iq.cpp",
+      "staged_sha256": "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+      "deployed_sha256": "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/moe-iq.h",
+      "staged_sha256": "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+      "deployed_sha256": "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/ggml-cuda.cu",
+      "staged_sha256": "29BF88D604B7551B765F4C0464220B78501CDDA9AFC30036739598C83984BDC6",
+      "deployed_sha256": "29BF88D604B7551B765F4C0464220B78501CDDA9AFC30036739598C83984BDC6",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/moe-hybrid.cu",
+      "staged_sha256": "96394D6A50EE5CAE22CDA56D365B96FFF93C27F953C74ED5BA1BBC0B143DEBC7",
+      "deployed_sha256": "96394D6A50EE5CAE22CDA56D365B96FFF93C27F953C74ED5BA1BBC0B143DEBC7",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/moe-hybrid.cuh",
+      "staged_sha256": "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772",
+      "deployed_sha256": "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/mmq.cu",
+      "staged_sha256": "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+      "deployed_sha256": "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-alloc.c",
+      "staged_sha256": "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+      "deployed_sha256": "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-backend.cpp",
+      "staged_sha256": "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+      "deployed_sha256": "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+      "match": true
+    },
+    {
+      "file": "src/llama-graph.cpp",
+      "staged_sha256": "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+      "deployed_sha256": "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+      "match": true
+    },
+    {
+      "file": "src/models/dflash.cpp",
+      "staged_sha256": "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+      "deployed_sha256": "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+      "match": true
+    },
+    {
+      "file": "common/speculative.cpp",
+      "staged_sha256": "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9",
+      "deployed_sha256": "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/fattn.cu",
+      "staged_sha256": "7D85565227A6649BD7196AD10B6F28FA353DB6DAC778DDDD29DBB4E1B5DDBF3C",
+      "deployed_sha256": "7D85565227A6649BD7196AD10B6F28FA353DB6DAC778DDDD29DBB4E1B5DDBF3C",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/fattn-common.cuh",
+      "staged_sha256": "9D84509C1C955A3D090E1E692901C2D1723BE0693322CD1EEB51BDDA289B7935",
+      "deployed_sha256": "9D84509C1C955A3D090E1E692901C2D1723BE0693322CD1EEB51BDDA289B7935",
+      "match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/fattn-mma-f16.cuh",
+      "staged_sha256": "35D18179CECC6FB6CF3C0EBAE6B6512AF08342C6336960E2DB72008A5BA2D6D3",
+      "deployed_sha256": "35D18179CECC6FB6CF3C0EBAE6B6512AF08342C6336960E2DB72008A5BA2D6D3",
+      "match": true
+    },
+    {
+      "file": "src/llama-model.cpp",
+      "staged_sha256": "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB",
+      "deployed_sha256": "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB",
+      "match": true
+    },
+    {
+      "file": "src/llama-ext.h",
+      "staged_sha256": "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3",
+      "deployed_sha256": "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3",
+      "match": true
+    },
+    {
+      "file": "src/llama-kv-cache.cpp",
+      "staged_sha256": "062FE7E82FA79841BCC759F68B2A57EF8F57E8089F577DDFDD55D6F79D49CDC7",
+      "deployed_sha256": "062FE7E82FA79841BCC759F68B2A57EF8F57E8089F577DDFDD55D6F79D49CDC7",
+      "match": true
+    },
+    {
+      "file": "ggml/include/ggml-cpu-moe.h",
+      "staged_sha256": "679B289E25322591854B24BCA95D02FE97CE1CE747BA2678EE9521314C7F9C04",
+      "deployed_sha256": "679B289E25322591854B24BCA95D02FE97CE1CE747BA2678EE9521314C7F9C04",
+      "match": true
+    },
+    {
+      "file": "src/CMakeLists.txt",
+      "staged_sha256": "918ABC450AE62C3A5B7D9B8145C54B920138848F68AE9AC8A1EC08760CE96C55",
+      "deployed_sha256": "918ABC450AE62C3A5B7D9B8145C54B920138848F68AE9AC8A1EC08760CE96C55",
+      "match": true
+    }
+  ],
+  "source_integrity_count": 23,
+  "experiments": [
+    {
+      "name": "Earlier cache uploads",
+      "analysis": "refresh-overlap-comparison.json",
+      "rollback": "refresh-overlap-rollback.json",
+      "on_prefill_tps": 763.996368,
+      "on_generation_tps": 15.743417,
+      "off_prefill_tps": 786.981161,
+      "off_generation_tps": 16.124559,
+      "decision": "Rejected. Entry wait fell, but overall throughput did not improve."
+    },
+    {
+      "name": "Exact expanded IQ2 CPU weights",
+      "analysis": "iq2-weight-cache-comparison.json",
+      "rollback": "iq2-weight-cache-rollback.json",
+      "on_prefill_tps": 742.717336,
+      "on_generation_tps": 13.128156,
+      "off_prefill_tps": 783.670575,
+      "off_generation_tps": 16.847227,
+      "extra_ram_gib": 38.8125,
+      "preparation_ms": 17797.24,
+      "free_ram_after_request_gib": 28.549572,
+      "decision": "Rejected. Larger weight payload and slower CPU phases offset removal of repeated codebook lookups."
+    }
+  ],
+  "measured_evidence": [
+    "Expanded cache first-16 window: 18141 predecoded selections, 71190.84 MiB scheduled weight payload, gate/up 1412.88 ms and CPU fused 2191.80 ms.",
+    "Same-binary cache-disabled window: 50577.87 MiB scheduled weight payload, gate/up 959.00 ms and CPU fused 1685.29 ms.",
+    "Cache-disabled window: actual hits 17138/35720; best fixed-capacity hindsight estimate 24512. This is past-window evidence and must not be used as future routing.",
+    "Retained cache refreshes remain capped at one expert per layer per 16 evaluated target tokens. Prior cost-aware admission changed hits by only 0.406 percentage points and did not establish an end-to-end gain."
+  ],
+  "next_candidate": {
+    "status": "not implemented, not measured",
+    "purpose": "Reduce avoidable CPU work by admitting useful GPU experts sooner, using upload time that can overlap existing CPU calculations.",
+    "implementation_plan": [
+      "Calibrate host-copy throughput from one completed prefill weight upload; use actual bytes and elapsed GPU events.",
+      "Record previous CPU compute duration and cached GPU duration per layer, without an additional stream synchronization.",
+      "Derive the permitted promotion bytes from max(0, previous CPU duration minus previous GPU duration) times observed upload throughput.",
+      "Queue unchanged heat-ranked promotions after this node cached GPU reads and before the CPU-ready polling kernel. Current CPU mask and GPU IDs remain fixed.",
+      "Retain the old cadence as a fallback when timing evidence or usable overlap is unavailable. Keep all selected experts, original weights, context and quantization.",
+      "Compare enabled/disabled on the saved 8064-token request and check cache hits, uploaded bytes, CPU time, throughput and recall."
+    ]
+  },
+  "outstanding_requirements": [
+    "900 tok/s prefill and 30 tok/s generation at configured 8k",
+    "Fast near-full 128k after the 8k gate",
+    "Complete local API feature behavior"
+  ],
+  "limitations": [
+    "Latest run variation is not an optimization gain; speculative acceptance and output differ across runs.",
+    "Three-code recall does not establish complete API coverage.",
+    "128k performance remains unverified.",
+    "Scheduled payload bytes do not isolate actual DRAM traffic.",
+    "The earlier disappearance of desktop application windows remains unexplained.",
+    "No test files or parameter sweeps were added. The existing saved inference request was replayed.",
+    "Optional administrator GPU-clock-lock question remains unanswered; no administrator helper was launched."
+  ]
+}

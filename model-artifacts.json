@@ -1,0 +1,20 @@
+{
+  "artifacts": [
+    {
+      "id": "target",
+      "repo": "unsloth/Laguna-S-2.1-GGUF",
+      "revision": "750f92f90cf54159c4d7a610cb7b3e74498e75c6",
+      "file": "Laguna-S-2.1-UD-IQ3_S.gguf",
+      "bytes": 48428911520,
+      "sha256": "8a9ab3f8b3ff1723441cd251e873b295a7ef086d78dbae7515e5e27c8382b002"
+    },
+    {
+      "id": "draft",
+      "repo": "dev7a/Laguna-S-2.1-DFlash-GGUF",
+      "revision": "0f7234ea9b0de138a2b9b119e805b82322dba0fd",
+      "file": "Laguna-S-2.1-DFlash-Q8_0.gguf",
+      "bytes": 1188535328,
+      "sha256": "94d5d6d93acb2dfb1209599bc099ebc5b30e959a3a1200dcaebfb01e3f480e43"
+    }
+  ]
+}

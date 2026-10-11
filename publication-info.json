@@ -1,0 +1,22 @@
+{
+  "prepared_at": "2026-10-11T22:26:16.029901+00:00",
+  "repository": "barretts/floatie",
+  "repository_url": "https://github.com/barretts/floatie",
+  "visibility": "private",
+  "source_base": "06f8cebd7fe728687be3d19f8bdedb70d75883af",
+  "engine_delta_files": 26,
+  "source_history": "Complete upstream history retained; isolated publication checkout.",
+  "actions_enabled": false,
+  "verification": "Static source hashes, scripts, notices, documentation links and credential patterns reviewed; no independent build, tests or inference execution.",
+  "runtime_installation_changed_by_packaging": false,
+  "performance_goal_resumed": false,
+  "original_evidence_json_hashes_verified_in_git_index": 336,
+  "documentation_link_check": {
+    "links_checked": 889,
+    "missing_links": 0
+  },
+  "source_snapshot_whitespace_notes": [
+    "The installed ggml/include/ggml-cpu-moe.h and ggml/src/ggml-cpu/moe.cpp retain their pre-existing extra blank EOF line to preserve source identity.",
+    "Historical archived source, unified patches and raw native logs retain their original whitespace."
+  ]
+}

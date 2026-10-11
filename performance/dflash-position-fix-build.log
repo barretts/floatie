@@ -1,0 +1,52 @@
+[1/16] Provisioning UI assets
+CMake Warning at E:/poolside/engine/scripts/ui-assets.cmake:359 (message):
+  UI: no assets available - building without an embedded UI.  In a
+  disconnected environment, download the pre-built UI from a llama.cpp
+  release at https://github.com/ggml-org/llama.cpp/releases and extract to
+  tools/ui/dist.
+
+
+[2/13] Building CXX object common\CMakeFiles\llama-common.dir\speculative.cpp.obj
+[3/13] Building CXX object src\CMakeFiles\llama.dir\llama-model.cpp.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): warning C4244: 'initializing': conversion from '_Ty' to '_Ty2', possible loss of data
+        with
+        [
+            _Ty=int64_t
+        ]
+        and
+        [
+            _Ty2=uint32_t
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): note: the template instantiation context (the oldest one first) is
+E:\poolside\engine\src\llama-model.cpp(528): note: see reference to function template instantiation 'std::pair<int64_t,uint32_t>::pair<const int64_t&,int64_t,0>(_Other1,_Other2 &&) noexcept' being compiled
+        with
+        [
+            _Other1=const int64_t &,
+            _Other2=int64_t
+        ]
+E:\poolside\engine\src\llama-model.cpp(528): note: see the first reference to 'std::pair<int64_t,uint32_t>::pair' in 'llama_meta_device_get_split_state::<lambda_3f3a1e03815790bdd1a2b10624cd6b7a>::operator ()'
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): warning C4244: 'initializing': conversion from 'const int64_t' to '_Ty2', possible loss of data
+        with
+        [
+            _Ty2=uint32_t
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): note: the template instantiation context (the oldest one first) is
+E:\poolside\engine\src\llama-model.cpp(531): note: see reference to function template instantiation 'std::pair<int64_t,uint32_t>::pair<const int64_t&,const int64_t&,0>(_Other1,_Other2) noexcept' being compiled
+        with
+        [
+            _Other1=const int64_t &,
+            _Other2=const int64_t &
+        ]
+E:\poolside\engine\src\llama-model.cpp(531): note: see the first reference to 'std::pair<int64_t,uint32_t>::pair' in 'llama_meta_device_get_split_state::<lambda_3f3a1e03815790bdd1a2b10624cd6b7a>::operator ()'
+[4/13] Building CUDA object ggml\src\ggml-cuda\CMakeFiles\ggml-cuda.dir\mmid.cu.obj
+mmid.cu
+tmpxft_00002c78_00000000-10_mmid.cudafe1.cpp
+[5/13] Linking CUDA shared library bin\ggml-cuda.dll
+[6/13] Building CXX object tools\server\CMakeFiles\server-context.dir\server-context.cpp.obj
+[7/13] Linking CXX shared library bin\ggml.dll
+[8/13] Linking CXX shared library bin\llama.dll
+[9/13] Linking CXX shared library bin\mtmd.dll
+[10/13] Linking CXX shared library bin\llama-common.dll
+[11/13] Linking CXX static library tools\server\server-context.lib
+[12/13] Linking CXX shared library bin\llama-server-impl.dll
+[13/13] Linking CXX executable bin\llama-server.exe

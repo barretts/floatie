@@ -1,0 +1,66 @@
+{
+  "timestamp": "2026-10-11",
+  "workload": "Existing saved8064-token request/80generated tokens; cold prompt; same candidate binaries; restarted servers; fixed established settings",
+  "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+  "same_request": true,
+  "same_binaries": true,
+  "on_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 10691.793,
+    "prompt_per_token_ms": 1.3258671874999999,
+    "prompt_per_second": 754.2233561760876,
+    "predicted_n": 80,
+    "predicted_ms": 5137.26,
+    "predicted_per_token_ms": 64.21575,
+    "predicted_per_second": 15.57250363033991,
+    "draft_n": 96,
+    "draft_n_accepted": 54
+  },
+  "off_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 10297.305,
+    "prompt_per_token_ms": 1.276947544642857,
+    "prompt_per_second": 783.1175244396471,
+    "predicted_n": 80,
+    "predicted_ms": 5209.522,
+    "predicted_per_token_ms": 65.119025,
+    "predicted_per_second": 15.356495279221395,
+    "draft_n": 95,
+    "draft_n_accepted": 53
+  },
+  "generation_change_pct": 1.4066253216695301,
+  "prefill_change_pct": -3.6896337218649933,
+  "same_response_tokens": false,
+  "both_checkpoint_order_correct": true,
+  "mirror_bytes": 23731372032,
+  "mirror_gib": 22.1015625,
+  "prepared_tensors": 92,
+  "startup_packing_ms": 10174.11,
+  "profile_lines": {
+    "on": {
+      "cpu_profile_lines": [
+        "0.47.478.260 I CUDA hybrid MoE CPU profile: calls=752 jobs=16677 groups_1_2_3_4=(10135,2454,426,89) scheduled_weight_MiB=46920.84 setup_ms=61.49 gate_up_ms=886.81 down_quant_ms=23.38 down_ms=637.49"
+      ],
+      "decode_profile_lines": [
+        "0.47.497.684 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=76.0 cache_hits=19043 cache_misses=16677 h2d_weight_MiB=4647.42 cpu_fused_ms=1610.49 entry_event_wait_ms=250.42 readback_wait_ms=583.29 host_prepare_submit_ms=349.81 gpu_cached_interval_ms=530.91 gpu_streamed_interval_ms=0.00 gpu_weight_copy_interval_ms=0.00 gpu_cache_refresh_interval_ms=803.27 gpu_attention_interval_ms=251.23 gpu_cpu_wait_interval_ms=559.35 gpu_between_moe_readback_interval_ms=864.24"
+      ]
+    },
+    "off": {
+      "cpu_profile_lines": [
+        "0.36.129.161 I CUDA hybrid MoE CPU profile: calls=752 jobs=16347 groups_1_2_3_4=(10058,2385,417,67) scheduled_weight_MiB=46311.61 setup_ms=59.45 gate_up_ms=938.24 down_quant_ms=18.59 down_ms=627.75"
+      ],
+      "decode_profile_lines": [
+        "0.36.148.287 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=76.0 cache_hits=19373 cache_misses=16347 h2d_weight_MiB=5316.54 cpu_fused_ms=1645.29 entry_event_wait_ms=251.38 readback_wait_ms=594.74 host_prepare_submit_ms=349.69 gpu_cached_interval_ms=527.70 gpu_streamed_interval_ms=0.00 gpu_weight_copy_interval_ms=0.00 gpu_cache_refresh_interval_ms=916.98 gpu_attention_interval_ms=219.10 gpu_cpu_wait_interval_ms=471.82 gpu_between_moe_readback_interval_ms=757.29"
+      ]
+    }
+  },
+  "decision": "Archive and restore baseline. Generation difference1.4% does not establish a material gain worth22.1GiB extraRAM. Prefill3.69% slower despite CPUmirror notused inbulk prefill, showing timing variation. Routing and outputtokens differ from reductionorder; no bit-identical or general-quality claim.900/30 unmet.",
+  "numeric_audit": "Exact82->328 byte-bit repack; local292byteQ8_K namedfields; AVX2/FMA/F16C; sign/scale/row integer mapping audited; float reduction differs.",
+  "memory_launch_issue": "Off firstlaunch refused47.9GiB free immediately after inference stop. Readonlyfollowup found109.539GiB free and no inferenceprocess. Relaunched withouttouching other apps. Originalexistingprobe continuedwaiting.",
+  "receipts": {
+    "on": "performance/core8k-iq2-r4-on-dflash4-q8-cache6144.json",
+    "off": "performance/core8k-iq2-r4-off-dflash4-q8-cache6144.json"
+  }
+}

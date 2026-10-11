@@ -1,0 +1,259 @@
+{
+  "at": "2026-10-11T16:59:14.1917639-05:00",
+  "outcome": "Implemented, synchronized and built; no inference regression or benchmark executed.",
+  "build_exit_code": 0,
+  "backup": "E:\\poolside\\backups\\before-dflash-position-fix-20261011-165516",
+  "source_overlay": [
+    {
+      "file": "tools\\server\\server-context.cpp",
+      "staged_sha256": "1C93A1A8F4A157BD5C4388403182C46E95C2BA5ABD44A591F426C3E26706274D",
+      "installed_sha256": "1C93A1A8F4A157BD5C4388403182C46E95C2BA5ABD44A591F426C3E26706274D",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml.c",
+      "staged_sha256": "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+      "installed_sha256": "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml-cuda\\moe-hybrid.cuh",
+      "staged_sha256": "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772",
+      "installed_sha256": "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml-cuda\\moe-hybrid.cu",
+      "staged_sha256": "AF3E081FB5C00FA2135AE0858895074F2937D17FB69FAB89D6B70E5271246A5B",
+      "installed_sha256": "AF3E081FB5C00FA2135AE0858895074F2937D17FB69FAB89D6B70E5271246A5B",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml-cuda\\mmq.cu",
+      "staged_sha256": "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+      "installed_sha256": "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml-cuda\\mmid.cu",
+      "staged_sha256": "A1FFB79ADCC600DAB29D1E99ABE3AC3792E2CC2E93007634491000A4B4952F1C",
+      "installed_sha256": "A1FFB79ADCC600DAB29D1E99ABE3AC3792E2CC2E93007634491000A4B4952F1C",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml-cuda\\ggml-cuda.cu",
+      "staged_sha256": "29BF88D604B7551B765F4C0464220B78501CDDA9AFC30036739598C83984BDC6",
+      "installed_sha256": "29BF88D604B7551B765F4C0464220B78501CDDA9AFC30036739598C83984BDC6",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml-cuda\\fattn.cu",
+      "staged_sha256": "7D85565227A6649BD7196AD10B6F28FA353DB6DAC778DDDD29DBB4E1B5DDBF3C",
+      "installed_sha256": "7D85565227A6649BD7196AD10B6F28FA353DB6DAC778DDDD29DBB4E1B5DDBF3C",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml-cuda\\fattn-mma-f16.cuh",
+      "staged_sha256": "35D18179CECC6FB6CF3C0EBAE6B6512AF08342C6336960E2DB72008A5BA2D6D3",
+      "installed_sha256": "35D18179CECC6FB6CF3C0EBAE6B6512AF08342C6336960E2DB72008A5BA2D6D3",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml-cuda\\fattn-common.cuh",
+      "staged_sha256": "9D84509C1C955A3D090E1E692901C2D1723BE0693322CD1EEB51BDDA289B7935",
+      "installed_sha256": "9D84509C1C955A3D090E1E692901C2D1723BE0693322CD1EEB51BDDA289B7935",
+      "match": true
+    },
+    {
+      "file": "src\\models\\dflash.cpp",
+      "staged_sha256": "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+      "installed_sha256": "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+      "match": true
+    },
+    {
+      "file": "src\\llama-model.cpp",
+      "staged_sha256": "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB",
+      "installed_sha256": "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB",
+      "match": true
+    },
+    {
+      "file": "src\\llama-kv-cache.cpp",
+      "staged_sha256": "062FE7E82FA79841BCC759F68B2A57EF8F57E8089F577DDFDD55D6F79D49CDC7",
+      "installed_sha256": "062FE7E82FA79841BCC759F68B2A57EF8F57E8089F577DDFDD55D6F79D49CDC7",
+      "match": true
+    },
+    {
+      "file": "src\\llama-graph.cpp",
+      "staged_sha256": "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+      "installed_sha256": "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+      "match": true
+    },
+    {
+      "file": "src\\llama-ext.h",
+      "staged_sha256": "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3",
+      "installed_sha256": "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3",
+      "match": true
+    },
+    {
+      "file": "src\\llama-context.cpp",
+      "staged_sha256": "FD1094FD6EA5F29FD71CE8E1A1355B6550BEC5E5F611A427D9F06D6958C56E97",
+      "installed_sha256": "FD1094FD6EA5F29FD71CE8E1A1355B6550BEC5E5F611A427D9F06D6958C56E97",
+      "match": true
+    },
+    {
+      "file": "src\\CMakeLists.txt",
+      "staged_sha256": "918ABC450AE62C3A5B7D9B8145C54B920138848F68AE9AC8A1EC08760CE96C55",
+      "installed_sha256": "918ABC450AE62C3A5B7D9B8145C54B920138848F68AE9AC8A1EC08760CE96C55",
+      "match": true
+    },
+    {
+      "file": "ggml\\include\\ggml.h",
+      "staged_sha256": "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+      "installed_sha256": "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+      "match": true
+    },
+    {
+      "file": "ggml\\include\\ggml-cpu-moe.h",
+      "staged_sha256": "679B289E25322591854B24BCA95D02FE97CE1CE747BA2678EE9521314C7F9C04",
+      "installed_sha256": "679B289E25322591854B24BCA95D02FE97CE1CE747BA2678EE9521314C7F9C04",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml-alloc.c",
+      "staged_sha256": "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+      "installed_sha256": "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml-backend.cpp",
+      "staged_sha256": "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+      "installed_sha256": "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml-cpu\\CMakeLists.txt",
+      "staged_sha256": "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+      "installed_sha256": "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml-cpu\\moe-iq.cpp",
+      "staged_sha256": "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+      "installed_sha256": "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml-cpu\\moe.cpp",
+      "staged_sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+      "installed_sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+      "match": true
+    },
+    {
+      "file": "ggml\\src\\ggml-cpu\\moe-iq.h",
+      "staged_sha256": "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+      "installed_sha256": "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+      "match": true
+    },
+    {
+      "file": "common\\speculative.cpp",
+      "staged_sha256": "F542594CFF884DF622FA16512E561F097577C2A0CD53F9EB375B53CD98B2839B",
+      "installed_sha256": "F542594CFF884DF622FA16512E561F097577C2A0CD53F9EB375B53CD98B2839B",
+      "match": true
+    }
+  ],
+  "binaries": [
+    {
+      "file": "cublas64_12.dll",
+      "sha256": "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142",
+      "bytes": 100796416,
+      "changed_from_backup": false
+    },
+    {
+      "file": "cublasLt64_12.dll",
+      "sha256": "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49",
+      "bytes": 494290944,
+      "changed_from_backup": false
+    },
+    {
+      "file": "cudart64_12.dll",
+      "sha256": "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746",
+      "bytes": 556544,
+      "changed_from_backup": false
+    },
+    {
+      "file": "ggml-base.dll",
+      "sha256": "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA",
+      "bytes": 649728,
+      "changed_from_backup": false
+    },
+    {
+      "file": "ggml-cpu.dll",
+      "sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E",
+      "bytes": 967168,
+      "changed_from_backup": false
+    },
+    {
+      "file": "ggml-cuda.dll",
+      "sha256": "EF5651CF66AF3C936EA99289523D6B62F70C44E74FD3328D0154162275B37106",
+      "bytes": 188008448,
+      "changed_from_backup": true
+    },
+    {
+      "file": "ggml.dll",
+      "sha256": "78CCF7F7F8061768F03756E9C833431D350C75FF3378C241BA8A8EF3E35745A4",
+      "bytes": 67072,
+      "changed_from_backup": true
+    },
+    {
+      "file": "llama-common.dll",
+      "sha256": "EF11E95A8D30FDD405FA82A2E53B262DA989536E0C20F2293001E30289D71B3D",
+      "bytes": 9274880,
+      "changed_from_backup": true
+    },
+    {
+      "file": "llama-server-impl.dll",
+      "sha256": "7FC5C214D9261111FCC842FC2D7F30ACAC00D22B5712A7E7CA79413C46CD28AE",
+      "bytes": 4054016,
+      "changed_from_backup": true
+    },
+    {
+      "file": "llama-server.exe",
+      "sha256": "60041104E0D2FAF412A45923A5F83B92C2D320D69F68627159A7816D12B4035F",
+      "bytes": 10752,
+      "changed_from_backup": true
+    },
+    {
+      "file": "llama.dll",
+      "sha256": "9702D8C339599ADEF2FBCC4D3911508904248B919C789E967824102F352C225B",
+      "bytes": 2249216,
+      "changed_from_backup": true
+    },
+    {
+      "file": "mtmd.dll",
+      "sha256": "33C0DEABC64B93CD5F600A6570D528A8A751C29AFB6FF3AC06CF85A74E8E29BA",
+      "bytes": 989696,
+      "changed_from_backup": true
+    }
+  ],
+  "launcher": "E:\\poolside\\Start-Floatie-128k.bat",
+  "context_size": 131072,
+  "startup_expert_cache_mib": 3072,
+  "draft_max": 4,
+  "draft_kv": "q8_0",
+  "no_tests_or_inference": true,
+  "runtime_regression_status": "not_run",
+  "performance_goal_resumed": false,
+  "observed_server_state": {
+    "checked_at": "2026-10-11T16:59:13.2039029-05:00",
+    "laguna_running": false,
+    "pids": [],
+    "server_restarted_by_agent": false
+  },
+  "verification_scope": {
+    "source_and_compile": "Verified: all 26 C overlay files match E; 12 installed binaries recorded; build exit0.",
+    "runtime": "Not verified: no inference regression or speed measurement performed.",
+    "static_reviews": "Two delegated reviews found no material flaw in final two-file patch.",
+    "preserved": "Same Q3 model, selected experts, target/draft weights, absolute positions, injection chunk sizes, DFlash4, Q8 KV and 128k launcher.",
+    "limits": "Failure cleanup is scoped to common_speculative_process returning false; no new general exception recovery was introduced."
+  }
+}

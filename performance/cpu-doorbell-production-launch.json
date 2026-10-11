@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-10-11T03:58:51.9327888-05:00",
+  "wrapper_pid": 11368,
+  "stdout_log": "E:\\poolside\\logs\\core8k-cpu-doorbell-production-20261011-035851.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-cpu-doorbell-production-20261011-035851.stderr.log",
+  "source_sha256": "3191A8F8CFC6D98108AA49B1485D3F5CE871507F533259CCAA180BD4DFCE14F3",
+  "llama_common_dll_sha256": "F6D0457994F82EAB6C33AE2FFD091C6F1327A0638AB8C3F9A930596453370B58",
+  "llama_dll_sha256": "00151E0ED94A6EC45A2B8EF1365D8869B2C63B4B3A9684011FAD0F84502C83AD",
+  "cuda_dll_sha256": "140CC1E7312FF2456D73B79AC160CA362750B6F1024B76102B45E3527FC1DEA1",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "profile": false,
+  "timeline": false,
+  "verbosity": 3,
+  "cpu_doorbell": "engine default enabled",
+  "cpu_doorbell_environment_override": null,
+  "pin_experts": true,
+  "adaptive_cache": true
+}

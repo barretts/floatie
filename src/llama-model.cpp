@@ -2379,6 +2379,19 @@ int32_t llama_model_n_swa(const llama_model * model) {
     return model->hparams.n_swa;
 }
 
+int32_t llama_model_n_swa_all(const llama_model * model) {
+    const auto & hparams = model->hparams;
+    if (hparams.n_swa == 0 || hparams.swa_type != LLAMA_SWA_TYPE_STANDARD || hparams.n_layer() == 0) {
+        return 0;
+    }
+    for (uint32_t il = 0; il < hparams.n_layer(); ++il) {
+        if (!hparams.is_swa(il)) {
+            return 0;
+        }
+    }
+    return hparams.n_swa;
+}
+
 
 uint32_t llama_model_n_cls_out(const struct llama_model * model) {
     return model->hparams.n_cls_out;

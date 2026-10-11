@@ -1,0 +1,316 @@
+0.00.049.323 I cmn  common_param: common_params_print_info: build 1 (06f8ceb) with MSVC 19.44.35224.0 for Windows AMD64
+0.00.049.331 I cmn  common_param: common_params_print_info: verbosity = 4 (adjust with the `-lv N` CLI arg)
+0.00.049.331 I cmn  common_param: device_info:
+0.00.158.250 I cmn  common_param:   - CUDA0   : NVIDIA GeForce RTX 4060 Ti (16379 MiB, 15223 MiB free)
+0.00.158.267 I cmn  common_param:   - CPU     : AMD Ryzen Threadripper 1950X 16-Core Processor  (130953 MiB, 95868 MiB free)
+0.00.158.358 I cmn  common_param: system_info: n_threads = 16 (n_threads_batch = 16) / 32 | CUDA : ARCHS = 890 | USE_GRAPHS = 1 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.00.158.448 I srv          init: using 31 threads for HTTP server
+0.00.158.451 I srv          init: The UI is disabled
+0.00.158.451 I srv          init: Use --ui/--no-ui (or deprecated --webui/--no-webui) to enable/disable
+0.00.158.650 I srv         start: binding port with default address family
+0.00.163.776 I srv    load_model: loading model 'E:\poolside\models\Laguna-S-2.1-UD-IQ3_S.gguf'
+0.00.163.777 I srv    load_model: local path 'E:\poolside\models\Laguna-S-2.1-UD-IQ3_S.gguf'
+0.00.206.630 I llama_model_loader: loaded meta data with 69 key-value pairs and 814 tensors from E:\poolside\models\Laguna-S-2.1-UD-IQ3_S.gguf (version GGUF V3 (latest))
+0.00.206.692 I llama_model_loader: Dumping metadata keys/values. Note: KV overrides do not apply in this output.
+0.00.206.696 I llama_model_loader: - kv   0:                       general.architecture str              = laguna
+0.00.206.697 I llama_model_loader: - kv   1:                               general.type str              = model
+0.00.206.700 I llama_model_loader: - kv   2:                     general.sampling.top_k i32              = 20
+0.00.206.708 I llama_model_loader: - kv   3:                     general.sampling.top_p f32              = 1.000000
+0.00.206.711 I llama_model_loader: - kv   4:                     general.sampling.min_p f32              = 0.000000
+0.00.206.713 I llama_model_loader: - kv   5:                      general.sampling.temp f32              = 1.000000
+0.00.206.714 I llama_model_loader: - kv   6:                               general.name str              = Laguna-S-2.1
+0.00.206.715 I llama_model_loader: - kv   7:                            general.version str              = 2.1
+0.00.206.716 I llama_model_loader: - kv   8:                           general.basename str              = Laguna-S-2.1
+0.00.206.717 I llama_model_loader: - kv   9:                       general.quantized_by str              = Unsloth
+0.00.206.718 I llama_model_loader: - kv  10:                         general.size_label str              = 256x4.5B
+0.00.206.719 I llama_model_loader: - kv  11:                            general.license str              = openmdw-1.1
+0.00.206.720 I llama_model_loader: - kv  12:                           general.repo_url str              = https://huggingface.co/unsloth
+0.00.206.722 I llama_model_loader: - kv  13:                   general.base_model.count u32              = 1
+0.00.206.722 I llama_model_loader: - kv  14:                  general.base_model.0.name str              = Laguna S 2.1
+0.00.206.723 I llama_model_loader: - kv  15:               general.base_model.0.version str              = 2.1
+0.00.206.724 I llama_model_loader: - kv  16:          general.base_model.0.organization str              = Poolside
+0.00.206.729 I llama_model_loader: - kv  17:              general.base_model.0.repo_url str              = https://huggingface.co/poolside/Lagun...
+0.00.206.760 I llama_model_loader: - kv  18:                               general.tags arr[str,4]       = ["laguna-s-2.1", "unsloth", "vllm", "...
+0.00.206.762 I llama_model_loader: - kv  19:                         laguna.block_count u32              = 48
+0.00.206.763 I llama_model_loader: - kv  20:                      laguna.context_length u32              = 262144
+0.00.206.764 I llama_model_loader: - kv  21:                    laguna.embedding_length u32              = 3072
+0.00.206.765 I llama_model_loader: - kv  22:                 laguna.feed_forward_length u32              = 12288
+0.00.206.780 I llama_model_loader: - kv  23:                laguna.attention.head_count arr[i32,48]      = [48, 72, 72, 72, 48, 72, 72, 72, 48, ...
+0.00.206.781 I llama_model_loader: - kv  24:             laguna.attention.head_count_kv u32              = 8
+0.00.206.782 I llama_model_loader: - kv  25:                   laguna.rope.scaling.type str              = yarn
+0.00.206.784 I llama_model_loader: - kv  26:                 laguna.rope.scaling.factor f32              = 32.000000
+0.00.206.785 I llama_model_loader: - kv  27: laguna.rope.scaling.original_context_length u32              = 8192
+0.00.206.787 I llama_model_loader: - kv  28:       laguna.rope.scaling.yarn_attn_factor f32              = 1.000000
+0.00.206.789 I llama_model_loader: - kv  29:         laguna.rope.scaling.yarn_beta_fast f32              = 32.000000
+0.00.206.790 I llama_model_loader: - kv  30:         laguna.rope.scaling.yarn_beta_slow f32              = 1.000000
+0.00.206.792 I llama_model_loader: - kv  31:                      laguna.rope.freq_base f32              = 500000.000000
+0.00.206.794 I llama_model_loader: - kv  32:                  laguna.rope.freq_base_swa f32              = 10000.000000
+0.00.206.796 I llama_model_loader: - kv  33:    laguna.attention.layer_norm_rms_epsilon f32              = 0.000001
+0.00.206.797 I llama_model_loader: - kv  34:                        laguna.expert_count u32              = 256
+0.00.206.798 I llama_model_loader: - kv  35:                   laguna.expert_used_count u32              = 10
+0.00.206.799 I llama_model_loader: - kv  36:                laguna.attention.key_length u32              = 128
+0.00.206.800 I llama_model_loader: - kv  37:              laguna.attention.value_length u32              = 128
+0.00.206.801 I llama_model_loader: - kv  38:                          laguna.vocab_size u32              = 100352
+0.00.206.802 I llama_model_loader: - kv  39:            laguna.attention.sliding_window u32              = 512
+0.00.206.803 I llama_model_loader: - kv  40:          laguna.expert_feed_forward_length u32              = 1024
+0.00.206.804 I llama_model_loader: - kv  41:   laguna.expert_shared_feed_forward_length u32              = 1024
+0.00.206.806 I llama_model_loader: - kv  42:                 laguna.expert_weights_norm bool             = true
+0.00.206.808 I llama_model_loader: - kv  43:                laguna.expert_weights_scale f32              = 2.500000
+0.00.206.809 I llama_model_loader: - kv  44:                  laguna.expert_gating_func u32              = 2
+0.00.206.810 I llama_model_loader: - kv  45:           laguna.leading_dense_block_count u32              = 1
+0.00.206.811 I llama_model_loader: - kv  46:                laguna.rope.dimension_count u32              = 64
+0.00.206.812 I llama_model_loader: - kv  47:            laguna.rope.dimension_count_swa u32              = 128
+0.00.206.813 I llama_model_loader: - kv  48:                       tokenizer.ggml.model str              = gpt2
+0.00.206.814 I llama_model_loader: - kv  49:                         tokenizer.ggml.pre str              = laguna
+0.00.240.869 I llama_model_loader: - kv  50:                      tokenizer.ggml.tokens arr[str,100352]  = ["〈|UNK|〉", "〈|CODE_START|〉",...
+0.00.254.754 I llama_model_loader: - kv  51:                  tokenizer.ggml.token_type arr[i32,100352]  = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, ...
+0.00.291.891 I llama_model_loader: - kv  52:                      tokenizer.ggml.merges arr[str,100026]  = ["i n", "Ġ t", "Ġ Ġ", "e r", "Ġ a...
+0.00.291.907 I llama_model_loader: - kv  53:                tokenizer.ggml.bos_token_id u32              = 2
+0.00.291.908 I llama_model_loader: - kv  54:                tokenizer.ggml.eos_token_id u32              = 2
+0.00.291.910 I llama_model_loader: - kv  55:            tokenizer.ggml.unknown_token_id u32              = 0
+0.00.291.911 I llama_model_loader: - kv  56:          tokenizer.ggml.seperator_token_id u32              = 8
+0.00.291.912 I llama_model_loader: - kv  57:            tokenizer.ggml.padding_token_id u32              = 9
+0.00.291.914 I llama_model_loader: - kv  58:               tokenizer.ggml.mask_token_id u32              = 12
+0.00.291.916 I llama_model_loader: - kv  59:               tokenizer.ggml.add_bos_token bool             = true
+0.00.291.917 I llama_model_loader: - kv  60:               tokenizer.ggml.add_sep_token bool             = true
+0.00.291.925 I llama_model_loader: - kv  61:                    tokenizer.chat_template str              = {#- Iteration on laguna_glm_thinking_...
+0.00.291.926 I llama_model_loader: - kv  62:                tokenizer.ggml.eot_token_id u32              = 24
+0.00.291.927 I llama_model_loader: - kv  63:               general.quantization_version u32              = 2
+0.00.291.928 I llama_model_loader: - kv  64:                          general.file_type u32              = 26
+0.00.291.931 I llama_model_loader: - kv  65:                      quantize.imatrix.file str              = Laguna-S-2.1-GGUF/imatrix_unsloth.gguf
+0.00.291.934 I llama_model_loader: - kv  66:                   quantize.imatrix.dataset str              = unsloth_calibration_Laguna-S-2.1.txt
+0.00.291.935 I llama_model_loader: - kv  67:             quantize.imatrix.entries_count u32              = 572
+0.00.291.937 I llama_model_loader: - kv  68:              quantize.imatrix.chunks_count u32              = 46
+0.00.291.938 I llama_model_loader: - type  f32:  287 tensors
+0.00.291.939 I llama_model_loader: - type q8_0:    8 tensors
+0.00.291.940 I llama_model_loader: - type q6_K:  380 tensors
+0.00.291.941 I llama_model_loader: - type iq3_s:    2 tensors
+0.00.291.942 I llama_model_loader: - type iq2_s:   92 tensors
+0.00.291.942 I llama_model_loader: - type iq4_xs:   45 tensors
+0.00.291.944 I print_info: file format = GGUF V3 (latest)
+0.00.291.945 I print_info: file type   = IQ3_S - 3.4375 bpw
+0.00.291.951 I print_info: file size   = 45.10 GiB (3.30 BPW) 
+0.00.292.042 I llama_prepare_model_devices: using device CUDA0 (NVIDIA GeForce RTX 4060 Ti) (0000:43:00.0) - 15223 MiB free
+0.00.379.973 I load: 0 unused tokens
+0.00.404.628 W load: special_eos_id is not in special_eog_ids - the tokenizer config may be incorrect
+0.00.404.643 W load: special_eot_id is not in special_eog_ids - the tokenizer config may be incorrect
+0.00.404.643 I load: printing all EOG tokens:
+0.00.404.645 I load:   - 2 ('〈|EOS|〉')
+0.00.404.648 I load:   - 24 ('</assistant>')
+0.00.405.152 I load: special tokens cache size = 70
+0.00.434.604 I load: token to piece cache size = 0.6432 MB
+0.00.434.670 I print_info: arch                  = laguna
+0.00.434.672 I print_info: vocab_only            = 0
+0.00.434.673 I print_info: no_alloc              = 0
+0.00.434.674 I print_info: n_ctx_train           = 262144
+0.00.434.675 I print_info: n_embd_inp            = 3072
+0.00.434.675 I print_info: n_embd                = 3072
+0.00.434.676 I print_info: n_embd_out            = 3072
+0.00.434.676 I print_info: n_layer               = 48
+0.00.434.677 I print_info: n_layer_all           = 48
+0.00.434.736 I print_info: n_head                = [48, 72, 72, 72, 48, 72, 72, 72, 48, 72, 72, 72, 48, 72, 72, 72, 48, 72, 72, 72, 48, 72, 72, 72, 48, 72, 72, 72, 48, 72, 72, 72, 48, 72, 72, 72, 48, 72, 72, 72, 48, 72, 72, 72, 48, 72, 72, 72]
+0.00.434.743 I print_info: n_head_kv             = 8
+0.00.434.743 I print_info: n_rot                 = 64
+0.00.434.744 I print_info: n_swa                 = 512
+0.00.434.745 I print_info: is_swa_any            = 1
+0.00.434.746 I print_info: n_embd_head_k         = 128
+0.00.434.746 I print_info: n_embd_head_v         = 128
+0.00.434.768 I print_info: n_gqa                 = [6, 9, 9, 9, 6, 9, 9, 9, 6, 9, 9, 9, 6, 9, 9, 9, 6, 9, 9, 9, 6, 9, 9, 9, 6, 9, 9, 9, 6, 9, 9, 9, 6, 9, 9, 9, 6, 9, 9, 9, 6, 9, 9, 9, 6, 9, 9, 9]
+0.00.434.771 I print_info: n_embd_k_gqa          = 1024
+0.00.434.774 I print_info: n_embd_v_gqa          = 1024
+0.00.434.777 I print_info: f_norm_eps            = 0.0e+00
+0.00.434.780 I print_info: f_norm_rms_eps        = 1.0e-06
+0.00.434.781 I print_info: f_clamp_kqv           = 0.0e+00
+0.00.434.781 I print_info: f_max_alibi_bias      = 0.0e+00
+0.00.434.782 I print_info: f_logit_scale         = 0.0e+00
+0.00.434.783 I print_info: f_attn_scale          = 0.0e+00
+0.00.434.786 I print_info: f_attn_value_scale    = 0.0000
+0.00.434.790 I print_info: n_ff                  = 12288
+0.00.434.791 I print_info: n_expert              = 256
+0.00.434.792 I print_info: n_expert_used         = 10
+0.00.434.792 I print_info: n_expert_groups       = 0
+0.00.434.793 I print_info: n_group_used          = 0
+0.00.434.793 I print_info: causal attn           = 1
+0.00.434.794 I print_info: pooling type          = -1
+0.00.434.795 I print_info: rope type             = 2
+0.00.434.795 I print_info: rope scaling          = yarn
+0.00.434.796 I print_info: freq_base_train       = 500000.0
+0.00.434.799 I print_info: freq_scale_train      = 0.03125
+0.00.434.800 I print_info: freq_base_swa         = 10000.0
+0.00.434.802 I print_info: freq_scale_swa        = 1
+0.00.434.802 I print_info: n_embd_head_k_swa     = 128
+0.00.434.803 I print_info: n_embd_head_v_swa     = 128
+0.00.434.803 I print_info: n_rot_swa             = 128
+0.00.434.804 I print_info: n_ctx_orig_yarn       = 8192
+0.00.434.805 I print_info: rope_yarn_log_mul     = 0.0000
+0.00.434.805 I print_info: rope_finetuned        = unknown
+0.00.434.808 I print_info: model type            = 118B.A8B
+0.00.434.809 I print_info: model params          = 117.56 B
+0.00.434.810 I print_info: general.name          = Laguna-S-2.1
+0.00.434.816 I print_info: vocab type            = BPE
+0.00.434.817 I print_info: n_vocab               = 100352
+0.00.434.818 I print_info: n_merges              = 100026
+0.00.434.819 I print_info: BOS token             = 2 '〈|EOS|〉'
+0.00.434.820 I print_info: EOS token             = 2 '〈|EOS|〉'
+0.00.434.821 I print_info: EOT token             = 24 '</assistant>'
+0.00.434.821 I print_info: UNK token             = 0 '〈|UNK|〉'
+0.00.434.823 I print_info: SEP token             = 8 '〈|SEP|〉'
+0.00.434.823 I print_info: PAD token             = 9 '〈|PAD|〉'
+0.00.434.824 I print_info: MASK token            = 12 '〈|MASK|〉'
+0.00.434.825 I print_info: LF token              = 268 'Ċ'
+0.00.434.826 I print_info: EOG token             = 2 '〈|EOS|〉'
+0.00.434.827 I print_info: EOG token             = 24 '</assistant>'
+0.00.434.827 I print_info: max token length      = 830
+0.00.434.830 I load_tensors: loading model tensors, this can take a while... (mmap = false, direct_io = false)
+CUDA hybrid MoE: pinned 41.91 GiB of expert RAM
+0.05.182.917 I load_tensors: offloading output layer to GPU
+0.05.182.928 I load_tensors: offloading 47 repeating layers to GPU
+0.05.182.928 I load_tensors: offloaded 49/49 layers to GPU
+0.05.182.931 I load_tensors:          CPU model buffer size =   241.17 MiB
+0.05.182.933 I load_tensors:        CUDA0 model buffer size =  3028.68 MiB
+0.05.182.934 I load_tensors: CUDA_MOE_HOST model buffer size = 42912.00 MiB
+0.21.928.465 I cmn  common_init_: added 〈|EOS|〉 logit bias = -inf
+0.21.928.476 I cmn  common_init_: added </assistant> logit bias = -inf
+0.21.929.617 I llama_context: constructing llama_context
+0.21.929.624 I llama_context: n_seq_max     = 1
+0.21.929.625 I llama_context: n_ctx         = 131072
+0.21.929.625 I llama_context: n_ctx_seq     = 131072
+0.21.929.626 I llama_context: n_batch       = 2048
+0.21.929.626 I llama_context: n_ubatch      = 2048
+0.21.929.627 I llama_context: causal_attn   = 1
+0.21.929.628 I llama_context: flash_attn    = enabled
+0.21.929.628 I llama_context: kv_unified    = false
+0.21.929.632 I llama_context: freq_base     = 500000.0
+0.21.929.635 I llama_context: freq_scale    = 0.03125
+0.21.929.635 I llama_context: n_rs_seq      = 0
+0.21.929.636 I llama_context: n_outputs_max = 1
+0.21.929.637 I llama_context: n_ctx_seq (131072) < n_ctx_train (262144) -- the full capacity of the model will not be utilized
+0.21.930.313 I llama_context:  CUDA_Host  output buffer size =     0.38 MiB
+0.21.930.320 I llama_kv_cache_iswa: creating non-SWA KV cache, size = 131072 cells
+0.21.941.384 I llama_kv_cache:      CUDA0 KV buffer size =  3264.00 MiB
+0.22.177.735 I llama_kv_cache: size = 3264.00 MiB (131072 cells,  12 layers,  1/1 seqs), K (q8_0): 1632.00 MiB, V (q8_0): 1632.00 MiB
+0.22.177.757 I llama_kv_cache: attn_rot_k = 1, n_embd_head_k_all = 128
+0.22.177.758 I llama_kv_cache: attn_rot_v = 1, n_embd_head_k_all = 128
+0.22.177.799 I llama_kv_cache_iswa: creating     SWA KV cache, size = 2560 cells
+0.22.178.711 I llama_kv_cache:      CUDA0 KV buffer size =   191.25 MiB
+0.22.185.330 I llama_kv_cache: size =  191.25 MiB (  2560 cells,  36 layers,  1/1 seqs), K (q8_0):   95.62 MiB, V (q8_0):   95.62 MiB
+0.22.185.346 I llama_kv_cache: attn_rot_k = 1, n_embd_head_k_all = 128
+0.22.185.347 I llama_kv_cache: attn_rot_v = 1, n_embd_head_k_all = 128
+0.22.185.389 I sched_reserve: reserving ...
+0.22.186.626 I resolve_fused_ops: resolving fused Gated Delta Net support:
+0.22.189.195 I resolve_fused_ops: fused Gated Delta Net (autoregressive) enabled
+0.22.191.243 I resolve_fused_ops: fused Gated Delta Net (chunked) enabled
+0.22.191.248 I resolve_fused_ops: resolving fused Lightning Indexer support:
+0.22.193.368 I resolve_fused_ops: Lightning Indexer enabled
+0.22.269.027 I sched_reserve:      CUDA0 compute buffer size =  1202.23 MiB
+0.22.269.040 I sched_reserve:  CUDA_Host compute buffer size =   570.23 MiB
+0.22.269.040 I sched_reserve: graph nodes  = 4335
+0.22.269.041 I sched_reserve: graph splits = 2
+0.22.269.042 I sched_reserve: reserve took 83.65 ms, sched copies = 1
+0.22.346.941 I CUDA hybrid MoE: 5120 MiB cache, 47 layers, 16 CPU threads, decode <= 32 tokens
+0.22.346.951 I CUDA hybrid MoE adaptive cache: cap prefill history at 8 tokens on decode entry; decode decay 0.97 per evaluated token; promotion limit 1 per layer call
+0.22.346.955 I CUDA hybrid MoE profile: per-mode windows of 752 layer calls; tokens count target evaluations, not accepted output tokens. CPU wall time overlaps GPU work; waits include preceding queued work. These are not additive GPU timings.
+0.22.347.792 I CUDA hybrid MoE: blk.1.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.355.715 I CUDA hybrid MoE: blk.2.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.362.614 I CUDA hybrid MoE: blk.3.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.369.132 I CUDA hybrid MoE: blk.4.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.375.776 I CUDA hybrid MoE: blk.5.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.384.108 I CUDA hybrid MoE: blk.6.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.391.346 I CUDA hybrid MoE: blk.7.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.398.566 I CUDA hybrid MoE: blk.8.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.405.400 I CUDA hybrid MoE: blk.9.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.413.399 I CUDA hybrid MoE: blk.10.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.422.044 I CUDA hybrid MoE: blk.11.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.428.428 I CUDA hybrid MoE: blk.12.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.436.554 I CUDA hybrid MoE: blk.13.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.444.034 I CUDA hybrid MoE: blk.14.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.451.029 I CUDA hybrid MoE: blk.15.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.458.066 I CUDA hybrid MoE: blk.16.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.465.043 I CUDA hybrid MoE: blk.17.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.472.538 I CUDA hybrid MoE: blk.18.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.481.233 I CUDA hybrid MoE: blk.19.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.488.335 I CUDA hybrid MoE: blk.20.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.496.086 I CUDA hybrid MoE: blk.21.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.503.313 I CUDA hybrid MoE: blk.22.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.511.590 I CUDA hybrid MoE: blk.23.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.518.509 I CUDA hybrid MoE: blk.24.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.525.389 I CUDA hybrid MoE: blk.25.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.532.702 I CUDA hybrid MoE: blk.26.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.539.594 I CUDA hybrid MoE: blk.27.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.546.644 I CUDA hybrid MoE: blk.28.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.553.434 I CUDA hybrid MoE: blk.29.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.559.753 I CUDA hybrid MoE: blk.30.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.567.729 I CUDA hybrid MoE: blk.31.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.575.652 I CUDA hybrid MoE: blk.32.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.582.730 I CUDA hybrid MoE: blk.33.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.590.057 I CUDA hybrid MoE: blk.34.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.597.659 I CUDA hybrid MoE: blk.35.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.605.086 I CUDA hybrid MoE: blk.36.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.613.077 I CUDA hybrid MoE: blk.37.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.620.332 I CUDA hybrid MoE: blk.38.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.627.761 I CUDA hybrid MoE: blk.39.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.635.276 I CUDA hybrid MoE: blk.40.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.643.504 I CUDA hybrid MoE: blk.41.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.650.562 I CUDA hybrid MoE: blk.42.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.658.661 I CUDA hybrid MoE: blk.43.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.666.037 I CUDA hybrid MoE: blk.44.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.673.438 I CUDA hybrid MoE: blk.45.ffn_gate_exps.weight, 29/256 expert triplets cached
+0.22.681.088 I CUDA hybrid MoE: blk.46.ffn_gate_exps.weight, 23/256 expert triplets cached
+0.22.688.421 I CUDA hybrid MoE: blk.47.ffn_gate_exps.weight, 20/256 expert triplets cached
+0.22.710.990 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 131072, kv_unified = 'false'
+0.22.711.022 I spec common_specu: no implementations specified for speculative decoding
+0.22.711.035 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 131072
+0.22.711.219 I srv    load_model: prompt cache is disabled - use `--cache-ram N` to enable it
+0.22.711.220 I srv    load_model: for more info see https://github.com/ggml-org/llama.cpp/pull/16391
+0.22.711.221 I srv    load_model: context checkpoints enabled, max = 32, min spacing = 8192
+0.22.711.254 W srv          init: --cache-idle-slots requires --cache-ram, disabling
+0.22.737.551 I srv          init: init: chat template, example_format: '<system>You are a helpful assistant</system>
+<user>Hello</user>
+<assistant><think></think>Hi there</assistant>
+<user>How are you?</user>
+<assistant><think>'
+0.22.755.446 I srv          init: init: chat template, thinking = 1
+0.22.755.460 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+0.22.755.488 I srv  llama_server: model loaded
+0.22.755.491 I srv  llama_server: listening on http://127.0.0.1:1235
+0.22.755.512 I srv  update_slots: all slots are idle
+0.23.691.481 I srv  server_strea: conv_id= (empty=1)
+0.23.691.816 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.23.691.876 I slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> top-k -> ?typical -> ?top-p -> ?min-p -> ?xtc -> temp-ext -> dist 
+0.23.691.897 I slot launch_slot_: id  0 | task -1 | sampler params: 
+	repeat_last_n = 64, repeat_penalty = 1.000, frequency_penalty = 0.000, presence_penalty = 0.000
+	dry_multiplier = 0.000, dry_base = 1.750, dry_allowed_length = 2, dry_penalty_last_n = 131072
+	top_k = 20, top_p = 1.000, min_p = 0.000, xtc_probability = 0.000, xtc_threshold = 0.100, typical_p = 1.000, top_n_sigma = -1.000, temp = 0.000
+	mirostat = 0, mirostat_lr = 0.100, mirostat_ent = 5.000, adaptive_target = -1.000, adaptive_decay = 0.900
+0.23.691.901 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.23.691.918 I slot  operator (): id  0 | task 0 | new prompt, n_ctx_slot = 131072, n_keep = 0, task.n_tokens = 8192
+0.23.691.925 I slot  operator (): id  0 | task 0 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.32.402.567 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   2048, progress = 0.25, t =   8.71 s / 235.11 tokens per second
+0.32.402.577 I slot  operator (): id  0 | task 0 | cached n_tokens = 2048, memory_seq_rm [2048, end)
+0.39.435.553 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   4096, progress = 0.50, t =  15.74 s / 260.17 tokens per second
+0.39.435.560 I slot  operator (): id  0 | task 0 | cached n_tokens = 4096, memory_seq_rm [4096, end)
+0.46.997.520 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   6144, progress = 0.75, t =  23.31 s / 263.63 tokens per second
+0.46.997.532 I slot  operator (): id  0 | task 0 | cached n_tokens = 6144, memory_seq_rm [6144, end)
+0.47.208.528 I slot create_check: id  0 | task 0 | created context checkpoint 1 of 32 (pos_min = 3584, pos_max = 6143, n_tokens = 6144, size = 38.257 MiB)
+0.54.941.371 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   8188, progress = 1.00, t =  31.25 s / 262.02 tokens per second
+0.54.941.382 I slot  operator (): id  0 | task 0 | cached n_tokens = 8188, memory_seq_rm [8188, end)
+0.54.942.583 I slot init_sampler: id  0 | task 0 | init sampler, took 1.09 ms, tokens: text = 8192, total = 8192
+0.55.159.772 I slot create_check: id  0 | task 0 | created context checkpoint 2 of 32 (pos_min = 5628, pos_max = 8187, n_tokens = 8188, size = 38.257 MiB)
+0.57.166.777 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=20.0 cache_hits=2581 cache_misses=6819 h2d_weight_MiB=2682.00 cpu_fused_ms=785.32 entry_event_wait_ms=510.85 readback_wait_ms=441.46
+0.59.034.144 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=16.0 cache_hits=3094 cache_misses=4426 h2d_weight_MiB=2625.75 cpu_fused_ms=503.43 entry_event_wait_ms=415.72 readback_wait_ms=427.82
+1.00.775.114 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=16.0 cache_hits=3663 cache_misses=3857 h2d_weight_MiB=2243.79 cpu_fused_ms=438.18 entry_event_wait_ms=343.05 readback_wait_ms=401.57
+1.02.493.133 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=16.0 cache_hits=3647 cache_misses=3873 h2d_weight_MiB=2095.88 cpu_fused_ms=441.82 entry_event_wait_ms=331.35 readback_wait_ms=403.76
+1.04.198.353 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=16.0 cache_hits=3467 cache_misses=4053 h2d_weight_MiB=1961.02 cpu_fused_ms=459.53 entry_event_wait_ms=308.49 readback_wait_ms=393.61
+1.04.307.754 I slot print_timing: id  0 | task 0 | prompt eval time =   31767.16 ms /  8192 tokens (    3.88 ms per token,   257.88 tokens per second)
+1.04.307.769 I slot print_timing: id  0 | task 0 |        eval time =    8848.66 ms /    80 tokens (  110.61 ms per token,     9.04 tokens per second)
+1.04.307.771 I slot print_timing: id  0 | task 0 |       total time =   40615.82 ms /  8272 tokens
+1.04.307.773 I slot print_timing: id  0 | task 0 |    graphs reused =         78
+1.04.308.199 I slot      release: id  0 | task 0 | stop processing: n_tokens = 8271, truncated = 0
+1.04.308.214 I srv  update_slots: all slots are idle
+Laguna server exited with code -1. Read E:\poolside\logs\laguna-20261010-184442.log.
+At E:\poolside\launch.ps1:108 char:32
++ ... DE -ne 0) { throw "Laguna server exited with code $LASTEXITCODE. Read ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Laguna server e...010-184442.log.:String) [], RuntimeException
+    + FullyQualifiedErrorId : Laguna server exited with code -1. Read E:\poolside\logs\laguna-20261010-184442.log.
+ 

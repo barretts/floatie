@@ -1,0 +1,11 @@
+{
+  "wrapper_pid": 15584,
+  "stdout": "E:\\poolside\\logs\\core8k-internal-timings-20261010-232613.stdout.log",
+  "stderr": "E:\\poolside\\logs\\core8k-internal-timings-20261010-232613.stderr.log",
+  "context": 8192,
+  "expert_cache_mib": 6144,
+  "batch": 8192,
+  "draft_max": 4,
+  "draft_kv": "q8_0",
+  "gpu_misses_per_token": 0
+}

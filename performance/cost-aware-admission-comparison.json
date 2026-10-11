@@ -1,0 +1,44 @@
+{
+  "candidate_source_sha256": "6EBD1A186DC8B34E0031AB998C5C03F7C3DCC06BD8510A8031F919957D949493",
+  "candidate_receipt": "core8k-cost-aware-admission-dflash4-q8-cache6144.json",
+  "baseline_receipt": "core8k-cache-capacity-profile-dflash4-q8-cache6144.json",
+  "baseline_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 15764.457,
+    "prompt_per_token_ms": 1.9549177827380952,
+    "prompt_per_second": 511.5304637514632,
+    "predicted_n": 80,
+    "predicted_ms": 6894.923,
+    "predicted_per_token_ms": 86.1865375,
+    "predicted_per_second": 11.602740161130153,
+    "draft_n": 100,
+    "draft_n_accepted": 53
+  },
+  "candidate_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 15793.712,
+    "prompt_per_token_ms": 1.958545634920635,
+    "prompt_per_second": 510.58294592176935,
+    "predicted_n": 80,
+    "predicted_ms": 6659.547,
+    "predicted_per_token_ms": 83.2443375,
+    "predicted_per_second": 12.01282910083824,
+    "draft_n": 96,
+    "draft_n_accepted": 55
+  },
+  "candidate_checkpoints_correct": true,
+  "profile_window": {
+    "target_evaluations": 76,
+    "baseline_hits": 17056,
+    "candidate_hits": 17201,
+    "total_selections": 35720,
+    "baseline_cpu_ms": 1671.22,
+    "candidate_cpu_ms": 1638.23,
+    "baseline_h2d_mib": 670.5,
+    "candidate_h2d_mib": 803.23
+  },
+  "conclusion": "Cache hits changed by 0.406 percentage points. Draft acceptance and GPU clocks vary, so these runs do not establish an end-to-end speedup from admission.",
+  "clock_hold_measured": false
+}

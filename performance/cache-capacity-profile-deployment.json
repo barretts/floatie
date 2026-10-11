@@ -1,0 +1,7 @@
+{
+  "at": "2026-10-11T01:38:00.0394960-05:00",
+  "backup": "E:\\poolside\\backups\\before-cache-capacity-profile-20261011-013759",
+  "stopped_native_pid": 28756,
+  "source_sha256": "1E32271CBACD3ACABA0E174989F1578D0C14F9819EBD60E5CADC36BB8FA29B32",
+  "change": "Restore the previous decode implementation; collect actual per-expert frequencies to measure cache admission and capacity opportunities."
+}

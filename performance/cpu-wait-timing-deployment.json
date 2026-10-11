@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-10-11T03:41:27.5420030-05:00",
+  "stopped_native_pid": 28872,
+  "backup_directory": "E:\\poolside\\backups\\before-cpu-wait-timing-20261011-034127",
+  "source_sha256": "5D3BEA69E54B1A14BF58E9BEBE802A62F2F542EABD97B0F95875BDED5DE528F3",
+  "build_log": "E:\\poolside\\logs\\cpu-wait-timing-build-20261011-034127.log",
+  "build_status": "complete",
+  "reason": "Measure GPU idle interval after cached experts finish while CPU expert computation is running, using events only when existing profiling is enabled.",
+  "build_exit_code": 0,
+  "cuda_dll_sha256": "4E905EFA528A8AEC60002F5AD43B748056873905EADE6F46767549784E0A609C"
+}

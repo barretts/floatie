@@ -76,8 +76,9 @@ static void ggml_cuda_mul_mat_q_switch_type(ggml_backend_cuda_context & ctx, con
     }
 }
 
-void ggml_cuda_mul_mat_q(
-        ggml_backend_cuda_context & ctx, const ggml_tensor * src0, const ggml_tensor * src1, const ggml_tensor * ids, ggml_tensor * dst) {
+static void ggml_cuda_mul_mat_q_impl(
+        ggml_backend_cuda_context & ctx, const ggml_tensor * src0, const ggml_tensor * src1,
+        const ggml_tensor * ids, ggml_tensor * dst, int64_t max_expert_rows) {
     GGML_ASSERT(        src1->type == GGML_TYPE_F32);
     GGML_ASSERT(        dst->type  == GGML_TYPE_F32);
     GGML_ASSERT(!ids || ids->type  == GGML_TYPE_I32); // Optional, used for batched GGML_MUL_MAT_ID.
@@ -218,9 +219,20 @@ void ggml_cuda_mul_mat_q(
         ne00, ne01, ne_get_rows, s01, ne_get_rows, s1,
         ne02, ne02, s02, s12, s2,
         ne03, ne13, s03, s13, s3,
-        ne12};
+        max_expert_rows > 0 ? max_expert_rows : ne12};
 
     ggml_cuda_mul_mat_q_switch_type(ctx, args, stream);
+}
+
+void ggml_cuda_mul_mat_q(ggml_backend_cuda_context & ctx, const ggml_tensor * src0,
+        const ggml_tensor * src1, const ggml_tensor * ids, ggml_tensor * dst) {
+    ggml_cuda_mul_mat_q_impl(ctx, src0, src1, ids, dst, 0);
+}
+
+void ggml_cuda_mul_mat_q_bounded(ggml_backend_cuda_context & ctx, const ggml_tensor * src0,
+        const ggml_tensor * src1, const ggml_tensor * ids, ggml_tensor * dst, int64_t max_expert_rows) {
+    GGML_ASSERT(ids && max_expert_rows > 0 && max_expert_rows <= src1->ne[2]);
+    ggml_cuda_mul_mat_q_impl(ctx, src0, src1, ids, dst, max_expert_rows);
 }
 
 bool ggml_cuda_should_use_mmq(enum ggml_type type, int cc, int64_t ne11, int64_t n_experts) {

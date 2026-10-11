@@ -1,0 +1,103 @@
+{
+  "recorded_utc": "2026-10-11T01:07:44.210723+00:00",
+  "goal": "900 tokens/sec prefill and 30 tokens/sec generation with Laguna S 2.1 IQ3 at a nearly filled 131072-token context",
+  "user_instruction": "Get to a stopping point; finish current build and pause with servers stopped.",
+  "expert": "expert-performance-knuth",
+  "engine_base": "06f8cebd7fe728687be3d19f8bdedb70d75883af",
+  "backup": "E:\\poolside\\backups\\before-core-streaming-20261010-195640",
+  "implemented": [
+    "Bounded 4096-selection GPU tiles and weighted MoE output, preserving all top-10 experts.",
+    "Two 32-expert transfer banks on a nonblocking copy stream, with ready/consumed events.",
+    "Cached GPU experts plus up to one streamed unique miss per target token; remaining misses computed on CPU.",
+    "Cache admissions use already uploaded expert weights, avoiding redundant RAM copies.",
+    "Grouped AVX2 CPU kernels reuse IQ2_S/IQ3_S/IQ4_XS decoding across up to four tokens.",
+    "Launcher permits 8192-token batches and explicit draft KV type; default F16.",
+    "DFlash injection Hadamard rotation applied to both ordinary and sliding-window KV paths, based on upstream PR 25823; compiled into llama.dll."
+  ],
+  "new_diagnosis": {
+    "defect": "DFlash injection bypasses the Hadamard transform used by normal attention for quantized KV caches.",
+    "local_evidence": "E:/poolside/logs/fixed-dflash4-20261010-183650.stderr.log lines 356-357 show draft SWA K/V rotation enabled; old src/models/dflash.cpp injection had no rotation.",
+    "upstream": "https://github.com/ggml-org/llama.cpp/pull/25823",
+    "old_acceptance": "2/298 (0.00671); recovery after patch is not yet measured."
+  },
+  "last_valid_live_result": {
+    "receipt": "performance/submitted-adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json",
+    "prompt_tokens": 8192,
+    "output_tokens": 80,
+    "prefill_tokens_per_second": 242.12,
+    "generation_tokens_per_second": 10.63,
+    "correct_checkpoint_order": true,
+    "limits": "Previous engine only, 8k prompt; does not establish filled-128k speed."
+  },
+  "verification": {
+    "core_cpu_compile": "passed",
+    "core_cuda_compile": "passed",
+    "full_build": "passed (exit 0); final incremental build explicitly compiled models/dflash.cpp and linked llama.dll",
+    "new_inference": "not run; stopped at user request before new inference",
+    "build_logs": [
+      "E:/poolside/logs/build-20261010-195643.native.log",
+      "E:\\poolside\\logs\\build-20261010-200528.native.log",
+      "E:\\poolside\\logs\\build-20261010-200611.native.log"
+    ]
+  },
+  "resume": [
+    "Confirm compiled binaries match checkpoint hashes and no old server is running.",
+    "Run the existing 8192-token saved request to check the new hybrid path, then the saved 130278-token request with sufficient GPU headroom.",
+    "Verify DFlash Q8 KV acceptance after the injection-rotation fix; compare F16 if needed. Keep failed results.",
+    "Measure 8192-token prefill batches with bounded streaming. Investigate memory lending if the full attention mask prevents fitting.",
+    "Check model output, all three checkpoint codes and actual evaluated token counts. Full objective remains unproven."
+  ],
+  "workload_sha256": {
+    "checkpoint-request.json": "10d32464a7f2666e7c4d9e9814d1cdebddf41e35790f13b0590465f8ae9c6246",
+    "checkpoint-request-8192.json": "2da4526f5f7c12e372a9cb6d7c7bc1865e9516bc384492974dca044eb44c3eac"
+  },
+  "staged_source_sha256": {
+    "ggml/include/ggml.h": "25ba154dbad1b4c14fcaf61e2e0c79a3357a26523285ac221685210cd147e047",
+    "ggml/src/ggml-cpu/CMakeLists.txt": "8f1a2eb6a23108a5e3b3e503b4b4824b300745a60515ed85df67efcfdee18043",
+    "ggml/src/ggml-cpu/moe-iq.cpp": "6a746c8780829f8ad3f9b9df415d6ee59d154270995e41d4825e23aca941a290",
+    "ggml/src/ggml-cpu/moe-iq.h": "710eef81f8facd0f9cae057bd0170d511b5bafc5b9e8930729afd0951d801df4",
+    "ggml/src/ggml-cpu/moe.cpp": "592df5998d737e964492b2927cb9144e7201c08f8f0cea47420dc162ab39eff5",
+    "ggml/src/ggml-cuda/ggml-cuda.cu": "e45e5b45f63435067c6d07e79186c7743d28b356ef7f0849450772343f2561a3",
+    "ggml/src/ggml-cuda/moe-hybrid.cu": "8b40b508e47cd316f8aa66e09443a9ebaff98b21ebf2d360efdbaa59c806e2d9",
+    "ggml/src/ggml.c": "6a704969411f20f09b70b1fd17e529423d16a0d7b3f06e6927566654761204f0",
+    "src/llama-graph.cpp": "b51548f16fa7cb6b2039356410a757f80e0a3be5ef0f5dadda4adb728086845e",
+    "src/models/dflash.cpp": "44f6e34fbd77d3499c5b6e7ab26e8fe099c9815b8497a43a2698122d3a888423"
+  },
+  "installed_source_sha256": {
+    "ggml/include/ggml.h": "25ba154dbad1b4c14fcaf61e2e0c79a3357a26523285ac221685210cd147e047",
+    "ggml/src/ggml-cpu/CMakeLists.txt": "8f1a2eb6a23108a5e3b3e503b4b4824b300745a60515ed85df67efcfdee18043",
+    "ggml/src/ggml-cpu/moe-iq.cpp": "6a746c8780829f8ad3f9b9df415d6ee59d154270995e41d4825e23aca941a290",
+    "ggml/src/ggml-cpu/moe-iq.h": "710eef81f8facd0f9cae057bd0170d511b5bafc5b9e8930729afd0951d801df4",
+    "ggml/src/ggml-cpu/moe.cpp": "592df5998d737e964492b2927cb9144e7201c08f8f0cea47420dc162ab39eff5",
+    "ggml/src/ggml-cuda/ggml-cuda.cu": "e45e5b45f63435067c6d07e79186c7743d28b356ef7f0849450772343f2561a3",
+    "ggml/src/ggml-cuda/moe-hybrid.cu": "8b40b508e47cd316f8aa66e09443a9ebaff98b21ebf2d360efdbaa59c806e2d9",
+    "ggml/src/ggml.c": "6a704969411f20f09b70b1fd17e529423d16a0d7b3f06e6927566654761204f0",
+    "src/llama-graph.cpp": "b51548f16fa7cb6b2039356410a757f80e0a3be5ef0f5dadda4adb728086845e",
+    "src/models/dflash.cpp": "44f6e34fbd77d3499c5b6e7ab26e8fe099c9815b8497a43a2698122d3a888423"
+  },
+  "binary_sha256": {
+    "cublas64_12.dll": "e26c6a52b7df762633978b282d6f172d0085719b116ff1a8ca4c96ff5786e142",
+    "cublasLt64_12.dll": "0fa3aabf2e90f0ba3d331699b95305ee29fe1cda0f4d4b64c883e04f01a35b49",
+    "cudart64_12.dll": "3df50cf48718712f17b8c77ad72c45a1f43ff94781e302a4be7f1d7a9b66c746",
+    "ggml-base.dll": "58791a28df403a0c05148b88c96ad5b2d6cdf19d5d04284ef01618b33cfeab8a",
+    "ggml-cpu.dll": "23ed0ecad9e934c91421fea7a47cb10f8dfb227ef3d6c34b195f65b1cf98d589",
+    "ggml-cuda.dll": "7ef70e6f8786df45b69759c62e8fe9263ffed4042588730e33cc6ae13bfd1594",
+    "ggml.dll": "7bb6980dc6ee97e0c9cda7bb3abcc70a9f14837144810f8a81767e06e7449c7e",
+    "llama-common.dll": "5d87a820d39d3d20e08ba2b4d3277deb343597093da2bee7abf4f03cf6e32210",
+    "llama-server-impl.dll": "c5f780e4adf25f85b9eb74b4259e6e7d9c533bac69449d366035ecee2cba2658",
+    "llama-server.exe": "d1023d90121574d3a141e56e4dc352770ee1e1e9d20a44051662cf0e1cfe2db7",
+    "llama.dll": "ecb9e8b45fdaa8b7d9f785f76e245b5de3a1e559fb94ac5446506d73efdc015d",
+    "mtmd.dll": "451e66c6d405a6ee2f0ffa27177b3982f469aab89cf86029b7d7aa4486003b5f"
+  },
+  "launcher_sha256": {
+    "launch.ps1": "1187947d3b49ea96f51b5727882eb691795c42181e2bd78d570416de729d9daf",
+    "build.ps1": "5fb6ac6ca9ea1d90679af7b822d504fb938f5617227877470caa460aed5433c8"
+  },
+  "ports": {
+    "1234": "not listening",
+    "1235": "not listening"
+  },
+  "status": "compiled checkpoint; awaiting explicit resume; performance goal not achieved",
+  "backup_note": "Prior changed sources and core binaries preserved. The bin snapshot excludes llama-common.dll and llama-server-impl.dll; rebuild restored sources for a complete rollback.",
+  "servers": "Niko and Laguna stopped; both ports checked closed."
+}

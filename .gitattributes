@@ -1,0 +1,4 @@
+* text=auto
+/Start-Floatie-*.bat text eol=crlf
+*.gguf -text
+/performance/** -text

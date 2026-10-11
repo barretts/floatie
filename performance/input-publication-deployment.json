@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-10-11T04:33:09.3555528-05:00",
+  "stopped_native_pids": [
+    12100
+  ],
+  "backup_directory": "E:\\poolside\\backups\\before-input-publication-20261011-043308",
+  "old_source_sha256": "3191A8F8CFC6D98108AA49B1485D3F5CE871507F533259CCAA180BD4DFCE14F3",
+  "old_cuda_dll_sha256": "140CC1E7312FF2456D73B79AC160CA362750B6F1024B76102B45E3527FC1DEA1",
+  "source_sha256": "8327C40945ABC2DCF9FAD24CB9D4D50D5460B238A3DE8B3344FB947297B8FB7A",
+  "build_log": "E:\\poolside\\logs\\input-publication-build-20261011-043308.log",
+  "build_status": "complete",
+  "reason": "Publish decode inputs and routed IDs to existing pinned host buffers on the GPU stream, with a completion ticket and synchronization fallback. Candidate remains disabled by default.",
+  "build_exit_code": 0,
+  "cuda_dll_sha256": "4FD758684E079929B7D4DE48A500D19DED657AE69CB04B7717FC98405A6E445B"
+}

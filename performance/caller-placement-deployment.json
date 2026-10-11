@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-10-11T05:18:11.0691993-05:00",
+  "stopped_native_pids": [
+    9268
+  ],
+  "backup_directory": "E:\\poolside\\backups\\before-caller-placement-20261011-051811",
+  "build_log": "E:\\poolside\\logs\\caller-placement-build-20261011-051811.log",
+  "build_status": "complete",
+  "source_sha256": "1B75ACECCB3151A4F073E01DAD0AA09CDEF54A8E587CF29C14D865B7F09522B6",
+  "scope": "Profiling-only caller physical-core samples and worker affinity status. Core assignment and numerical work remain unchanged.",
+  "build_exit_code": 0,
+  "cpu_dll_sha256": "671CDC04A7554EF36BC2F13465F78DA67B684B251230A92CB38F80CDD63E91E2"
+}

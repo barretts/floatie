@@ -1,0 +1,26 @@
+﻿{
+    "as_of":  "2026-10-11T04:52:40.9950536-05:00",
+    "receipt":  "core8k-launch-span-profile-dflash4-q8-cache6144.json",
+    "launch_receipt":  "launch-span-profile-launch.json",
+    "timings":  {
+                    "cache_n":  0,
+                    "prompt_n":  8064,
+                    "prompt_ms":  10674.485,
+                    "prompt_per_token_ms":  1.3237208581349207,
+                    "prompt_per_second":  755.4462814833689,
+                    "predicted_n":  80,
+                    "predicted_ms":  5962.895,
+                    "predicted_per_token_ms":  74.53618750000001,
+                    "predicted_per_second":  13.416301980833135,
+                    "draft_n":  97,
+                    "draft_n_accepted":  53
+                },
+    "checkpoint_order_correct":  true,
+    "profile_lines":  [
+                          "0.38.642.600 I CUDA hybrid launch profile: calls=16 target_tokens=76 hybrid_nodes=752 ordinary_dispatches=23776 fused_nodes=12112 host_hybrid_ms=3201.74 host_outside_hybrid_ms=433.18",
+                          "0.38.660.064 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=76.0 cache_hits=17022 cache_misses=18698 h2d_weight_MiB=670.50 cpu_fused_ms=1695.32 entry_event_wait_ms=224.69 readback_wait_ms=965.99 host_prepare_submit_ms=284.11 gpu_cached_interval_ms=493.83 gpu_streamed_interval_ms=0.00 gpu_weight_copy_interval_ms=0.00 gpu_cache_refresh_interval_ms=128.10 gpu_attention_interval_ms=609.37 gpu_cpu_wait_interval_ms=1308.56 gpu_between_moe_readback_interval_ms=1149.14"
+                      ],
+    "scope":  "First 16 verification batches; 76 target evaluations per layer, 752 hybrid nodes. Host outside hybrid includes ordinary CUDA submission/fusion/bookkeeping, not just kernel launch. GPU between-MoE span includes internal submission gaps and input transfers. GPU attention intervals overlap that span. CPU and GPU timings overlap.",
+    "interpretation":  "Host outside hybrid is 433.18 ms and attention GPU intervals total 609.37 ms. CPU experts cost 1695.32 ms. Full target CUDA graph capture is disabled for hybrid nodes. Check decode attention mask bounds before implementing graph scheduling.",
+    "cpu_phase_profile_line":  "0.38.642.357 I CUDA hybrid MoE CPU profile: calls=752 jobs=18698 groups_1_2_3_4=(10501,2864,599,168) scheduled_weight_MiB=50605.76 setup_ms=65.88 gate_up_ms=990.19 down_quant_ms=20.26 down_ms=617.90"
+}

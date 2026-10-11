@@ -1,0 +1,135 @@
+{
+  "timestamp": "2026-10-11T14:02:54.181828-05:00",
+  "on_receipt": "performance\\core8k-research-iq2-rows4-on-dflash4-q8-cache6144.json",
+  "off_receipt": "performance\\core8k-research-iq2-rows4-off-dflash4-q8-cache6144.json",
+  "same_request": true,
+  "same_binaries": true,
+  "same_actual_output_tokens": false,
+  "same_output_length": true,
+  "same_draft_counts": true,
+  "all_checkpoint_codes_recalled": true,
+  "on_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 10759.501,
+    "prompt_per_token_ms": 1.3342635168650794,
+    "prompt_per_second": 749.4771365326328,
+    "predicted_n": 80,
+    "predicted_ms": 5539.063,
+    "predicted_per_token_ms": 69.2382875,
+    "predicted_per_second": 14.442875988231222,
+    "draft_n": 100,
+    "draft_n_accepted": 53
+  },
+  "off_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 10383.705,
+    "prompt_per_token_ms": 1.2876618303571428,
+    "prompt_per_second": 776.6014153907493,
+    "predicted_n": 80,
+    "predicted_ms": 5254.679,
+    "predicted_per_token_ms": 65.6834875,
+    "predicted_per_second": 15.224526560042964,
+    "draft_n": 100,
+    "draft_n_accepted": 53
+  },
+  "on_profile": {
+    "CUDA hybrid MoE CPU profile:": {
+      "calls": 752.0,
+      "jobs": 16229.0,
+      "setup_ms": 63.31,
+      "gate_up_ms": 1072.63,
+      "down_quant_ms": 24.81,
+      "down_ms": 605.11,
+      "groups_1_2_3_4": [
+        9918,
+        2346,
+        441,
+        74
+      ],
+      "scheduled_weight_MiB": 45812.41
+    },
+    "CUDA hybrid MoE profile [decode]:": {
+      "layer_calls": 752.0,
+      "target_tokens_per_layer": 76.0,
+      "cache_hits": 19491.0,
+      "cache_misses": 16229.0,
+      "cpu_fused_ms": 1767.14,
+      "entry_event_wait_ms": 241.75,
+      "readback_wait_ms": 563.81,
+      "host_prepare_submit_ms": 362.45,
+      "gpu_cached_interval_ms": 528.9,
+      "gpu_streamed_interval_ms": 0.0,
+      "gpu_weight_copy_interval_ms": 0.0,
+      "gpu_cache_refresh_interval_ms": 960.27,
+      "gpu_attention_interval_ms": 226.95,
+      "gpu_cpu_wait_interval_ms": 551.33,
+      "gpu_between_moe_readback_interval_ms": 782.53,
+      "h2d_weight_MiB": 5641.73
+    },
+    "CUDA hybrid MoE cache capacity [retrospective]:": {
+      "observed": 35720.0,
+      "actual_hits": 19491.0,
+      "best_fixed_capacity_hits": 24782.0,
+      "greedy_global_capacity_hits": 24948.0,
+      "global_experts_per_layer_min": 29.0,
+      "global_experts_per_layer_max": 62.0,
+      "budget_MiB": 8192.0
+    }
+  },
+  "off_profile": {
+    "CUDA hybrid MoE CPU profile:": {
+      "calls": 752.0,
+      "jobs": 16434.0,
+      "setup_ms": 59.98,
+      "gate_up_ms": 929.31,
+      "down_quant_ms": 25.12,
+      "down_ms": 622.15,
+      "groups_1_2_3_4": [
+        10124,
+        2387,
+        412,
+        75
+      ],
+      "scheduled_weight_MiB": 46559.48
+    },
+    "CUDA hybrid MoE profile [decode]:": {
+      "layer_calls": 752.0,
+      "target_tokens_per_layer": 76.0,
+      "cache_hits": 19286.0,
+      "cache_misses": 16434.0,
+      "cpu_fused_ms": 1637.8,
+      "entry_event_wait_ms": 247.33,
+      "readback_wait_ms": 584.78,
+      "host_prepare_submit_ms": 346.09,
+      "gpu_cached_interval_ms": 523.19,
+      "gpu_streamed_interval_ms": 0.0,
+      "gpu_weight_copy_interval_ms": 0.0,
+      "gpu_cache_refresh_interval_ms": 875.08,
+      "gpu_attention_interval_ms": 222.37,
+      "gpu_cpu_wait_interval_ms": 505.85,
+      "gpu_between_moe_readback_interval_ms": 758.61,
+      "h2d_weight_MiB": 5057.58
+    },
+    "CUDA hybrid MoE cache capacity [retrospective]:": {
+      "observed": 35720.0,
+      "actual_hits": 19286.0,
+      "best_fixed_capacity_hits": 24736.0,
+      "greedy_global_capacity_hits": 24910.0,
+      "global_experts_per_layer_min": 32.0,
+      "global_experts_per_layer_max": 72.0,
+      "budget_MiB": 8192.0
+    }
+  },
+  "generation_relative_percent": -5.1341535562964395,
+  "prefill_relative_percent": -3.4926898561559727,
+  "decision": "Reject and restore baseline: this four-output-row IQ2 candidate increased gate/up CPU time and showed no generation-speed gain.",
+  "limitations": [
+    "One fixed-request comparison, not a repeatability estimate.",
+    "Original packed weights were unchanged; floating reduction order changed and output token sequences differ.",
+    "Cache admission responds to measured CPU/GPU timing, so traffic/hits may differ even on identical settings.",
+    "The candidate reads the existing row layout; this is not a measurement of a persistent R4 repacked weight mirror.",
+    "CPU/GPU intervals overlap and must not be summed."
+  ]
+}

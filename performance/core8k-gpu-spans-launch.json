@@ -1,0 +1,12 @@
+{
+  "wrapper_pid": 2672,
+  "stdout": "E:\\poolside\\logs\\core8k-gpu-spans-20261010-234610.stdout.log",
+  "stderr": "E:\\poolside\\logs\\core8k-gpu-spans-20261010-234610.stderr.log",
+  "context": 8192,
+  "expert_cache_mib": 6144,
+  "batch": 8192,
+  "draft_max": 4,
+  "draft_kv": "q8_0",
+  "gpu_misses_per_token": 0,
+  "gpu_spans": "Replay GPU-only spans around hybrid expert operations during decode."
+}

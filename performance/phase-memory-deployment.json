@@ -1,0 +1,12 @@
+{
+  "status": "deployed; awaiting compilation and live inference",
+  "change": "Release oversized compute buffers for hybrid decode; reduce expert cache before prefill and grow/populate it after prefill; maintain bulk-buffer VRAM headroom.",
+  "backup": "E:\\poolside\\backups\\before-phase-memory-20261011-001802",
+  "source_sha256": {
+    "ggml\\src\\ggml-cuda\\ggml-cuda.cu": "1238A6B91AB4860BD353918DA31888334E7E58453C4FB6209D2EE068012CD8C5",
+    "ggml\\src\\ggml-cuda\\moe-hybrid.cuh": "C1053A8F1EBF17D58E71B9D490179CEF9011A7D4CB0968E8A535A5387D027BC5",
+    "ggml\\src\\ggml-alloc.c": "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+    "ggml\\src\\ggml-backend.cpp": "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+    "ggml\\src\\ggml-cuda\\moe-hybrid.cu": "76B7EB36979D42BBC137C3AA9F86CE24FD11164B34ECEFCFC545451DE6221A16"
+  }
+}

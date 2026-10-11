@@ -1,0 +1,7 @@
+{
+  "at": "2026-10-11T01:25:46.6599263-05:00",
+  "backup": "E:\\poolside\\backups\\before-compact-decode-slots-20261011-012546",
+  "stopped_native_pid": 17284,
+  "source_sha256": "5DB0AB2C6A088B9882854DECE293D9B74AF81D08895BF43C10042B87C6F9D0CB",
+  "change": "Pack GPU decode selections within each token while preserving its CPU misses and original routing weights."
+}

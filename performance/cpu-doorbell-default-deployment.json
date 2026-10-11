@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-10-11T03:57:36.0669486-05:00",
+  "stopped_native_pid": 19124,
+  "source_sha256": "3191A8F8CFC6D98108AA49B1485D3F5CE871507F533259CCAA180BD4DFCE14F3",
+  "build_log": "E:\\poolside\\logs\\cpu-doorbell-default-build-20261011-035736.log",
+  "build_status": "complete",
+  "retained_candidate_comparison": "cpu-doorbell-comparison.json",
+  "backup_directory": "E:\\poolside\\backups\\before-cpu-doorbell-20261011-034953",
+  "build_exit_code": 0,
+  "cuda_dll_sha256": "140CC1E7312FF2456D73B79AC160CA362750B6F1024B76102B45E3527FC1DEA1"
+}

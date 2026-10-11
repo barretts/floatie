@@ -1,0 +1,83 @@
+{
+  "timestamp": "2026-10-11T13:57:00.7670502-05:00",
+  "backup": "E:\\poolside\\backups\\before-iq2-rows4-20261011-135658",
+  "sources": [
+    {
+      "file": "moe.cpp",
+      "baseline_sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+      "candidate_sha256": "250E3B97562D0D75F24969288E3275D8135E6A8F3D59E39CD6E19F68F916D723"
+    },
+    {
+      "file": "moe-iq.cpp",
+      "baseline_sha256": "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+      "candidate_sha256": "6FCF032AB07268F4F1B4BD2CD8A24CCFE2ED6C5A3C2F5BAF30B603C427675FD7"
+    },
+    {
+      "file": "moe-iq.h",
+      "baseline_sha256": "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+      "candidate_sha256": "E8FF919F2868DDF7938BB9E878E9AA2C6D425E71C795E78BDF38FF110427FAC7"
+    }
+  ],
+  "baseline_binaries": [
+    {
+      "file": "cublas64_12.dll",
+      "sha256": "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142"
+    },
+    {
+      "file": "cublasLt64_12.dll",
+      "sha256": "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49"
+    },
+    {
+      "file": "cudart64_12.dll",
+      "sha256": "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746"
+    },
+    {
+      "file": "ggml-base.dll",
+      "sha256": "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA"
+    },
+    {
+      "file": "ggml-cpu.dll",
+      "sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E"
+    },
+    {
+      "file": "ggml-cuda.dll",
+      "sha256": "465D152C90671D4CF70D9DCFD0B99A5135B7DB7D71691CFADBFEC45B68006EC2"
+    },
+    {
+      "file": "ggml.dll",
+      "sha256": "47DD2E6AE7538D27DC4F94C4EC5569EBEA4E78579D72A34BEF1F8468A798DBA2"
+    },
+    {
+      "file": "llama-common.dll",
+      "sha256": "4CE650D500D57370A8DBDA23C04CC022EA6F3019ED08B7CE33915F655475B5DD"
+    },
+    {
+      "file": "llama-server-impl.dll",
+      "sha256": "515F3B1C23DC1F91C61BFA3A3E364F5400F651FA679DF080E22A162E10EB4160"
+    },
+    {
+      "file": "llama-server.exe",
+      "sha256": "56A839707A3EF9DCA966905221357F71EF4A37DBCF54574CD32F432E4B834A7E"
+    },
+    {
+      "file": "llama.dll",
+      "sha256": "03AF4A1A15ABEA96C088BDB06622EFDFE905ED853B4855A2A7CBDB5658DCF718"
+    },
+    {
+      "file": "mtmd.dll",
+      "sha256": "53AA3EB603D218828CE5E3F393559471092133080900B1CACDE645614650B3B1"
+    }
+  ],
+  "stopped_servers": [
+    {
+      "ProcessId": 14368,
+      "ExecutablePath": "E:\\poolside\\build\\bin\\llama-server.exe"
+    }
+  ],
+  "build_log": "E:\\poolside\\logs\\iq2-rows4-build-20261011-135658.log",
+  "build_target": "ggml-cpu",
+  "change": "Four output-row IQ2 AVX2 computation on original packed weights; default-off flag GGML_CUDA_MOE_IQ2_ROWS4.",
+  "status": "build complete; awaiting live inference",
+  "build_exit_code": 0,
+  "cpu_binary_sha256": "910BFFE26B40EF7B40315AD7D24F54C2E97A49C54892E7DD1559B05E0B19FE0C"
+}

@@ -1,0 +1,64 @@
+﻿{
+    "as_of":  "2026-10-11T03:57:29.0464442-05:00",
+    "control_receipt":  "core8k-cpu-doorbell-control-dflash4-q8-cache6144.json",
+    "candidate_receipt":  "core8k-cpu-doorbell-dflash4-q8-cache6144.json",
+    "same_request":  true,
+    "same_source":  true,
+    "same_cuda_binary":  true,
+    "same_common_binary":  true,
+    "same_generated_tokens":  true,
+    "before_timings":  {
+                           "cache_n":  0,
+                           "prompt_n":  8064,
+                           "prompt_ms":  10938.204,
+                           "prompt_per_token_ms":  1.356424107142857,
+                           "prompt_per_second":  737.2325475004855,
+                           "predicted_n":  80,
+                           "predicted_ms":  6764.212,
+                           "predicted_per_token_ms":  84.55265,
+                           "predicted_per_second":  11.826950426745938,
+                           "draft_n":  100,
+                           "draft_n_accepted":  53
+                       },
+    "after_timings":  {
+                          "cache_n":  0,
+                          "prompt_n":  8064,
+                          "prompt_ms":  11212.398,
+                          "prompt_per_token_ms":  1.3904263392857141,
+                          "prompt_per_second":  719.2038670050779,
+                          "predicted_n":  80,
+                          "predicted_ms":  6117.93,
+                          "predicted_per_token_ms":  76.474125,
+                          "predicted_per_second":  13.07631829720183,
+                          "draft_n":  100,
+                          "draft_n_accepted":  53
+                      },
+    "generation_percent_change":  10.563736427190238361871236950,
+    "generation_ms_saved":  646.282,
+    "gpu_telemetry":  {
+                          "off":  {
+                                      "scope":  "Coarse busy samples with GPU memory used \u003e= 14000 MiB and utilization \u003e= 30%. This filters for the loaded decode cache; it is not an exact per-token or generation-only interval.",
+                                      "samples":  56,
+                                      "median_sm_mhz":  1335,
+                                      "median_memory_mhz":  8751,
+                                      "median_power_w":  34.995000000000005,
+                                      "p2_samples":  30,
+                                      "p3_samples":  26
+                                  },
+                          "on":  {
+                                     "scope":  "Coarse busy samples with GPU memory used \u003e= 14000 MiB and utilization \u003e= 30%. This filters for the loaded decode cache; it is not an exact per-token or generation-only interval.",
+                                     "samples":  55,
+                                     "median_sm_mhz":  1530,
+                                     "median_memory_mhz":  8751,
+                                     "median_power_w":  42.57,
+                                     "p2_samples":  53,
+                                     "p3_samples":  2
+                                 }
+                      },
+    "profile_scope":  "Both runs used Profile and DebugGpu, same binary and saved 8064-token request; only CPU_DOORBELL was changed. GPU telemetry ran at 250 ms in both runs.",
+    "caveats":  [
+                    "One run in each condition, unlocked GPU clocks, and cache-hit trajectories differ.",
+                    "Only checkpoint recall and generated token equality were checked here; 128k and all inference features remain unverified.",
+                    "The feature uses mapped CPU result reads and a bounded completion wait, so GPU activity and memory clocks can change."
+                ]
+}

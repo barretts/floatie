@@ -1,0 +1,68 @@
+﻿{
+    "timestamp":  "2026-10-11T07:24:39.9731966-05:00",
+    "request_sha256":  "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+    "same_request":  true,
+    "same_cpu_binary":  true,
+    "same_cuda_binary":  true,
+    "same_llama_binary":  true,
+    "on_timings":  {
+                       "cache_n":  0,
+                       "prompt_n":  8064,
+                       "prompt_ms":  10857.428,
+                       "prompt_per_token_ms":  1.346407242063492,
+                       "prompt_per_second":  742.7173360025967,
+                       "predicted_n":  80,
+                       "predicted_ms":  6093.773,
+                       "predicted_per_token_ms":  76.1721625,
+                       "predicted_per_second":  13.128155577833308,
+                       "draft_n":  100,
+                       "draft_n_accepted":  53
+                   },
+    "off_timings":  {
+                        "cache_n":  0,
+                        "prompt_n":  8064,
+                        "prompt_ms":  10290.038,
+                        "prompt_per_token_ms":  1.2760463789682541,
+                        "prompt_per_second":  783.6705753661939,
+                        "predicted_n":  80,
+                        "predicted_ms":  4748.556,
+                        "predicted_per_token_ms":  59.35695,
+                        "predicted_per_second":  16.84722682011121,
+                        "draft_n":  86,
+                        "draft_n_accepted":  56
+                    },
+    "on_checkpoints_correct":  true,
+    "off_checkpoints_correct":  true,
+    "same_output_tokens":  false,
+    "memory":  {
+                   "timestamp":  "2026-10-11T07:20:24.9632827-05:00",
+                   "free_ram_after_request_gib":  28.549571990966797,
+                   "prepared_tensor_count":  92,
+                   "preparation_lines":  [
+                                             "0.39.546.706 I Exact IQ2 CPU weight cache: prepared 92 tensors in 17797.24 ms before requests",
+                                             "0.41.164.077 I Exact IQ2 CPU weight cache: prepared 0 tensors in 0.00 ms before requests"
+                                         ]
+               },
+    "extra_weight_ram_gib":  38.8125,
+    "on_profile":  [
+                       "0.57.263.696 I CUDA hybrid MoE CPU profile: calls=752 jobs=18629 groups_1_2_3_4=(10719,2842,546,147) scheduled_weight_MiB=71190.84 setup_ms=70.59 gate_up_ms=1412.88 down_quant_ms=21.53 down_ms=685.30 predecoded_jobs=18141",
+                       "0.57.263.723 I CUDA hybrid MoE CPU placement: samples=1504 worker_core_samples=800 reserved_core_samples=704 caller_thread_id=31080 other_thread_samples=0 worker_affinity_successes=15 worker_affinity_failures=0",
+                       "0.57.263.921 I CUDA hybrid launch profile: calls=16 target_tokens=76 hybrid_nodes=752 ordinary_dispatches=23776 fused_nodes=12112 host_hybrid_ms=3335.62 host_outside_hybrid_ms=564.93",
+                       "0.57.283.137 I CUDA hybrid MoE cache capacity [retrospective]: observed=35720 actual_hits=17091 best_fixed_capacity_hits=24683 greedy_global_capacity_hits=24851 budget_MiB=8192 global_experts_per_layer_min=28 global_experts_per_layer_max=65; estimates use this past window, not future routing",
+                       "0.57.283.175 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=76.0 cache_hits=17091 cache_misses=18629 h2d_weight_MiB=670.50 cpu_fused_ms=2191.80 entry_event_wait_ms=226.06 readback_wait_ms=568.73 host_prepare_submit_ms=314.21 gpu_cached_interval_ms=507.22 gpu_streamed_interval_ms=0.00 gpu_weight_copy_interval_ms=0.00 gpu_cache_refresh_interval_ms=129.58 gpu_attention_interval_ms=248.05 gpu_cpu_wait_interval_ms=1795.80 gpu_between_moe_readback_interval_ms=872.44"
+                   ],
+    "off_profile":  [
+                        "0.44.887.442 I CUDA hybrid MoE CPU profile: calls=752 jobs=18582 groups_1_2_3_4=(10583,2803,603,146) scheduled_weight_MiB=50577.87 setup_ms=81.78 gate_up_ms=959.00 down_quant_ms=19.47 down_ms=623.42 predecoded_jobs=0",
+                        "0.44.887.468 I CUDA hybrid MoE CPU placement: samples=1504 worker_core_samples=448 reserved_core_samples=1056 caller_thread_id=12352 other_thread_samples=0 worker_affinity_successes=15 worker_affinity_failures=0",
+                        "0.44.887.683 I CUDA hybrid launch profile: calls=16 target_tokens=76 hybrid_nodes=752 ordinary_dispatches=23776 fused_nodes=12112 host_hybrid_ms=2768.42 host_outside_hybrid_ms=525.06",
+                        "0.44.905.402 I CUDA hybrid MoE cache capacity [retrospective]: observed=35720 actual_hits=17138 best_fixed_capacity_hits=24512 greedy_global_capacity_hits=24681 budget_MiB=8192 global_experts_per_layer_min=29 global_experts_per_layer_max=65; estimates use this past window, not future routing",
+                        "0.44.905.444 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=76.0 cache_hits=17138 cache_misses=18582 h2d_weight_MiB=670.50 cpu_fused_ms=1685.29 entry_event_wait_ms=222.34 readback_wait_ms=523.40 host_prepare_submit_ms=294.76 gpu_cached_interval_ms=517.15 gpu_streamed_interval_ms=0.00 gpu_weight_copy_interval_ms=0.00 gpu_cache_refresh_interval_ms=133.92 gpu_attention_interval_ms=222.62 gpu_cpu_wait_interval_ms=1302.22 gpu_between_moe_readback_interval_ms=783.91"
+                    ],
+    "decision":  "Reject the exact expanded CPU weight cache and restore all six source files and original binaries. It increases CPU phase time and does not improve generation.",
+    "limitations":  [
+                        "Scheduled byte totals describe kernel weight payload, not directly measured DRAM traffic. The result does not isolate memory bandwidth from instruction cost or page translation.",
+                        "Output tokens, acceptance and caller placement differ. No isolated throughput regression percentage is claimed.",
+                        "Checkpoint recall is correct; full API behavior and 128k performance remain unverified."
+                    ],
+    "next_candidate":  "Evaluate GPU cache admission limited by upload time that can overlap observed CPU work, instead of a fixed one-expert-per-16-target-token cadence. Preserve all routed computations and use only past routing/timing information."
+}

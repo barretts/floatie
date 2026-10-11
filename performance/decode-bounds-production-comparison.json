@@ -1,0 +1,37 @@
+﻿{
+    "as_of":  "2026-10-11T05:15:39.8961600-05:00",
+    "prior_receipt":  "core8k-contiguous-mask-production-dflash4-q8-cache6144.json",
+    "latest_receipt":  "core8k-decode-bounds-production-dflash4-q8-cache6144.json",
+    "prior_timings":  {
+                          "cache_n":  0,
+                          "prompt_n":  8064,
+                          "prompt_ms":  10403.054,
+                          "prompt_per_token_ms":  1.290061259920635,
+                          "prompt_per_second":  775.1569875538471,
+                          "predicted_n":  80,
+                          "predicted_ms":  5522.063,
+                          "predicted_per_token_ms":  69.0257875,
+                          "predicted_per_second":  14.487339242598283,
+                          "draft_n":  93,
+                          "draft_n_accepted":  54
+                      },
+    "latest_timings":  {
+                           "cache_n":  0,
+                           "prompt_n":  8064,
+                           "prompt_ms":  10762.35,
+                           "prompt_per_token_ms":  1.3346168154761906,
+                           "prompt_per_second":  749.2787355921337,
+                           "predicted_n":  80,
+                           "predicted_ms":  5478.732,
+                           "predicted_per_token_ms":  68.48415,
+                           "predicted_per_second":  14.601918838154521,
+                           "draft_n":  100,
+                           "draft_n_accepted":  53
+                       },
+    "prefill_change_percent":  -3.3384530330271633985435537700,
+    "generation_change_percent":  0.7908946814700828248393987900,
+    "scope":  "Same saved request and production configuration, with different CUDA binaries, output tokens, speculative acceptance/cache trajectories and unlocked clocks. This is not an isolated generation improvement comparison.",
+    "controlled_comparison":  "decode-bounds-comparison.json",
+    "attention_reduction_percent":  63.465302564271262,
+    "checkpoints_correct":  true
+}

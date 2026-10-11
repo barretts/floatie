@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-10-11T03:35:04.2830955-05:00",
+  "wrapper_pid": 24948,
+  "stdout_log": "E:\\poolside\\logs\\core8k-dflash-window-chunks-profile-20261011-033504.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-dflash-window-chunks-profile-20261011-033504.stderr.log",
+  "source_sha256": "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9",
+  "llama_common_dll_sha256": "F6D0457994F82EAB6C33AE2FFD091C6F1327A0638AB8C3F9A930596453370B58",
+  "llama_dll_sha256": "00151E0ED94A6EC45A2B8EF1365D8869B2C63B4B3A9684011FAD0F84502C83AD",
+  "cuda_dll_sha256": "62EBE1C83CFAC8F757FBED05E24B4C7F2480C55CC40CED01BD27BFC04EE64FA5",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "profile": true,
+  "timeline": false,
+  "verbosity": 5,
+  "pin_experts": true,
+  "adaptive_cache": true
+}

@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-10-11T05:52:00.9539194-05:00",
+  "stopped_native_pids": [
+    13744
+  ],
+  "backup_directory": "E:\\poolside\\backups\\before-hybrid-span-graphs-20261011-055200",
+  "build_log": "E:\\poolside\\logs\\hybrid-span-graphs-build-20261011-055200.log",
+  "build_status": "failed",
+  "source_sha256": "4BF9A6E825EBE13C82104023D663183201353421B327B2C62A5CC3031F4843C9",
+  "cpu_source_sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+  "scope": "Optional CUDA graph replay for GPU-only decode sections between CPU expert operations. Existing graph warmup, property checks, fusion dependency counts and direct fallback are reused.",
+  "build_exit_code": "-1",
+  "failure": "Windows DLL link: ggml_graph_view is internal and not exported. Replaced the call with a local slice retaining parent dependency counts."
+}

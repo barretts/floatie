@@ -1,0 +1,28 @@
+﻿{
+    "as_of":  "2026-10-11T05:33:29.4821934-05:00",
+    "receipt":  "core8k-caller-sibling-sampling-dflash4-q8-cache6144.json",
+    "timings":  {
+                    "cache_n":  0,
+                    "prompt_n":  8064,
+                    "prompt_ms":  10626.652,
+                    "prompt_per_token_ms":  1.3177891865079365,
+                    "prompt_per_second":  758.846718609022,
+                    "predicted_n":  80,
+                    "predicted_ms":  5567.58,
+                    "predicted_per_token_ms":  69.59475,
+                    "predicted_per_second":  14.368899952941854,
+                    "draft_n":  100,
+                    "draft_n_accepted":  53
+                },
+    "checkpoint_order_correct":  true,
+    "placement_line":  "0.39.905.786 I CUDA hybrid MoE CPU placement: samples=1504 worker_core_samples=924 reserved_core_samples=580 caller_thread_id=7208 other_thread_samples=0 worker_affinity_successes=15 worker_affinity_failures=0",
+    "samples":  1504,
+    "worker_physical_core_samples":  924,
+    "reserved_physical_core_samples":  580,
+    "worker_core_sample_percent":  61.436170212765958,
+    "worker_affinity_successes":  15,
+    "worker_affinity_failures":  0,
+    "scope":  "Samples immediately before gate/up and after down computation, using full sibling masks. Samples are not time-weighted CPU contention measurements.",
+    "decision":  "Compare scoped caller affinity to reserved physical core 0.",
+    "prior_sampler_correction":  "caller-placement-primary-sampler-analysis.json"
+}

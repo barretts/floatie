@@ -1,0 +1,183 @@
+[34m0.00.046.692[0m [32mI [0mcmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+[34m0.00.160.949[0m [32mI [0msrv          init: The UI is disabled
+[34m0.00.160.959[0m [32mI [0msrv          init: Use --ui/--no-ui (or deprecated --webui/--no-webui) to enable/disable
+[34m0.00.173.783[0m [32mI [0msrv    load_model: loading model 'E:\poolside\models\Laguna-S-2.1-UD-IQ3_S.gguf'
+[34m0.00.405.380[0m [35mW load: special_eos_id is not in special_eog_ids - the tokenizer config may be incorrect
+[0m[34m0.00.405.395[0m [35mW load: special_eot_id is not in special_eog_ids - the tokenizer config may be incorrect
+[0m[34m0.24.503.851[0m [32mI [0mcommon_speculative_init_result: DFlash working batch = 512, ubatch = 512
+[34m0.24.740.849[0m [35mW load: special_eos_id is not in special_eog_ids - the tokenizer config may be incorrect
+[0m[34m0.25.902.149[0m [32mI [0msrv    load_model: initializing, n_slots = 1, n_ctx_slot = 131072, kv_unified = 'false'
+[34m0.25.902.202[0m [32mI [0mcommon_speculative_impl_draft_dflash: adding speculative implementation 'draft-dflash'
+[34m0.25.902.206[0m [32mI [0mcommon_speculative_impl_draft_dflash: - n_max=4, n_min=0, p_min=0.00
+[34m0.25.902.207[0m [32mI [0mcommon_speculative_impl_draft_dflash: - block_size=16, mask_token_id=12, n_extract=6
+[34m0.25.916.895[0m [35mW srv          init: --cache-idle-slots requires --cache-ram, disabling
+[0m[34m0.25.940.320[0m [32mI [0msrv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+[34m0.25.940.349[0m [32mI [0msrv  llama_server: model loaded
+[34m0.25.940.351[0m [32mI [0msrv  llama_server: listening on http://127.0.0.1:1235
+[34m13.28.231.252[0m [32mI [0mslot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+[34m13.28.233.649[0m [32mI [0mslot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+[34m13.42.603.335[0m [32mI [0mprocess: injected 706 target rows for seq 0, skipped 4608 outside the 512-token window (426.99 ms)
+[34m13.42.603.406[0m [32mI [0mslot print_timing: id  0 | task 0 | prompt processing, n_tokens =   5314, progress = 0.39, t =  14.37 s / 369.81 tokens per second
+[34m13.57.135.734[0m [31mE init: the tokens of sequence 0 in the input batch have inconsistent sequence positions:
+ - the last position stored in the memory module of the context (i.e. the KV cache) for sequence 0 is X = 5313
+ - the tokens for sequence 0 in the input batch have a starting position of Y = 12482
+ it is required that the sequence positions remain consecutive: Y = X + 1
+[0m[34m13.57.135.748[0m [31mE decode: failed to initialize batch
+[0m[34m13.57.135.749[0m [31mE llama_decode: failed to decode, ret = -1
+[0m[34m13.57.135.750[0m [31mE process: llama_decode(ctx_dft) failed rc=-1 (n_tokens=512, offset=7168)
+[0m[34m13.57.135.753[0m [31mE srv        decode: failed to process speculative batch
+[0m[34m13.57.136.802[0m [31mE srv  update_slots: decode() failed: failed to process speculative batch
+[0m[34m13.57.136.811[0m [31mE srv    send_error: task id = 0, error: decode() failed: failed to process speculative batch
+[0m[34m13.57.136.821[0m [32mI [0mslot      release: id  0 | task 0 | stop processing: n_tokens = 13502, truncated = 0
+[34m13.57.136.852[0m [35mW srv          stop: cancel task, id_task = 0
+[0m[34m13.57.726.760[0m [32mI [0mslot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 1.000 (> 0.100 thold), f_keep = 1.000
+[34m13.57.729.065[0m [32mI [0mslot launch_slot_: id  0 | task 4 | processing task, is_child = 0
+[34m13.59.044.971[0m [31mE init: the tokens of sequence 0 in the input batch have inconsistent sequence positions:
+ - the last position stored in the memory module of the context (i.e. the KV cache) for sequence 0 is X = 5313
+ - the tokens for sequence 0 in the input batch have a starting position of Y = 13502
+ it is required that the sequence positions remain consecutive: Y = X + 1
+[0m[34m13.59.044.981[0m [31mE decode: failed to initialize batch
+[0m[34m13.59.044.983[0m [31mE llama_decode: failed to decode, ret = -1
+[0m[34m13.59.044.984[0m [31mE process: llama_decode(ctx_dft) failed rc=-1 (n_tokens=4, offset=0)
+[0m[34m13.59.044.987[0m [31mE srv        decode: failed to process speculative batch
+[0m[34m13.59.045.021[0m [31mE srv  update_slots: decode() failed: failed to process speculative batch
+[0m[34m13.59.045.025[0m [31mE srv    send_error: task id = 4, error: decode() failed: failed to process speculative batch
+[0m[34m13.59.045.042[0m [32mI [0mslot      release: id  0 | task 4 | stop processing: n_tokens = 13506, truncated = 0
+[34m13.59.045.070[0m [35mW srv          stop: cancel task, id_task = 4
+[0m[34m13.59.045.216[0m [32mI [0mslot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 839004938
+[34m13.59.045.362[0m [32mI [0mslot launch_slot_: id  0 | task 6 | processing task, is_child = 0
+[34m14.05.537.767[0m [32mI [0mslot print_timing: id  0 | task 6 | prompt processing, n_tokens =    378, progress = 0.99, t =   6.49 s / 58.22 tokens per second
+[34m14.07.459.788[0m [32mI [0mslot print_timing: id  0 | task 6 | prompt eval time =    7447.85 ms /   382 tokens (   19.50 ms per token,    51.29 tokens per second)
+[34m14.07.459.798[0m [32mI [0mslot print_timing: id  0 | task 6 |        eval time =     966.21 ms /    10 tokens (   96.62 ms per token,    10.35 tokens per second)
+[34m14.07.459.800[0m [32mI [0mslot print_timing: id  0 | task 6 |       total time =    8414.06 ms /   392 tokens
+[34m14.07.459.801[0m [32mI [0mslot print_timing: id  0 | task 6 |    graphs reused =          3
+[34m14.07.459.809[0m [32mI [0mslot print_timing: id  0 | task 6 | draft acceptance = 0.31250 (    5 accepted /    16 generated), mean len =  2.25
+[34m14.07.460.357[0m [32mI [0mslot      release: id  0 | task 6 | stop processing: n_tokens = 391, truncated = 0
+[34m14.07.460.508[0m [32mI [0mslot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 847420253
+[34m14.07.462.566[0m [32mI [0mslot launch_slot_: id  0 | task 9 | processing task, is_child = 0
+[34m14.16.174.942[0m [32mI [0mprocess: injected 706 target rows for seq 0, skipped 4608 outside the 512-token window (376.08 ms)
+[34m14.16.174.983[0m [32mI [0mslot print_timing: id  0 | task 9 | prompt processing, n_tokens =   5314, progress = 0.39, t =   8.71 s / 609.94 tokens per second
+[34m14.25.805.410[0m [31mE init: the tokens of sequence 0 in the input batch have inconsistent sequence positions:
+ - the last position stored in the memory module of the context (i.e. the KV cache) for sequence 0 is X = 5313
+ - the tokens for sequence 0 in the input batch have a starting position of Y = 12482
+ it is required that the sequence positions remain consecutive: Y = X + 1
+[0m[34m14.25.805.423[0m [31mE decode: failed to initialize batch
+[0m[34m14.25.805.425[0m [31mE llama_decode: failed to decode, ret = -1
+[0m[34m14.25.805.426[0m [31mE process: llama_decode(ctx_dft) failed rc=-1 (n_tokens=512, offset=7168)
+[0m[34m14.25.805.429[0m [31mE srv        decode: failed to process speculative batch
+[0m[34m14.25.805.463[0m [31mE srv  update_slots: decode() failed: failed to process speculative batch
+[0m[34m14.25.805.467[0m [31mE srv    send_error: task id = 9, error: decode() failed: failed to process speculative batch
+[0m[34m14.25.805.476[0m [32mI [0mslot      release: id  0 | task 9 | stop processing: n_tokens = 13502, truncated = 0
+[34m14.25.805.519[0m [35mW srv          stop: cancel task, id_task = 9
+[0m[34m14.26.386.234[0m [32mI [0mslot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 1.000 (> 0.100 thold), f_keep = 1.000
+[34m14.26.388.043[0m [32mI [0mslot launch_slot_: id  0 | task 18 | processing task, is_child = 0
+[34m14.27.440.452[0m [31mE init: the tokens of sequence 0 in the input batch have inconsistent sequence positions:
+ - the last position stored in the memory module of the context (i.e. the KV cache) for sequence 0 is X = 5313
+ - the tokens for sequence 0 in the input batch have a starting position of Y = 13502
+ it is required that the sequence positions remain consecutive: Y = X + 1
+[0m[34m14.27.440.462[0m [31mE decode: failed to initialize batch
+[0m[34m14.27.440.463[0m [31mE llama_decode: failed to decode, ret = -1
+[0m[34m14.27.440.465[0m [31mE process: llama_decode(ctx_dft) failed rc=-1 (n_tokens=4, offset=0)
+[0m[34m14.27.440.467[0m [31mE srv        decode: failed to process speculative batch
+[0m[34m14.27.440.503[0m [31mE srv  update_slots: decode() failed: failed to process speculative batch
+[0m[34m14.27.440.507[0m [31mE srv    send_error: task id = 18, error: decode() failed: failed to process speculative batch
+[0m[34m14.27.440.517[0m [32mI [0mslot      release: id  0 | task 18 | stop processing: n_tokens = 13506, truncated = 0
+[34m14.27.440.551[0m [35mW srv          stop: cancel task, id_task = 18
+[0m[34m14.28.391.020[0m [32mI [0mslot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 1.000 (> 0.100 thold), f_keep = 1.000
+[34m14.28.392.666[0m [32mI [0mslot launch_slot_: id  0 | task 21 | processing task, is_child = 0
+[34m14.28.392.700[0m [35mW slot  operator (): id  0 | task 21 | need to evaluate at least 1 token for each active slot (n_past = 13506, task.n_tokens() = 13506)
+[0m[34m14.28.392.701[0m [35mW slot  operator (): id  0 | task 21 | n_past was set to 13505
+[0m[34m14.28.593.480[0m [31mE init: the tokens of sequence 0 in the input batch have inconsistent sequence positions:
+ - the last position stored in the memory module of the context (i.e. the KV cache) for sequence 0 is X = 5313
+ - the tokens for sequence 0 in the input batch have a starting position of Y = 13505
+ it is required that the sequence positions remain consecutive: Y = X + 1
+[0m[34m14.28.593.492[0m [31mE decode: failed to initialize batch
+[0m[34m14.28.593.494[0m [31mE llama_decode: failed to decode, ret = -1
+[0m[34m14.28.593.495[0m [31mE process: llama_decode(ctx_dft) failed rc=-1 (n_tokens=1, offset=0)
+[0m[34m14.28.593.498[0m [31mE srv        decode: failed to process speculative batch
+[0m[34m14.28.593.531[0m [31mE srv  update_slots: decode() failed: failed to process speculative batch
+[0m[34m14.28.593.535[0m [31mE srv    send_error: task id = 21, error: decode() failed: failed to process speculative batch
+[0m[34m14.28.593.546[0m [32mI [0mslot      release: id  0 | task 21 | stop processing: n_tokens = 13506, truncated = 0
+[34m14.28.593.585[0m [35mW srv          stop: cancel task, id_task = 21
+[0m[34m14.29.172.410[0m [32mI [0mslot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 1.000 (> 0.100 thold), f_keep = 1.000
+[34m14.29.174.169[0m [32mI [0mslot launch_slot_: id  0 | task 24 | processing task, is_child = 0
+[34m14.29.174.201[0m [35mW slot  operator (): id  0 | task 24 | need to evaluate at least 1 token for each active slot (n_past = 13506, task.n_tokens() = 13506)
+[0m[34m14.29.174.202[0m [35mW slot  operator (): id  0 | task 24 | n_past was set to 13505
+[0m[34m14.29.326.950[0m [31mE init: the tokens of sequence 0 in the input batch have inconsistent sequence positions:
+ - the last position stored in the memory module of the context (i.e. the KV cache) for sequence 0 is X = 5313
+ - the tokens for sequence 0 in the input batch have a starting position of Y = 13505
+ it is required that the sequence positions remain consecutive: Y = X + 1
+[0m[34m14.29.326.962[0m [31mE decode: failed to initialize batch
+[0m[34m14.29.326.963[0m [31mE llama_decode: failed to decode, ret = -1
+[0m[34m14.29.326.965[0m [31mE process: llama_decode(ctx_dft) failed rc=-1 (n_tokens=1, offset=0)
+[0m[34m14.29.326.968[0m [31mE srv        decode: failed to process speculative batch
+[0m[34m14.29.327.006[0m [31mE srv  update_slots: decode() failed: failed to process speculative batch
+[0m[34m14.29.327.010[0m [31mE srv    send_error: task id = 24, error: decode() failed: failed to process speculative batch
+[0m[34m14.29.327.019[0m [32mI [0mslot      release: id  0 | task 24 | stop processing: n_tokens = 13506, truncated = 0
+[34m14.29.327.044[0m [35mW srv          stop: cancel task, id_task = 24
+[0m[34m14.31.015.753[0m [32mI [0mslot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 1.000 (> 0.100 thold), f_keep = 1.000
+[34m14.31.017.495[0m [32mI [0mslot launch_slot_: id  0 | task 27 | processing task, is_child = 0
+[34m14.31.017.526[0m [35mW slot  operator (): id  0 | task 27 | need to evaluate at least 1 token for each active slot (n_past = 13506, task.n_tokens() = 13506)
+[0m[34m14.31.017.527[0m [35mW slot  operator (): id  0 | task 27 | n_past was set to 13505
+[0m[34m14.31.163.539[0m [31mE init: the tokens of sequence 0 in the input batch have inconsistent sequence positions:
+ - the last position stored in the memory module of the context (i.e. the KV cache) for sequence 0 is X = 5313
+ - the tokens for sequence 0 in the input batch have a starting position of Y = 13505
+ it is required that the sequence positions remain consecutive: Y = X + 1
+[0m[34m14.31.163.549[0m [31mE decode: failed to initialize batch
+[0m[34m14.31.163.551[0m [31mE llama_decode: failed to decode, ret = -1
+[0m[34m14.31.163.552[0m [31mE process: llama_decode(ctx_dft) failed rc=-1 (n_tokens=1, offset=0)
+[0m[34m14.31.163.555[0m [31mE srv        decode: failed to process speculative batch
+[0m[34m14.31.163.593[0m [31mE srv  update_slots: decode() failed: failed to process speculative batch
+[0m[34m14.31.163.597[0m [31mE srv    send_error: task id = 27, error: decode() failed: failed to process speculative batch
+[0m[34m14.31.163.607[0m [32mI [0mslot      release: id  0 | task 27 | stop processing: n_tokens = 13506, truncated = 0
+[34m14.31.163.619[0m [35mW srv          stop: cancel task, id_task = 27
+[0m[34m14.31.741.411[0m [32mI [0mslot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 1.000 (> 0.100 thold), f_keep = 1.000
+[34m14.31.743.084[0m [32mI [0mslot launch_slot_: id  0 | task 30 | processing task, is_child = 0
+[34m14.31.743.122[0m [35mW slot  operator (): id  0 | task 30 | need to evaluate at least 1 token for each active slot (n_past = 13506, task.n_tokens() = 13506)
+[0m[34m14.31.743.123[0m [35mW slot  operator (): id  0 | task 30 | n_past was set to 13505
+[0m[34m14.31.884.855[0m [31mE init: the tokens of sequence 0 in the input batch have inconsistent sequence positions:
+ - the last position stored in the memory module of the context (i.e. the KV cache) for sequence 0 is X = 5313
+ - the tokens for sequence 0 in the input batch have a starting position of Y = 13505
+ it is required that the sequence positions remain consecutive: Y = X + 1
+[0m[34m14.31.884.868[0m [31mE decode: failed to initialize batch
+[0m[34m14.31.884.870[0m [31mE llama_decode: failed to decode, ret = -1
+[0m[34m14.31.884.871[0m [31mE process: llama_decode(ctx_dft) failed rc=-1 (n_tokens=1, offset=0)
+[0m[34m14.31.884.874[0m [31mE srv        decode: failed to process speculative batch
+[0m[34m14.31.884.914[0m [31mE srv  update_slots: decode() failed: failed to process speculative batch
+[0m[34m14.31.884.918[0m [31mE srv    send_error: task id = 30, error: decode() failed: failed to process speculative batch
+[0m[34m14.31.884.928[0m [32mI [0mslot      release: id  0 | task 30 | stop processing: n_tokens = 13506, truncated = 0
+[34m14.31.884.946[0m [35mW srv          stop: cancel task, id_task = 30
+[0m[34m18.32.439.701[0m [32mI [0mslot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.989 (> 0.100 thold), f_keep = 1.000
+[34m18.32.441.341[0m [32mI [0mslot launch_slot_: id  0 | task 33 | processing task, is_child = 0
+[34m18.37.983.602[0m [31mE init: the tokens of sequence 0 in the input batch have inconsistent sequence positions:
+ - the last position stored in the memory module of the context (i.e. the KV cache) for sequence 0 is X = 5313
+ - the tokens for sequence 0 in the input batch have a starting position of Y = 13504
+ it is required that the sequence positions remain consecutive: Y = X + 1
+[0m[34m18.37.983.615[0m [31mE decode: failed to initialize batch
+[0m[34m18.37.983.617[0m [31mE llama_decode: failed to decode, ret = -1
+[0m[34m18.37.983.618[0m [31mE process: llama_decode(ctx_dft) failed rc=-1 (n_tokens=145, offset=0)
+[0m[34m18.37.983.621[0m [31mE srv        decode: failed to process speculative batch
+[0m[34m18.37.983.661[0m [31mE srv  update_slots: decode() failed: failed to process speculative batch
+[0m[34m18.37.983.664[0m [31mE srv    send_error: task id = 33, error: decode() failed: failed to process speculative batch
+[0m[34m18.37.983.673[0m [32mI [0mslot      release: id  0 | task 33 | stop processing: n_tokens = 13649, truncated = 0
+[34m18.37.983.827[0m [35mW srv          stop: cancel task, id_task = 33
+[0m[34m18.38.564.857[0m [32mI [0mslot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 1.000 (> 0.100 thold), f_keep = 1.000
+[34m18.38.566.592[0m [32mI [0mslot launch_slot_: id  0 | task 36 | processing task, is_child = 0
+[34m18.39.564.358[0m [31mE init: the tokens of sequence 0 in the input batch have inconsistent sequence positions:
+ - the last position stored in the memory module of the context (i.e. the KV cache) for sequence 0 is X = 5313
+ - the tokens for sequence 0 in the input batch have a starting position of Y = 13649
+ it is required that the sequence positions remain consecutive: Y = X + 1
+[0m[34m18.39.564.369[0m [31mE decode: failed to initialize batch
+[0m[34m18.39.564.370[0m [31mE llama_decode: failed to decode, ret = -1
+[0m[34m18.39.564.372[0m [31mE process: llama_decode(ctx_dft) failed rc=-1 (n_tokens=4, offset=0)
+[0m[34m18.39.564.375[0m [31mE srv        decode: failed to process speculative batch
+[0m[34m18.39.564.412[0m [31mE srv  update_slots: decode() failed: failed to process speculative batch
+[0m[34m18.39.564.417[0m [31mE srv    send_error: task id = 36, error: decode() failed: failed to process speculative batch
+[0m[34m18.39.564.428[0m [32mI [0mslot      release: id  0 | task 36 | stop processing: n_tokens = 13653, truncated = 0
+[34m18.39.564.479[0m [35mW srv          stop: cancel task, id_task = 36
+[0m[34m21.51.550.005[0m [32mI [0msrv   operator (): operator (): cleaning up before exit...
+[34m21.51.557.366[0m [35mW ~llama_context:      CUDA0 compute buffer size of  42.0000 MiB, does not match expectation of 202.0000 MiB
+[0m[34m21.51.557.377[0m [35mW ~llama_context:  CUDA_Host compute buffer size of  36.0000 MiB, does not match expectation of   7.0898 MiB
+[0m[34m21.51.645.155[0m [35mW ~llama_context:      CUDA0 compute buffer size of  79.5084 MiB, does not match expectation of 3776.4376 MiB
+[0m[34m21.51.645.170[0m [35mW ~llama_context:  CUDA_Host compute buffer size of   9.7908 MiB, does not match expectation of 2376.4688 MiB
+[0m

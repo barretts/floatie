@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-10-11T05:35:04.2162559-05:00",
+  "stopped_native_pids": [
+    14628
+  ],
+  "backup_directory": "E:\\poolside\\backups\\before-caller-affinity-20261011-053504",
+  "build_log": "E:\\poolside\\logs\\caller-affinity-build-20261011-053504.log",
+  "build_status": "complete",
+  "source_sha256": "A3B044B3D30561D6123FC4094DDDCDF2DBC5FECE65D8D2C0DD744CBD2F1AA0DE",
+  "scope": "Optional scoped caller affinity to the reserved physical core during CPU expert phases. Prior affinity is restored on return or exception. No quantization, selected-expert or numerical changes.",
+  "build_exit_code": 0,
+  "cpu_dll_sha256": "4722ACEF13E0B0F4DC19DD137677D293D7B234E9A182AF0365731198CBEF04A7"
+}

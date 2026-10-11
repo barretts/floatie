@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-11T06:02:53.277523+00:00",
+  "global": {
+    "name": "Base Profile",
+    "applications": 0,
+    "predefined": true,
+    "power_status": -160,
+    "power_error": "NVAPI_SETTING_NOT_FOUND"
+  },
+  "applications": [
+    {
+      "application": "E:\\poolside\\build\\bin\\llama-server.exe",
+      "find_status": -166,
+      "find_error": "NVAPI_EXECUTABLE_NOT_FOUND"
+    },
+    {
+      "application": "llama-server.exe",
+      "find_status": -166,
+      "find_error": "NVAPI_EXECUTABLE_NOT_FOUND"
+    },
+    {
+      "application": "python.exe",
+      "find_status": -166,
+      "find_error": "NVAPI_EXECUTABLE_NOT_FOUND"
+    }
+  ]
+}

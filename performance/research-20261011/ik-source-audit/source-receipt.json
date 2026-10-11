@@ -1,0 +1,54 @@
+{
+  "repository": "ikawrakow/ik_llama.cpp",
+  "commit": "89bba35c8841618502b2be8273fb5265b405aca1",
+  "files": [
+    {
+      "file": "performance\\research-20261011\\ik-source-audit\\iqk_gemm_iquants.cpp",
+      "url": "https://raw.githubusercontent.com/ikawrakow/ik_llama.cpp/89bba35c8841618502b2be8273fb5265b405aca1/ggml/src/iqk/iqk_gemm_iquants.cpp",
+      "sha256": "ab87d8a64f6b85142f24fc718627128b4b27d9acb309d340a2924b3f10cea236",
+      "bytes": 213028
+    },
+    {
+      "file": "performance\\research-20261011\\ik-source-audit\\iqk_gemm_iquants.h",
+      "url": "https://raw.githubusercontent.com/ikawrakow/ik_llama.cpp/89bba35c8841618502b2be8273fb5265b405aca1/ggml/src/iqk/iqk_gemm_iquants.h",
+      "sha256": "ee2effba6fe5025cca72d9a3c9c5946328b489a016f8b86d8a082af64c194fd2",
+      "bytes": 313
+    },
+    {
+      "file": "performance\\research-20261011\\ik-source-audit\\iqk_mul_mat.cpp",
+      "url": "https://raw.githubusercontent.com/ikawrakow/ik_llama.cpp/89bba35c8841618502b2be8273fb5265b405aca1/ggml/src/iqk/iqk_mul_mat.cpp",
+      "sha256": "056d8f458f0f2faf2c3ed365a961594cd4ad8098b1fc444f14d85eda696135c9",
+      "bytes": 104940
+    },
+    {
+      "file": "performance\\research-20261011\\ik-source-audit\\iqk_utils.h",
+      "url": "https://raw.githubusercontent.com/ikawrakow/ik_llama.cpp/89bba35c8841618502b2be8273fb5265b405aca1/ggml/src/iqk/iqk_utils.h",
+      "sha256": "829222f12c6a6e47bee84d898545a196275adf48dfabaa75d380f1b923f6f901",
+      "bytes": 11937
+    },
+    {
+      "file": "performance\\research-20261011\\ik-source-audit\\iqk_common.h",
+      "url": "https://raw.githubusercontent.com/ikawrakow/ik_llama.cpp/89bba35c8841618502b2be8273fb5265b405aca1/ggml/src/iqk/iqk_common.h",
+      "sha256": "3556fe88b020d17ce3aefa77c965744d0de864fcaf86050afcb3ecb29bace693",
+      "bytes": 48380
+    },
+    {
+      "file": "performance\\research-20261011\\ik-source-audit\\LICENSE",
+      "url": "https://raw.githubusercontent.com/ikawrakow/ik_llama.cpp/89bba35c8841618502b2be8273fb5265b405aca1/LICENSE",
+      "sha256": "153f7caf00796585022b1984edc8c80e5d885c58a68a832ef7bc198696e56380",
+      "bytes": 1350
+    },
+    {
+      "file": "performance\\research-20261011\\ik-source-audit\\ggml-common.h",
+      "url": "https://raw.githubusercontent.com/ikawrakow/ik_llama.cpp/89bba35c8841618502b2be8273fb5265b405aca1/ggml/src/ggml-common.h",
+      "sha256": "f5db819fb1c701ebdd2a600778a8690dad2e5d0d61c919dfe9f73d11414f3a64",
+      "bytes": 151203
+    },
+    {
+      "file": "performance\\research-20261011\\ik-source-audit\\ggml-quants.c",
+      "url": "https://raw.githubusercontent.com/ikawrakow/ik_llama.cpp/89bba35c8841618502b2be8273fb5265b405aca1/ggml/src/ggml-quants.c",
+      "sha256": "a71532f97fdc5a0d0b5febca0bdad72a4c09b063bcde3315fa211ec5dd318fd2",
+      "bytes": 713623
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "backup": "E:\\poolside\\backups\\before-recency-and-submit-20261010-233713",
+  "source_sha256": "66243E5D7A2795D99B9176394F9F09D1856A1F74A97B8894E195EEBCB962FEC2",
+  "change": "Apply the existing per-token decay to prefill cache history and explicitly submit transfer/compute work on Windows."
+}

@@ -1,0 +1,2277 @@
+{
+  "project": "Floatie",
+  "documentation_scope": "Early evaluation and foundational engine milestones, documentation only; goal paused.",
+  "target": {
+    "prefill_tok_s": 900,
+    "generation_tok_s": 30,
+    "first_context": 8192,
+    "ultimate_context": 131072
+  },
+  "attempts": [
+    {
+      "id": "early-reference-evaluation",
+      "title": "Strata and ro99 evaluation",
+      "mechanism": "Compare Qwen-specific Niko Strata execution with Laguna attention, routing, DFlash, and Q3 format support; select Poolside llama.cpp as the engine base.",
+      "status": "researchonly",
+      "evidence": [
+        {
+          "path": "README.md",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/README.md",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/prepared-state.json",
+          "exists": true
+        }
+      ],
+      "result": "Niko supplied memory tiering ideas and adapted IQ kernel code. ro99 was inspected for Laguna and tiered placement, but the E: README records its four-bit floor/native FP4 path as unsuitable for the requested Q3. Floatie uses Poolside llama.cpp commit 06f8cebd7fe728687be3d19f8bdedb70d75883af.",
+      "limits": "Qwen 128k capability and roughly 30?38 tok/s around 50k were owner/session claims. No controlled, same-prompt Qwen/Laguna comparison or direct ro99 execution receipt was found in this family.",
+      "controls": {},
+      "candidate_runs": [],
+      "control_runs": []
+    },
+    {
+      "id": "early-architecture-essay",
+      "title": "Run Laguna2.1 via Strata research essay",
+      "mechanism": "Review Poolside backend support, SWA allocation, pinned experts, short DFlash blocks, confidence filtering, attention requantization, and multi-GPU regex balancing.",
+      "status": "researchonly",
+      "evidence": [
+        {
+          "path": "E:/poolside/Run Laguna 2.1 via Strata.md",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/model-layout.json",
+          "exists": true
+        },
+        {
+          "path": "performance/checkpoint-core-streaming.json",
+          "exists": true
+        }
+      ],
+      "result": "The full essay was reviewed; SHA256 ade039862d4352f00c97236f35636106d4bc063837012d17a460409b52abe957. The local engine implemented Poolside model support, owned host experts, compact SWA, and repaired Q8 DFlash. These receipts do not establish attention requantization, multi-GPU interleaving, or confidence-threshold optimization.",
+      "limits": "Its external claims include 18?20 / 60?64 generation tok/s, 7.2?7.8% attention requantization gain, 58?23 tok/s with DFlash, and 6.8 ms extra verification cost. These are source claims on other machines. Its 512-cell SWA estimate, all-48-MoE description, vocabulary/FF dimensions, and 1M-context claim must not override actual GGUF metadata or local allocation evidence.",
+      "controls": {},
+      "candidate_runs": [],
+      "control_runs": []
+    },
+    {
+      "id": "early-prepared-hybrid",
+      "title": "Initial hybrid engine build and artifact preparation",
+      "mechanism": "Implement owned RAM experts, GPU caching, concurrent standard quantized CPU misses, a fused routed operator, GPU quantized prefill, local API, and DFlash.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "E:/poolside/prepared-state.json",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/source-manifest.json",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/README.md",
+          "exists": true
+        }
+      ],
+      "result": "Compilation and pinned model checks succeeded. Target: 48,428,911,520 bytes, SHA256 8a9ab3f8b3ff1723441cd251e873b295a7ef086d78dbae7515e5e27c8382b002. Initial profile: cache 3072 MiB, context 131072, batch 512, DFlash 4, and Q8 KV. Preparation contained no inference metric.",
+      "limits": "The prepared-state receipt explicitly says inference/model initialization had not occurred. This foundation evolved substantially. Initial UI asset downloads failed TLS verification; the compiled API did not require the UI.",
+      "controls": {},
+      "candidate_runs": [],
+      "control_runs": []
+    },
+    {
+      "id": "early-full-context-run",
+      "title": "Initial near-full130278-token run",
+      "mechanism": "Execute the initial hybrid API at context 131072, cache 3072 MiB, batch 512, DFlash 4, and Q8 KV.",
+      "status": "inconclusive",
+      "evidence": [
+        {
+          "path": "E:/poolside/logs/laguna-20261010-175153.log",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/logs/launch-before-tuning-20261010-182545.ps1",
+          "exists": true
+        }
+      ],
+      "result": "Native log: 320.37 tok/s prefill, 1.76 tok/s generation, 52 output tokens, 0/204 draft tokens accepted. The owner reported all three codes recalled. A prior 130501-token run recorded 329.60 tok/s prefill and an invalid 1000000 tok/s generation figure from one output token timed at 0 ms.",
+      "limits": "The matching log belongs to the Poolside hybrid installation; ro99 execution is not established. The owner?s original request/output token IDs were not preserved. This does not prove current-engine 128k speed. The reported comparison with Niko?s prefill has no same-prompt control here.",
+      "controls": {
+        "configured_context": 131072,
+        "prompt_tokens": 130278,
+        "output_tokens": 52,
+        "batch": 512,
+        "expert_cache_mib": 3072,
+        "draft_max": 4,
+        "draft_kv": "q8_0",
+        "profile": "not established"
+      },
+      "candidate_runs": [
+        {
+          "log": "E:/poolside/logs/laguna-20261010-175153.log",
+          "prompt_tokens": 130278,
+          "output_tokens": 52,
+          "prefill_tok_s": 320.37,
+          "generation_tok_s": 1.76,
+          "draft_n": 204,
+          "draft_n_accepted": 0,
+          "checkpoint_order_correct": "owner-reported; native log does not include output text"
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-raw-request-failures",
+      "title": "Initial request/launch interruptions",
+      "mechanism": "Preserve early malformed API requests, an interrupted no-draft long prompt, and a build wrapper failure.",
+      "status": "failed",
+      "evidence": [
+        {
+          "path": "E:/poolside/logs/laguna-20261010-175153.log",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/logs/laguna-20261010-182702.log",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/logs/build-20261010-183317.log",
+          "exists": true
+        }
+      ],
+      "result": "Two malformed JSON requests returned HTTP 500 parse error 101. A no-draft 131072-context attempt reached 5120 prompt tokens without a final timing receipt. A PowerShell 5.1 build invocation stopped on CMAKE_BUILD_TYPE=Release output under ErrorActionPreference=Stop.",
+      "limits": "Later wrapper exit code -1 lines alone do not prove crashes or OOM; many accompanied deliberate server stops. No OOM diagnosis is asserted. These failures are operational evidence, not speed comparisons.",
+      "controls": {},
+      "candidate_runs": [],
+      "control_runs": []
+    },
+    {
+      "id": "early-batch512-thinking",
+      "title": "512-batch initial8k run",
+      "mechanism": "Run an 8192-token prompt with cache 3072 MiB, batch 512, and drafting disabled.",
+      "status": "inconclusive",
+      "evidence": [
+        {
+          "path": "performance/nodraft-cache3072-batch512-8k.json",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/logs/nodraft-short-20261010-182853.stderr.log",
+          "exists": true
+        }
+      ],
+      "result": "73.64 tok/s prefill / 9.49 generation. Thinking consumed the 80-token output cap before the checkpoint answer.",
+      "limits": "The request hash and thinking mode differ from later explicit-BOS and 8064 comparisons. This run did not deliver a recall answer within the cap.",
+      "controls": {
+        "configured_context": 131072,
+        "cpu_workers": 16,
+        "target_kv": "q8_0",
+        "cache_prompt": false,
+        "profile": "Enabled for initial 2048 batch hybrid receipts (native logs); not established for short 512-batch/first-run."
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/nodraft-cache3072-batch512-8k.json",
+          "request_sha256": "3d3523acfec4e9b9dc94a554ebcc07e4630749a7f595402fc542e331e3988e40",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8192,
+            "prompt_ms": 111237.67,
+            "prompt_per_token_ms": 13.578817138671875,
+            "prompt_per_second": 73.6441171412526,
+            "predicted_n": 80,
+            "predicted_ms": 8430.017,
+            "predicted_per_token_ms": 105.3752125,
+            "predicted_per_second": 9.489897825828821
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": null,
+          "first_three_codes_from_saved_text": [],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "eb3f571083108b9de4f831cb0f4517abd5364c2218c7637bff7badb4cfa33ce0",
+          "speculative_types": "none,none",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-batch512-cached-answer",
+      "title": "Cached512-batch answer attempt",
+      "mechanism": "Reuse 8191 cached tokens and disable thinking in the answer request.",
+      "status": "failed",
+      "evidence": [
+        {
+          "path": "performance/nodraft-cache3072-batch512-8k-answer.json",
+          "exists": true
+        }
+      ],
+      "result": "Only one uncached prompt token was evaluated: 2.374 prompt tok/s is not full-prompt prefill. Generation was 9.86 tok/s. The first three codes were MAPLE-42 / MAPLE-42 / MAPLE-42: incorrect.",
+      "limits": "Cached prefill cannot be compared with uncached runs. The answer request?s BOS handling was subsequently corrected.",
+      "controls": {
+        "configured_context": 131072,
+        "cpu_workers": 16,
+        "target_kv": "q8_0",
+        "cache_prompt": true,
+        "profile": "Enabled for initial 2048 batch hybrid receipts (native logs); not established for short 512-batch/first-run."
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/nodraft-cache3072-batch512-8k-answer.json",
+          "request_sha256": "5008d892bf10176146c6f2cdabfcb73802ddbae63466083319c986964c45a0af",
+          "timings": {
+            "cache_n": 8191,
+            "prompt_n": 1,
+            "prompt_ms": 421.224,
+            "prompt_per_token_ms": 421.224,
+            "prompt_per_second": 2.3740337682563197,
+            "predicted_n": 80,
+            "predicted_ms": 8110.39,
+            "predicted_per_token_ms": 101.379875,
+            "predicted_per_second": 9.863890639044484
+          },
+          "cache_prompt": true,
+          "truncated": false,
+          "checkpoint_order_correct_saved": null,
+          "first_three_codes_from_saved_text": [
+            "MAPLE-42",
+            "MAPLE-42",
+            "MAPLE-42"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "b1e41945de5ad9940787a4581327dfec33d8b5c58b907033a5e43821c8cf630a",
+          "speculative_types": "none,none",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-batch2048-answer",
+      "title": "2048-batch no-draft answer attempt",
+      "mechanism": "Increase the target batch from 512 to 2048 with cache 3072 MiB and drafting disabled.",
+      "status": "inconclusive",
+      "evidence": [
+        {
+          "path": "performance/nodraft-cache3072-batch2048-8k-answer.json",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/logs/nodraft-b2048-20261010-183437.stderr.log",
+          "exists": true
+        }
+      ],
+      "result": "206.94 tok/s prefill / 9.46 generation. The beginning checkpoint was incorrect: MAPLE-42 / MAPLE-42 / VIOLET-89.",
+      "limits": "The prompt differs from the thinking and explicit-BOS requests. Throughput does not establish valid output or an isolated batch-size benefit.",
+      "controls": {
+        "configured_context": 131072,
+        "cpu_workers": 16,
+        "target_kv": "q8_0",
+        "cache_prompt": false,
+        "profile": "Enabled for initial 2048 batch hybrid receipts (native logs); not established for short 512-batch/first-run.",
+        "batch": 2048,
+        "expert_cache_mib": 3072
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/nodraft-cache3072-batch2048-8k-answer.json",
+          "request_sha256": "5008d892bf10176146c6f2cdabfcb73802ddbae63466083319c986964c45a0af",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8192,
+            "prompt_ms": 39587.114,
+            "prompt_per_token_ms": 4.832411376953125,
+            "prompt_per_second": 206.93602468722523,
+            "predicted_n": 80,
+            "predicted_ms": 8455.523,
+            "predicted_per_token_ms": 105.6940375,
+            "predicted_per_second": 9.461271644580709
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": null,
+          "first_three_codes_from_saved_text": [
+            "MAPLE-42",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "9e98152123c1072178ad4b0b4243d8bfe38c9a235b6da82c90beae0913d1e978",
+          "speculative_types": "none,none",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-dflash-metadata-fix",
+      "title": "DFlash GGUF metadata repair",
+      "mechanism": "Add the official 512-token window, all-SWA pattern, 128 RoPE dimensions, and no RoPE scaling without changing the draft tensor payload.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "E:/poolside/models/Laguna-S-2.1-DFlash-Q8_0-swa512.gguf.metadata-repair.json",
+          "exists": true
+        },
+        {
+          "path": "performance/fixed-dflash4-cache3072-batch2048-8k-answer.json",
+          "exists": true
+        },
+        {
+          "path": "performance/fixed-dflash4-cache3072-batch2048-8k-bos.json",
+          "exists": true
+        }
+      ],
+      "result": "All 76 tensor descriptors and the 1,184,848,896-byte payload were preserved; payload SHA256 8437edb6262d450ba224ffa546ee986af0408405c305d874eb9e9ef2f7715339. Answer request: 197.07 / 2.57 tok/s and incorrect beginning code. Explicit BOS: 187.95 / 2.56 and correct codes. Both accepted only 2/298 draft tokens (0.67%).",
+      "limits": "Metadata repair alone did not repair quantized-KV feature injection. No speedup is claimed; poor acceptance is retained as failure evidence.",
+      "controls": {
+        "configured_context": 131072,
+        "cpu_workers": 16,
+        "target_kv": "q8_0",
+        "cache_prompt": false,
+        "profile": "Enabled for initial 2048 batch hybrid receipts (native logs); not established for short 512-batch/first-run.",
+        "batch": 2048,
+        "expert_cache_mib": 3072,
+        "draft_max": 4,
+        "draft_kv": "q8_0"
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/fixed-dflash4-cache3072-batch2048-8k-answer.json",
+          "request_sha256": "5008d892bf10176146c6f2cdabfcb73802ddbae63466083319c986964c45a0af",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8192,
+            "prompt_ms": 41568.402,
+            "prompt_per_token_ms": 5.074267822265625,
+            "prompt_per_second": 197.07276695409172,
+            "predicted_n": 80,
+            "predicted_ms": 31142.077,
+            "predicted_per_token_ms": 389.2759625,
+            "predicted_per_second": 2.5688716908637788,
+            "draft_n": 298,
+            "draft_n_accepted": 2
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": null,
+          "first_three_codes_from_saved_text": [
+            "MAPLE-42",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "0248b16d50e932a857dee3ecb0bb0011a7a1726be8fc55253b202bb28ea9105c",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        },
+        {
+          "receipt": "performance/fixed-dflash4-cache3072-batch2048-8k-bos.json",
+          "request_sha256": "2da4526f5f7c12e372a9cb6d7c7bc1865e9516bc384492974dca044eb44c3eac",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8192,
+            "prompt_ms": 43586.601,
+            "prompt_per_token_ms": 5.320630004882813,
+            "prompt_per_second": 187.9476676788814,
+            "predicted_n": 80,
+            "predicted_ms": 31283.426,
+            "predicted_per_token_ms": 391.042825,
+            "predicted_per_second": 2.5572646678787674,
+            "draft_n": 298,
+            "draft_n_accepted": 2
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": null,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "16d1e187a888c41afb54ad406a3b2d9ea8b6ed11db8e25c22a4a9e581fe037fb",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-pinning-cache5120",
+      "title": "Pinned expert RAM and5120MiB cache",
+      "mechanism": "Register 41.91 GiB of expert RAM and enlarge cache 3072?5120 MiB; use batch 2048 and explicit BOS without drafting.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/nodraft-cache5120-pinned-batch2048-8k-bos.json",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/logs/pinned-cache5120-20261010-184227.stderr.log",
+          "exists": true
+        }
+      ],
+      "result": "257.05 tok/s prefill / 10.22 generation; all three codes correct. Pinning and a larger cache persisted in later mechanics.",
+      "limits": "BOS, cache, pinning, and prior code differed together. The benefit of pinning is not isolated. 5120 MiB is a historical budget, not the latest decode budget.",
+      "controls": {
+        "configured_context": 131072,
+        "cpu_workers": 16,
+        "target_kv": "q8_0",
+        "cache_prompt": false,
+        "profile": "Enabled for initial 2048 batch hybrid receipts (native logs); not established for short 512-batch/first-run.",
+        "batch": 2048,
+        "expert_cache_mib": 5120,
+        "pin_experts": true
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/nodraft-cache5120-pinned-batch2048-8k-bos.json",
+          "request_sha256": "2da4526f5f7c12e372a9cb6d7c7bc1865e9516bc384492974dca044eb44c3eac",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8192,
+            "prompt_ms": 31868.813,
+            "prompt_per_token_ms": 3.8902359619140623,
+            "prompt_per_second": 257.05381621838256,
+            "predicted_n": 80,
+            "predicted_ms": 7831.443,
+            "predicted_per_token_ms": 97.8930375,
+            "predicted_per_second": 10.215231088319229
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": null,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "16d1e187a888c41afb54ad406a3b2d9ea8b6ed11db8e25c22a4a9e581fe037fb",
+          "speculative_types": "none,none",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-adaptive-cache",
+      "title": "Initial adaptive cache admission",
+      "mechanism": "Cap old prefill history, decay heat by 0.97 per evaluated token, and permit one promotion per layer call.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/logs/adaptive-cache5120-20261010-184440.stderr.log",
+          "exists": true
+        }
+      ],
+      "result": "257.88 / 9.04 tok/s versus the preceding 257.05 / 10.22. Codes were correct. Adaptive history persisted; admission subsequently changed.",
+      "limits": "This initial admission regression does not establish a regression in the current budgeted policy. Output tokens and expert work differ.",
+      "controls": {
+        "configured_context": 131072,
+        "cpu_workers": 16,
+        "target_kv": "q8_0",
+        "cache_prompt": false,
+        "profile": "Enabled for initial 2048 batch hybrid receipts (native logs); not established for short 512-batch/first-run.",
+        "batch": 2048,
+        "expert_cache_mib": 5120,
+        "pin_experts": true,
+        "adaptive": true
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json",
+          "request_sha256": "2da4526f5f7c12e372a9cb6d7c7bc1865e9516bc384492974dca044eb44c3eac",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8192,
+            "prompt_ms": 31767.162,
+            "prompt_per_token_ms": 3.877827392578125,
+            "prompt_per_second": 257.8763567233359,
+            "predicted_n": 80,
+            "predicted_ms": 8848.656,
+            "predicted_per_token_ms": 110.60820000000001,
+            "predicted_per_second": 9.040921016705813
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": null,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "f954a39c09ef6611455080c5fcf97588f4ea546781c08a9b3dd8ffd9883424e0",
+          "speculative_types": "none,none",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": [
+        {
+          "receipt": "performance/nodraft-cache5120-pinned-batch2048-8k-bos.json",
+          "request_sha256": "2da4526f5f7c12e372a9cb6d7c7bc1865e9516bc384492974dca044eb44c3eac",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8192,
+            "prompt_ms": 31868.813,
+            "prompt_per_token_ms": 3.8902359619140623,
+            "prompt_per_second": 257.05381621838256,
+            "predicted_n": 80,
+            "predicted_ms": 7831.443,
+            "predicted_per_token_ms": 97.8930375,
+            "predicted_per_second": 10.215231088319229
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": null,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "16d1e187a888c41afb54ad406a3b2d9ea8b6ed11db8e25c22a4a9e581fe037fb",
+          "speculative_types": "none,none",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ]
+    },
+    {
+      "id": "early-overlap",
+      "title": "Initial compute/upload overlap",
+      "mechanism": "Queue cache/GPU work while CPU expert misses compute.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/overlap-adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json",
+          "exists": true
+        }
+      ],
+      "result": "256.16 / 9.61 tok/s versus preceding adaptive 257.88 / 9.04. Codes and output token hashes match the adaptive control.",
+      "limits": "Single sequential runs do not prove repeatability. The current overlap mechanism evolved further; no isolated sustained gain is established.",
+      "controls": {
+        "configured_context": 131072,
+        "cpu_workers": 16,
+        "target_kv": "q8_0",
+        "cache_prompt": false,
+        "profile": "Enabled for initial 2048 batch hybrid receipts (native logs); not established for short 512-batch/first-run.",
+        "batch": 2048,
+        "expert_cache_mib": 5120,
+        "pin_experts": true,
+        "adaptive": true
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/overlap-adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json",
+          "request_sha256": "2da4526f5f7c12e372a9cb6d7c7bc1865e9516bc384492974dca044eb44c3eac",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8192,
+            "prompt_ms": 31980.267,
+            "prompt_per_token_ms": 3.9038411865234375,
+            "prompt_per_second": 256.15796140788945,
+            "predicted_n": 80,
+            "predicted_ms": 8328.615,
+            "predicted_per_token_ms": 104.1076875,
+            "predicted_per_second": 9.605438599334944
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": null,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "f954a39c09ef6611455080c5fcf97588f4ea546781c08a9b3dd8ffd9883424e0",
+          "speculative_types": "none,none",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": [
+        {
+          "receipt": "performance/adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json",
+          "request_sha256": "2da4526f5f7c12e372a9cb6d7c7bc1865e9516bc384492974dca044eb44c3eac",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8192,
+            "prompt_ms": 31767.162,
+            "prompt_per_token_ms": 3.877827392578125,
+            "prompt_per_second": 257.8763567233359,
+            "predicted_n": 80,
+            "predicted_ms": 8848.656,
+            "predicted_per_token_ms": 110.60820000000001,
+            "predicted_per_second": 9.040921016705813
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": null,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "f954a39c09ef6611455080c5fcf97588f4ea546781c08a9b3dd8ffd9883424e0",
+          "speculative_types": "none,none",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ]
+    },
+    {
+      "id": "early-submit",
+      "title": "Explicit Windows stream submission",
+      "mechanism": "Explicitly submit Windows CUDA transfer/compute queues before waiting.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/submitted-adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/logs/submitted-cache5120-20261010-185327.stderr.log",
+          "exists": true
+        }
+      ],
+      "result": "242.12 / 10.63 tok/s versus preceding overlap 256.16 / 9.61. Codes and output token hashes match. Entry-event wait declined in the profile, while prefill regressed. Current code retains submit_stream.",
+      "limits": "Single sequential runs; CPU/GPU intervals overlap and must not be summed.",
+      "controls": {
+        "configured_context": 131072,
+        "cpu_workers": 16,
+        "target_kv": "q8_0",
+        "cache_prompt": false,
+        "profile": "Enabled for initial 2048 batch hybrid receipts (native logs); not established for short 512-batch/first-run.",
+        "batch": 2048,
+        "expert_cache_mib": 5120,
+        "pin_experts": true,
+        "adaptive": true
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/submitted-adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json",
+          "request_sha256": "2da4526f5f7c12e372a9cb6d7c7bc1865e9516bc384492974dca044eb44c3eac",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8192,
+            "prompt_ms": 33834.651,
+            "prompt_per_token_ms": 4.130206420898437,
+            "prompt_per_second": 242.11864931014068,
+            "predicted_n": 80,
+            "predicted_ms": 7525.831,
+            "predicted_per_token_ms": 94.07288750000001,
+            "predicted_per_second": 10.630055338739338
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "f954a39c09ef6611455080c5fcf97588f4ea546781c08a9b3dd8ffd9883424e0",
+          "speculative_types": "none,none",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": [
+        {
+          "receipt": "performance/overlap-adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json",
+          "request_sha256": "2da4526f5f7c12e372a9cb6d7c7bc1865e9516bc384492974dca044eb44c3eac",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8192,
+            "prompt_ms": 31980.267,
+            "prompt_per_token_ms": 3.9038411865234375,
+            "prompt_per_second": 256.15796140788945,
+            "predicted_n": 80,
+            "predicted_ms": 8328.615,
+            "predicted_per_token_ms": 104.1076875,
+            "predicted_per_second": 9.605438599334944
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": null,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "f954a39c09ef6611455080c5fcf97588f4ea546781c08a9b3dd8ffd9883424e0",
+          "speculative_types": "none,none",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ]
+    },
+    {
+      "id": "early-core-streaming",
+      "title": "Bounded core streaming and grouped AVX2",
+      "mechanism": "Bound GPU tiles to 4096 selections; use two 32-expert transfer banks, reuse admissions, group IQ CPU work across up to four tokens, and repair Hadamard draft KV injection.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/core-streaming-deployment.json",
+          "exists": true
+        },
+        {
+          "path": "performance/checkpoint-core-streaming.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-nodraft-cache8192-pinned-batch8192.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-nodraft-cache8192-strata-stopped-repeat.json",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/logs/core8k-nodraft-20261010-225936.stderr.log",
+          "exists": true,
+          "sha256": "425b1bcaf5b0b82b9acfc90ff50a82d2fc3113145967833acb74a40ce5214b5b",
+          "purpose": "Direct native evidence for settings or recorded timing."
+        }
+      ],
+      "result": "The compiled checkpoint initially stopped before inference. Subsequent no-draft 8064-prompt runs measured 464.63 / 9.44 and 499.06 / 9.56 tok/s after Strata stopped. Codes were correct.",
+      "limits": "Batch, context, cache, and kernels changed together; gains cannot be attributed individually. Output tokens differ. Shared GPU memory counters alone do not prove paging.",
+      "controls": {
+        "configured_context": 8192,
+        "prompt_tokens": 8064,
+        "output_tokens": 80,
+        "target_batch": 8192,
+        "target_ubatch": 8192,
+        "draft_max": 0,
+        "draft_kv": "q8_0",
+        "expert_cache_base_mib": 8192,
+        "pin_experts": true,
+        "adaptive_cache": true,
+        "gpu_misses_per_token": 1,
+        "profile": true,
+        "cache_prompt": false,
+        "profile_evidence": "E:/poolside/logs/core8k-nodraft-20261010-225936.stderr.log"
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/core8k-nodraft-cache8192-pinned-batch8192.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 17355.64,
+            "prompt_per_token_ms": 2.152237103174603,
+            "prompt_per_second": 464.6328225291606,
+            "predicted_n": 80,
+            "predicted_ms": 8473.577,
+            "predicted_per_token_ms": 105.91971249999999,
+            "predicted_per_second": 9.441113239426514
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "141267e5720de1a287a469adfbe392113c8071d9c5a51c582607b440c7852683",
+          "speculative_types": "none,none",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        },
+        {
+          "receipt": "performance/core8k-nodraft-cache8192-strata-stopped-repeat.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 16158.25,
+            "prompt_per_token_ms": 2.003751240079365,
+            "prompt_per_second": 499.0639456624325,
+            "predicted_n": 80,
+            "predicted_ms": 8365.103,
+            "predicted_per_token_ms": 104.56378749999999,
+            "predicted_per_second": 9.563540341344273
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "7aa8b99d3a4c6f5ed24bee1a01613fb3ad2e4d8fe44c2f69504ec22607b8ec1c",
+          "speculative_types": "none,none",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-dflash-working-batch",
+      "title": "DFlash512working batch plus corrected injection",
+      "mechanism": "Cap draft working batch at 512 independently of the target 8192 batch, alongside the corrected Hadamard quantized-KV feature injection.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/dflash-working-batch-deployment.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-dflash4-launch.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-dflash4-q8-cache6144-pinned-batch8192.json",
+          "exists": true
+        },
+        {
+          "path": "performance/checkpoint-core-streaming.json",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/logs/core8k-dflash4-q8-20261010-230719.stderr.log",
+          "exists": true,
+          "sha256": "c1d82bba5b89e4926b63bd48e92cccdb47b5776236b0cdea68571b3b716d4926",
+          "purpose": "Direct native evidence for settings or recorded timing."
+        }
+      ],
+      "result": "422.24 / 11.22 tok/s; 55/96 draft tokens accepted (57.29%), versus the earlier broken injection?s 2/298. All codes were correct.",
+      "limits": "Recovery followed multiple changes and context reduction; this is not an isolated working-batch gain. Q8 draft KV works after correcting feature transformation; the essay?s F16-only recommendation is not established.",
+      "controls": {
+        "configured_context": 8192,
+        "prompt_tokens": 8064,
+        "output_tokens": 80,
+        "target_batch": 8192,
+        "target_ubatch": 8192,
+        "draft_max": 4,
+        "draft_kv": "q8_0",
+        "expert_cache_base_mib": 6144,
+        "pin_experts": true,
+        "adaptive_cache": true,
+        "gpu_misses_per_token": 1,
+        "profile": "native profile enabled",
+        "cache_prompt": false,
+        "profile_evidence": "E:/poolside/logs/core8k-dflash4-q8-20261010-230719.stderr.log"
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/core8k-dflash4-q8-cache6144-pinned-batch8192.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 19098.163,
+            "prompt_per_token_ms": 2.3683237847222225,
+            "prompt_per_second": 422.2395630406966,
+            "predicted_n": 80,
+            "predicted_ms": 7132.299,
+            "predicted_per_token_ms": 89.1537375,
+            "predicted_per_second": 11.216579675080924,
+            "draft_n": 96,
+            "draft_n_accepted": 55
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "e3806a5bf91ce4cf0f939638d0383b09dc1890b226b14064a02a2321323468a4",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-decode-upload-budget",
+      "title": "Throttle decode cache refresh",
+      "mechanism": "Compute ordinary misses on CPU and refresh at most one expert per layer after 16 evaluated tokens.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/decode-upload-budget-deployment.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-budgeted-dflash4-launch.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-budgeted-dflash4-q8-cache6144-nsys.json",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/logs/core8k-budgeted-native-20261010-231807.profiler.log",
+          "exists": true,
+          "sha256": "f28b6bb190ad6ce169163a568b18ff11d67fc76815c4bd25888771c0718f4aa3",
+          "purpose": "Direct native evidence for settings or recorded timing."
+        }
+      ],
+      "result": "445.91 / 11.35 tok/s; 52/102 draft tokens accepted, correct codes. The 16-token refresh fallback remains; later budgeted admission overlaps further refreshes.",
+      "limits": "The receipt?s nsys label does not prove a completed trace. Native Nsight failed because the ETW ReflexStatsTraceLoggingProvider required administrator privileges; an earlier launcher could not resolve the pwsh alias. No usable CUDA trace is established.",
+      "controls": {
+        "configured_context": 8192,
+        "prompt_tokens": 8064,
+        "output_tokens": 80,
+        "target_batch": 8192,
+        "target_ubatch": 8192,
+        "draft_max": 4,
+        "draft_kv": "q8_0",
+        "expert_cache_base_mib": 6144,
+        "pin_experts": true,
+        "adaptive_cache": true,
+        "gpu_misses_per_token": 0,
+        "profile": "Nsight/profilerlaunch; overheadexpected",
+        "cache_prompt": false
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/core8k-budgeted-dflash4-q8-cache6144-nsys.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 18084.357,
+            "prompt_per_token_ms": 2.242603794642857,
+            "prompt_per_second": 445.9102416524956,
+            "predicted_n": 80,
+            "predicted_ms": 7049.595,
+            "predicted_per_token_ms": 88.1199375,
+            "predicted_per_second": 11.34816964662509,
+            "draft_n": 102,
+            "draft_n_accepted": 52
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "9686472e59c080e635ee4c98166dcc50eb8269dd5cc6a8d8e532e58d6d68e242",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-recency-submit",
+      "title": "Prefill recency and Windows stream submit",
+      "mechanism": "Apply per-token decay to prefill cache history and explicitly submit transfer/compute work on Windows.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/recency-and-submit-deployment.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-recency-submit-launch.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-recency-submit-dflash4-q8-cache6144.json",
+          "exists": true
+        }
+      ],
+      "result": "463.56 / 13.77 tok/s; 54/96 drafts accepted, all codes. Current source includes prefill recency/decay and stream submission.",
+      "limits": "The previous budgeted receipt used a profiler launcher. Multiple mechanisms changed, preventing a causal comparison.",
+      "controls": {
+        "configured_context": 8192,
+        "prompt_tokens": 8064,
+        "output_tokens": 80,
+        "target_batch": 8192,
+        "target_ubatch": 8192,
+        "draft_max": 4,
+        "draft_kv": "q8_0",
+        "expert_cache_base_mib": 6144,
+        "pin_experts": true,
+        "adaptive_cache": true,
+        "gpu_misses_per_token": 0,
+        "profile": true,
+        "cache_prompt": false
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/core8k-recency-submit-dflash4-q8-cache6144.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 17395.963,
+            "prompt_per_token_ms": 2.1572374751984125,
+            "prompt_per_second": 463.5558261419618,
+            "predicted_n": 80,
+            "predicted_ms": 5809.657,
+            "predicted_per_token_ms": 72.6207125,
+            "predicted_per_second": 13.770176105060937,
+            "draft_n": 96,
+            "draft_n_accepted": 54
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "f954a39c09ef6611455080c5fcf97588f4ea546781c08a9b3dd8ffd9883424e0",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-bulk-prefill",
+      "title": "Bulk prefill atlas",
+      "mechanism": "Stage a complete eligible layer atlas, upload the next layer, use four gather banks, and remove unhelpful GPU span capture.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/bulk-prefill-deployment.json",
+          "exists": true
+        },
+        {
+          "path": "performance/bulk-prefill-launch.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-bulk-prefill-dflash4-q8-cache6144.json",
+          "exists": true
+        }
+      ],
+      "result": "506.34 / 13.18 tok/s; 53/100 drafts accepted, correct codes. Current bulk paths retain atlas and fallback streaming mechanisms.",
+      "limits": "Source and output tokens differ from the recency run. Generation did not improve in this single measurement.",
+      "controls": {
+        "configured_context": 8192,
+        "prompt_tokens": 8064,
+        "output_tokens": 80,
+        "target_batch": 8192,
+        "target_ubatch": 8192,
+        "draft_max": 4,
+        "draft_kv": "q8_0",
+        "expert_cache_base_mib": 6144,
+        "pin_experts": true,
+        "adaptive_cache": true,
+        "gpu_misses_per_token": 0,
+        "profile": true,
+        "cache_prompt": false
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/core8k-bulk-prefill-dflash4-q8-cache6144.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 15926.089,
+            "prompt_per_token_ms": 1.974961433531746,
+            "prompt_per_second": 506.33900137064416,
+            "predicted_n": 80,
+            "predicted_ms": 6071.136,
+            "predicted_per_token_ms": 75.8892,
+            "predicted_per_second": 13.17710556969898,
+            "draft_n": 100,
+            "draft_n_accepted": 53
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "f954a39c09ef6611455080c5fcf97588f4ea546781c08a9b3dd8ffd9883424e0",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-dual-layer-prefill",
+      "title": "Two alternating full-layer buffers",
+      "mechanism": "Use two alternating layer atlases with direct matrix reads and a VRAM check; restore standard singleton CPU dots.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/dual-layer-prefill-deployment.json",
+          "exists": true
+        },
+        {
+          "path": "performance/dual-layer-prefill-launch.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-dual-layer-prefill-dflash4-q8-cache6144.json",
+          "exists": true
+        },
+        {
+          "path": "performance/phase-memory-deployment.json",
+          "exists": true
+        }
+      ],
+      "result": "Initial result: 190.19 / 14.11 tok/s, 55/92 drafts accepted, all codes. Prefill copied 42791.48 MiB; copy interval 13470.54 ms and readback wait 25400.97 ms. Later phase memory addressed headroom; the two-atlas mechanism remains.",
+      "limits": "The poor initial prefill result is preserved. Later success does not prove an isolated two-buffer benefit. Profiling intervals overlap.",
+      "controls": {
+        "configured_context": 8192,
+        "prompt_tokens": 8064,
+        "output_tokens": 80,
+        "target_batch": 8192,
+        "target_ubatch": 8192,
+        "draft_max": 4,
+        "draft_kv": "q8_0",
+        "expert_cache_base_mib": 6144,
+        "pin_experts": true,
+        "adaptive_cache": true,
+        "gpu_misses_per_token": 0,
+        "profile": true,
+        "cache_prompt": false
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/core8k-dual-layer-prefill-dflash4-q8-cache6144.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 42399.99,
+            "prompt_per_token_ms": 5.2579352678571425,
+            "prompt_per_second": 190.1887241011142,
+            "predicted_n": 80,
+            "predicted_ms": 5668.456,
+            "predicted_per_token_ms": 70.8557,
+            "predicted_per_second": 14.113190611341079,
+            "draft_n": 92,
+            "draft_n_accepted": 55
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "16d1e187a888c41afb54ad406a3b2d9ea8b6ed11db8e25c22a4a9e581fe037fb",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-phase-memory",
+      "title": "Separate prefill/decode memory budgets",
+      "mechanism": "Release oversized graph buffers, shrink expert cache during prefill, free layer atlases, then grow/populate the decode cache.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/phase-memory-deployment.json",
+          "exists": true
+        },
+        {
+          "path": "performance/phase-memory-launch.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-phase-memory-dflash4-q8-cache6144.json",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/logs/core8k-phase-memory-20261011-001937.stderr.log",
+          "exists": true,
+          "sha256": "e5c986c5efb5239d4971776d033358da1334ae782626c6cac7adb10945bdc97b",
+          "purpose": "Direct native evidence for settings or recorded timing."
+        }
+      ],
+      "result": "361.55 / 14.82 tok/s; 55/92 drafts accepted. Native log: prefill cache 5120 MiB; decode cache 8192 MiB; 3137.11 MiB of hot experts uploaded during an 829.71 ms transition. Codes were correct.",
+      "limits": "The preceding dual-layer run was 190.19 / 14.11, but binaries and memory state changed. The phase budgets are retained; these are historical rates.",
+      "controls": {
+        "configured_context": 8192,
+        "prompt_tokens": 8064,
+        "output_tokens": 80,
+        "target_batch": 8192,
+        "target_ubatch": 8192,
+        "draft_max": 4,
+        "draft_kv": "q8_0",
+        "expert_cache_base_mib": 6144,
+        "pin_experts": true,
+        "adaptive_cache": true,
+        "gpu_misses_per_token": 0,
+        "profile": true,
+        "cache_prompt": false
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/core8k-phase-memory-dflash4-q8-cache6144.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 22303.836,
+            "prompt_per_token_ms": 2.7658526785714286,
+            "prompt_per_second": 361.5521563196573,
+            "predicted_n": 80,
+            "predicted_ms": 5397.227,
+            "predicted_per_token_ms": 67.4653375,
+            "predicted_per_second": 14.822426405263297,
+            "draft_n": 92,
+            "draft_n_accepted": 55
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "7aa8b99d3a4c6f5ed24bee1a01613fb3ad2e4d8fe44c2f69504ec22607b8ec1c",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-compact-expert-tiles",
+      "title": "Bound MMQ grids to actual expert groups",
+      "mechanism": "Bound MMQ tile grids by the actual expert range and largest group; use dense MMQ for one expert.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/compact-expert-tiles-deployment.json",
+          "exists": true
+        },
+        {
+          "path": "performance/compact-expert-tiles-launch.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-compact-expert-tiles-dflash4-q8-cache6144.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-compact-expert-tiles-warm-repeat.json",
+          "exists": true
+        }
+      ],
+      "result": "515.30 / 14.46 tok/s; warm repeat 514.89 / 12.08. Draft counts were 96/54 versus 100/53. Codes were correct. The production checkpoint?s mmq.cu hash 46671A59? establishes retention.",
+      "limits": "Generation varied substantially and output tokens differ; 14.46 tok/s is not a demonstrated repeatable gain.",
+      "controls": {
+        "configured_context": 8192,
+        "prompt_tokens": 8064,
+        "output_tokens": 80,
+        "target_batch": 8192,
+        "target_ubatch": 8192,
+        "draft_max": 4,
+        "draft_kv": "q8_0",
+        "expert_cache_base_mib": 6144,
+        "pin_experts": true,
+        "adaptive_cache": true,
+        "gpu_misses_per_token": 0,
+        "profile": true,
+        "cache_prompt": false
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/core8k-compact-expert-tiles-dflash4-q8-cache6144.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 15649.001,
+            "prompt_per_token_ms": 1.940600322420635,
+            "prompt_per_second": 515.3044593709209,
+            "predicted_n": 80,
+            "predicted_ms": 5532.772,
+            "predicted_per_token_ms": 69.15965,
+            "predicted_per_second": 14.459298160126606,
+            "draft_n": 96,
+            "draft_n_accepted": 54
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "7aa8b99d3a4c6f5ed24bee1a01613fb3ad2e4d8fe44c2f69504ec22607b8ec1c",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        },
+        {
+          "receipt": "performance/core8k-compact-expert-tiles-warm-repeat.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 15661.583,
+            "prompt_per_token_ms": 1.9421605902777779,
+            "prompt_per_second": 514.8904807387606,
+            "predicted_n": 80,
+            "predicted_ms": 6623.514,
+            "predicted_per_token_ms": 82.793925,
+            "predicted_per_second": 12.078180856868423,
+            "draft_n": 100,
+            "draft_n_accepted": 53
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "f954a39c09ef6611455080c5fcf97588f4ea546781c08a9b3dd8ffd9883424e0",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-one-readback-wait",
+      "title": "Replace entry host-event wait",
+      "mechanism": "Replace the entry host-event wait with a CUDA stream dependency before mandatory metadata readback; measure host dispatch.",
+      "status": "rejected",
+      "evidence": [
+        {
+          "path": "performance/one-readback-wait-deployment.json",
+          "exists": true
+        },
+        {
+          "path": "performance/one-readback-wait-launch.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-one-readback-wait-dflash4-q8-cache6144.json",
+          "exists": true
+        },
+        {
+          "path": "performance/fused-bulk-gate-up-deployment.json",
+          "exists": true
+        }
+      ],
+      "result": "493.98 / 12.05 tok/s; 54/96 drafts accepted, correct codes. The later fused-bulk deployment explicitly restored the measured host-event wait.",
+      "limits": "No isolated matched control. Previous compact runs were 515.30 / 14.46 and 514.89 / 12.08. Dispatch instrumentation may remain independently of the rejected wait change.",
+      "controls": {
+        "configured_context": 8192,
+        "prompt_tokens": 8064,
+        "output_tokens": 80,
+        "target_batch": 8192,
+        "target_ubatch": 8192,
+        "draft_max": 4,
+        "draft_kv": "q8_0",
+        "expert_cache_base_mib": 6144,
+        "pin_experts": true,
+        "adaptive_cache": true,
+        "gpu_misses_per_token": 0,
+        "profile": true,
+        "cache_prompt": false
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/core8k-one-readback-wait-dflash4-q8-cache6144.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 16324.593,
+            "prompt_per_token_ms": 2.024379092261905,
+            "prompt_per_second": 493.9786247657139,
+            "predicted_n": 80,
+            "predicted_ms": 6641.489,
+            "predicted_per_token_ms": 83.01861249999999,
+            "predicted_per_second": 12.045491605873321,
+            "draft_n": 96,
+            "draft_n_accepted": 54
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "30fdcd81b87bb2b13dceebdd82c2f295207891d2344db26183bdaa9a88b0fd37",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-fused-bulk-gate-up",
+      "title": "Fuse GPU prefill gate/up projections",
+      "mechanism": "Interleave gate/up uploads without enlarging the atlas, fuse prefill MMQ, reuse input scratch, and restore the host-event wait.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/fused-bulk-gate-up-deployment.json",
+          "exists": true
+        },
+        {
+          "path": "performance/fused-bulk-gate-up-launch.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-fused-bulk-gate-up-dflash4-q8-cache6144.json",
+          "exists": true
+        }
+      ],
+      "result": "511.11 / 12.07 tok/s; 55/96 drafts accepted, correct codes. Current source retains bulk_fused.",
+      "limits": "Changes were combined; this measurement does not isolate fused GPU benefit or the wait restoration.",
+      "controls": {
+        "configured_context": 8192,
+        "prompt_tokens": 8064,
+        "output_tokens": 80,
+        "target_batch": 8192,
+        "target_ubatch": 8192,
+        "draft_max": 4,
+        "draft_kv": "q8_0",
+        "expert_cache_base_mib": 6144,
+        "pin_experts": true,
+        "adaptive_cache": true,
+        "gpu_misses_per_token": 0,
+        "profile": true,
+        "cache_prompt": false
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/core8k-fused-bulk-gate-up-dflash4-q8-cache6144.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 15777.502,
+            "prompt_per_token_ms": 1.9565354662698413,
+            "prompt_per_second": 511.10752513293926,
+            "predicted_n": 80,
+            "predicted_ms": 6630.183,
+            "predicted_per_token_ms": 82.8772875,
+            "predicted_per_second": 12.06603196322032,
+            "draft_n": 96,
+            "draft_n_accepted": 55
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "7f3b414299db6328a77449d651e19570495be1886e0829194f6fce7176dd324d",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-compact-decode-slots",
+      "title": "Compact GPU decode selections",
+      "mechanism": "Pack cached GPU selections within each token while preserving CPU misses and routing weights.",
+      "status": "rejected",
+      "evidence": [
+        {
+          "path": "performance/compact-decode-slots-deployment.json",
+          "exists": true
+        },
+        {
+          "path": "performance/compact-decode-slots-launch.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-compact-decode-slots-dflash4-q8-cache6144.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-compact-decode-slots-warm-repeat.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-cache-decision-evidence.json",
+          "exists": true
+        },
+        {
+          "path": "performance/checkpoint-core8k-production-baseline.json",
+          "exists": true
+        }
+      ],
+      "result": "511.02 / 11.67 and warm 538.10 / 11.98 tok/s. Draft counts: 96/54 versus 100/53. GPU padding fell 67.7% and cached intervals fell 23%, but throughput did not improve. The candidate was archived; the checkpoint explicitly says retained=false.",
+      "limits": "Warm/cold clocks and output tokens differ. A smaller GPU subinterval does not establish faster generation.",
+      "controls": {
+        "configured_context": 8192,
+        "prompt_tokens": 8064,
+        "output_tokens": 80,
+        "target_batch": 8192,
+        "target_ubatch": 8192,
+        "draft_max": 4,
+        "draft_kv": "q8_0",
+        "expert_cache_base_mib": 6144,
+        "pin_experts": true,
+        "adaptive_cache": true,
+        "gpu_misses_per_token": 0,
+        "profile": true,
+        "cache_prompt": false
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/core8k-compact-decode-slots-dflash4-q8-cache6144.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 15780.058,
+            "prompt_per_token_ms": 1.9568524305555557,
+            "prompt_per_second": 511.02473767840394,
+            "predicted_n": 80,
+            "predicted_ms": 6857.072,
+            "predicted_per_token_ms": 85.71340000000001,
+            "predicted_per_second": 11.666787223467976,
+            "draft_n": 96,
+            "draft_n_accepted": 54
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "7aa8b99d3a4c6f5ed24bee1a01613fb3ad2e4d8fe44c2f69504ec22607b8ec1c",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        },
+        {
+          "receipt": "performance/core8k-compact-decode-slots-warm-repeat.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 14986.141,
+            "prompt_per_token_ms": 1.858400421626984,
+            "prompt_per_second": 538.0971659081548,
+            "predicted_n": 80,
+            "predicted_ms": 6680.458,
+            "predicted_per_token_ms": 83.505725,
+            "predicted_per_second": 11.975226848219089,
+            "draft_n": 100,
+            "draft_n_accepted": 53
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "f954a39c09ef6611455080c5fcf97588f4ea546781c08a9b3dd8ffd9883424e0",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-production-baseline",
+      "title": "Restore production cache/decode baseline",
+      "mechanism": "Remove compact decode/cost-aware admission candidates; keep diagnostics optional and disable them during the production run.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/production-baseline-deployment.json",
+          "exists": true
+        },
+        {
+          "path": "performance/production-baseline-launch.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-production-baseline-dflash4-q8-cache6144.json",
+          "exists": true
+        },
+        {
+          "path": "performance/checkpoint-core8k-production-baseline.json",
+          "exists": true
+        }
+      ],
+      "result": "509.66 / 12.22 tok/s; 55/96 drafts accepted, all codes. The checkpoint records source/binary hashes and then-healthy API. Explicit compact decode, cost-aware admission, and power-policy rejections were preserved.",
+      "limits": "This is a historical baseline, not live performance. Outputs differ from candidates. Shared-memory 43770 MiB included 42912 MiB of registered experts; this does not prove paging.",
+      "controls": {
+        "configured_context": 8192,
+        "prompt_tokens": 8064,
+        "output_tokens": 80,
+        "target_batch": 8192,
+        "target_ubatch": 8192,
+        "draft_max": 4,
+        "draft_kv": "q8_0",
+        "expert_cache_base_mib": 6144,
+        "pin_experts": true,
+        "adaptive_cache": true,
+        "gpu_misses_per_token": 0,
+        "profile": false,
+        "cache_prompt": false
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/core8k-production-baseline-dflash4-q8-cache6144.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 15822.242,
+            "prompt_per_token_ms": 1.9620835813492064,
+            "prompt_per_second": 509.6622842704593,
+            "predicted_n": 80,
+            "predicted_ms": 6549.195,
+            "predicted_per_token_ms": 81.8649375,
+            "predicted_per_second": 12.215241720547334,
+            "draft_n": 96,
+            "draft_n_accepted": 55
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "c8eb1dd7c4b8f38d5134c5a3788fb7b7fcce5c6052f4bed9692c6b2e117de6b6",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-dflash-window-injection",
+      "title": "Trim obsolete DFlash prefill feature injection",
+      "mechanism": "Fuse and inject only target features still visible to the all-SWA draft?s 512-token window, using the proper model window accessor.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/dflash-window-injection-deployment.json",
+          "exists": true
+        },
+        {
+          "path": "performance/dflash-window-injection-production-launch.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-dflash-window-injection-production-dflash4-q8-cache6144.json",
+          "exists": true
+        },
+        {
+          "path": "E:/poolside/logs/core8k-dflash-window-injection-production-20261011-032952.stderr.log",
+          "exists": true,
+          "sha256": "3135bae4b547b5c35dbfbb836b970c01b86cb4a119121d496bfff41df12edb86",
+          "purpose": "Direct native evidence for settings or recorded timing."
+        }
+      ],
+      "result": "705.72 / 11.51 tok/s; 53/100 drafts accepted, correct codes. Native log injected 512 rows and skipped 7548 obsolete rows, taking 506.07 ms.",
+      "limits": "Historical baseline was 509.66 / 12.22 with other intervening changes. There is no isolated on/off control. The all-SWA guard is essential; not every model permits this trim.",
+      "controls": {
+        "configured_context": 8192,
+        "prompt_tokens": 8064,
+        "output_tokens": 80,
+        "target_batch": 8192,
+        "target_ubatch": 8192,
+        "draft_max": 4,
+        "draft_kv": "q8_0",
+        "expert_cache_base_mib": 6144,
+        "pin_experts": true,
+        "adaptive_cache": true,
+        "gpu_misses_per_token": 0,
+        "profile": false,
+        "cache_prompt": false
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/core8k-dflash-window-injection-production-dflash4-q8-cache6144.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 11426.697,
+            "prompt_per_token_ms": 1.4170011160714286,
+            "prompt_per_second": 705.7157462038243,
+            "predicted_n": 80,
+            "predicted_ms": 6950.276,
+            "predicted_per_token_ms": 86.87845,
+            "predicted_per_second": 11.510334265862248,
+            "draft_n": 100,
+            "draft_n_accepted": 53
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "f954a39c09ef6611455080c5fcf97588f4ea546781c08a9b3dd8ffd9883424e0",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    },
+    {
+      "id": "early-dflash-window-chunks",
+      "title": "Preserve original draft injection chunk alignment",
+      "mechanism": "Trim the draft window while preserving original 512-row chunk boundaries and matrix shapes.",
+      "status": "retained",
+      "evidence": [
+        {
+          "path": "performance/dflash-window-chunks-deployment.json",
+          "exists": true
+        },
+        {
+          "path": "performance/dflash-window-chunks-profile-launch.json",
+          "exists": true
+        },
+        {
+          "path": "performance/core8k-dflash-window-chunks-profile-dflash4-q8-cache6144.json",
+          "exists": true
+        }
+      ],
+      "result": "718.13 / 11.58 tok/s; 53/100 drafts accepted, all codes. Actual output tokens match the preceding window-injection production run.",
+      "limits": "Profiling, verbosity, and binaries differ from the preceding 705.72 / 11.51 run. Do not claim speedup from this one cross-profile comparison.",
+      "controls": {
+        "configured_context": 8192,
+        "prompt_tokens": 8064,
+        "output_tokens": 80,
+        "target_batch": 8192,
+        "target_ubatch": 8192,
+        "draft_max": 4,
+        "draft_kv": "q8_0",
+        "expert_cache_base_mib": 6144,
+        "pin_experts": true,
+        "adaptive_cache": true,
+        "gpu_misses_per_token": 0,
+        "profile": true,
+        "cache_prompt": false,
+        "verbosity": 5
+      },
+      "candidate_runs": [
+        {
+          "receipt": "performance/core8k-dflash-window-chunks-profile-dflash4-q8-cache6144.json",
+          "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 8064,
+            "prompt_ms": 11229.193,
+            "prompt_per_token_ms": 1.392509052579365,
+            "prompt_per_second": 718.1281860593189,
+            "predicted_n": 80,
+            "predicted_ms": 6910.15,
+            "predicted_per_token_ms": 86.376875,
+            "predicted_per_second": 11.57717270970963,
+            "draft_n": 100,
+            "draft_n_accepted": 53
+          },
+          "cache_prompt": false,
+          "truncated": false,
+          "checkpoint_order_correct_saved": true,
+          "first_three_codes_from_saved_text": [
+            "COBALT-17",
+            "MAPLE-42",
+            "VIOLET-89"
+          ],
+          "actual_output_token_count": 80,
+          "actual_output_tokens_sha256_of_json": "f954a39c09ef6611455080c5fcf97588f4ea546781c08a9b3dd8ffd9883424e0",
+          "speculative_types": "none,draft-dflash",
+          "temperature": 0.0,
+          "seed": 42,
+          "top_k": 20,
+          "top_p": 1.0,
+          "min_p": 0.0
+        }
+      ],
+      "control_runs": []
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "README.md",
+      "sha256": "6c29368308dcb44bc37d4b0e86aaa0914b1040fae144649e794ff56967aa4615"
+    },
+    {
+      "path": "E:/poolside/README.md",
+      "sha256": "8273d2dc168dc1732b541beefdb380e12068e15d8551bb0c17e2788ec7211bcf"
+    },
+    {
+      "path": "E:/poolside/prepared-state.json",
+      "sha256": "2c143ebf1e30d1ace4e583a48e54438d6de95ad410755675c72ad1be83a59b1c"
+    },
+    {
+      "path": "E:/poolside/Run Laguna 2.1 via Strata.md",
+      "sha256": "ade039862d4352f00c97236f35636106d4bc063837012d17a460409b52abe957"
+    },
+    {
+      "path": "E:/poolside/model-layout.json",
+      "sha256": "e461a65e945c6a0cd69c02e183badc47195e477a0e2da80bd48b344a1d5f0dd1"
+    },
+    {
+      "path": "performance/checkpoint-core-streaming.json",
+      "sha256": "10e958a239173298ffc5955a85fd6de316c4a48feb444b9bebcd321dacb9f30f"
+    },
+    {
+      "path": "E:/poolside/source-manifest.json",
+      "sha256": "7f110ba1ed81e2486d338ca1b97bc291edc3ff062958d86aab8d0ea1230ffe12"
+    },
+    {
+      "path": "E:/poolside/logs/laguna-20261010-175153.log",
+      "sha256": "de22787ae6ca05ef4930aa2119aa3f369b89d4532550db7b7381ca6a9c73477a"
+    },
+    {
+      "path": "E:/poolside/logs/launch-before-tuning-20261010-182545.ps1",
+      "sha256": "5f0dc75e4028483b4a5b777360e7025e3da2937c5fb588d19e0c827164ac0aec"
+    },
+    {
+      "path": "E:/poolside/logs/laguna-20261010-182702.log",
+      "sha256": "f3fa1b80605132e2eb34228ea5d3050e09e06bd8267d56929cee0b4e929b2de0"
+    },
+    {
+      "path": "E:/poolside/logs/build-20261010-183317.log",
+      "sha256": "52d12f44f926375c1f1c822dee06250fa78ad2339a43f1cd1592180476449e2d"
+    },
+    {
+      "path": "performance/nodraft-cache3072-batch512-8k.json",
+      "sha256": "52738da024b68aff53d4ba1e2ba8872a337b661b3eef74720a77b128d3ee5e20"
+    },
+    {
+      "path": "E:/poolside/logs/nodraft-short-20261010-182853.stderr.log",
+      "sha256": "dea858ab2afcddc213d5abd52b2ea5b24db0db05eac6d6390e2f54833322cc91"
+    },
+    {
+      "path": "performance/nodraft-cache3072-batch512-8k-answer.json",
+      "sha256": "d921290529dca0d5bed61354ce2b60e50f54b664b8d6526ea33af5544d7cc876"
+    },
+    {
+      "path": "performance/nodraft-cache3072-batch2048-8k-answer.json",
+      "sha256": "a202090bd1c5d3cb7c993974235b918e3ba9ad774fc8a7c9dd0ceecc8d1a9e27"
+    },
+    {
+      "path": "E:/poolside/logs/nodraft-b2048-20261010-183437.stderr.log",
+      "sha256": "1368e3d09dd4da4c94ea7528eab276ea282073a95c730efcd91445a955cce5a4"
+    },
+    {
+      "path": "E:/poolside/models/Laguna-S-2.1-DFlash-Q8_0-swa512.gguf.metadata-repair.json",
+      "sha256": "b7391ef839676524335e737e7825e69d2b705adf2a011848e6c3c97f635d813c"
+    },
+    {
+      "path": "performance/fixed-dflash4-cache3072-batch2048-8k-answer.json",
+      "sha256": "e81c5f5feeef37ce8a5d0cd81ee67d7b6efd865a0eebad8bb37575fc180260a9"
+    },
+    {
+      "path": "performance/fixed-dflash4-cache3072-batch2048-8k-bos.json",
+      "sha256": "5f8d458d9274415619334ca020f1005c995b845115de8e8aff7d138462609b7e"
+    },
+    {
+      "path": "performance/nodraft-cache5120-pinned-batch2048-8k-bos.json",
+      "sha256": "fdffe22eb9ed046f470027b83baa04f6f26e11046476b95929434f3a551301b4"
+    },
+    {
+      "path": "E:/poolside/logs/pinned-cache5120-20261010-184227.stderr.log",
+      "sha256": "22635d0b61039bd73765c0e3bc9c910997d0e56bb63893fa75adf8936f32a2a9"
+    },
+    {
+      "path": "performance/adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json",
+      "sha256": "bcc0a46605e107ea0cf8e41c855eb7246a5d91e9b4e5f75331aebf7b67f467cf"
+    },
+    {
+      "path": "E:/poolside/logs/adaptive-cache5120-20261010-184440.stderr.log",
+      "sha256": "ca9940ec5a534aaaa7a27dc444ca67ac926c2742322ab0c10b78bb87d042d1a8"
+    },
+    {
+      "path": "performance/overlap-adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json",
+      "sha256": "52dbd7efa76c822f720881fecdb92cab9a69f069dc0c1a21f641bad1f577ec36"
+    },
+    {
+      "path": "performance/submitted-adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json",
+      "sha256": "e17d1fbae48377cbc3d8bf68e022b302b5878123177e617e948382598c6f6662"
+    },
+    {
+      "path": "E:/poolside/logs/submitted-cache5120-20261010-185327.stderr.log",
+      "sha256": "25c2a2800a196290c9a7963715ca764370a65401bfac229a9625f38a941856f8"
+    },
+    {
+      "path": "performance/core-streaming-deployment.json",
+      "sha256": "38153cb762a9f3655ebfca5a27a833af9febe8b5bc4ab106e249c25632488d15"
+    },
+    {
+      "path": "performance/core8k-nodraft-cache8192-pinned-batch8192.json",
+      "sha256": "fe146f19c6e04d3142613c664f2ee9770661fd6826a76c246650c332b9570944"
+    },
+    {
+      "path": "performance/core8k-nodraft-cache8192-strata-stopped-repeat.json",
+      "sha256": "4632ad91830a25c5844f61ff12535a30c347fbaccd86e11b6846f57a30fa6088"
+    },
+    {
+      "path": "performance/dflash-working-batch-deployment.json",
+      "sha256": "ba658c122f7af41302e8bdcb31d17ef001c71d7b6bc24ae9de2c7baee086d810"
+    },
+    {
+      "path": "performance/core8k-dflash4-launch.json",
+      "sha256": "ab123d558f347135e7f2beb726d16f2b624ab80437b3e7bbd41d5fbb8c585497"
+    },
+    {
+      "path": "performance/core8k-dflash4-q8-cache6144-pinned-batch8192.json",
+      "sha256": "a08fd56dcfc1c61eab8ba2839300b454b3676749a282292ce7c58a2d4f25db8a"
+    },
+    {
+      "path": "performance/decode-upload-budget-deployment.json",
+      "sha256": "53a6a6afb5dfac4a9272a06730b118f7374a6e43401b55ea42b339e9d5d7b14e"
+    },
+    {
+      "path": "performance/core8k-budgeted-dflash4-launch.json",
+      "sha256": "ecc7d4ce47e2ce6985b2287a4a428b1613627de6d653715f60dc3d8e86a14aa6"
+    },
+    {
+      "path": "performance/core8k-budgeted-dflash4-q8-cache6144-nsys.json",
+      "sha256": "bfc42961d5dc89a57fb7afbea6abe9c2bc47c0744638755c152c1f6fbbf2d81d"
+    },
+    {
+      "path": "performance/recency-and-submit-deployment.json",
+      "sha256": "3931944dce73ebc6e8be730708a5de15637e9ebe7b51920d49d07f4fc8a06787"
+    },
+    {
+      "path": "performance/core8k-recency-submit-launch.json",
+      "sha256": "6a3a420670d7ed98d8712c4a6aaf8683ea01efaebea302e98704941165c7e266"
+    },
+    {
+      "path": "performance/core8k-recency-submit-dflash4-q8-cache6144.json",
+      "sha256": "0d13e393fefd95951c65f6487be0e27bda9144219057763bb048b4ab22d92c93"
+    },
+    {
+      "path": "performance/bulk-prefill-deployment.json",
+      "sha256": "05286865da58c64eb57b8162f933a154332f6e959b1b05e3de8cce25819442ca"
+    },
+    {
+      "path": "performance/bulk-prefill-launch.json",
+      "sha256": "ad28ac580ed2270aae7c0a1f3352e838b14be0ff9337e3133e7abbadba57d314"
+    },
+    {
+      "path": "performance/core8k-bulk-prefill-dflash4-q8-cache6144.json",
+      "sha256": "ae9c4d4a49e256b6a305cead26dfc9d61625ba3b4e1bbd15e28b0ecb3c5a2991"
+    },
+    {
+      "path": "performance/dual-layer-prefill-deployment.json",
+      "sha256": "b794ce79ccde72209f7a58cf9971344a89bbdd0e6ab2f9eab5ff5bccf9e3277f"
+    },
+    {
+      "path": "performance/dual-layer-prefill-launch.json",
+      "sha256": "4560f8b5d0af99c661b6c641e56a34a7463e6fd44338f4cff4fbbe49b45ae5f7"
+    },
+    {
+      "path": "performance/core8k-dual-layer-prefill-dflash4-q8-cache6144.json",
+      "sha256": "bcd37277eac207c9ee9c1f57b3f6dc1bcaea7224175656210ef2517c7e359377"
+    },
+    {
+      "path": "performance/phase-memory-deployment.json",
+      "sha256": "8dd9f1bb9c3ee6feb27826b73f041bc506598c1e65e3d34d76aa3bf41a02fefc"
+    },
+    {
+      "path": "performance/phase-memory-launch.json",
+      "sha256": "b18b5ef1523206eca1d2e270070b00e64ce390dba0d660314b55f662cb063c73"
+    },
+    {
+      "path": "performance/core8k-phase-memory-dflash4-q8-cache6144.json",
+      "sha256": "a1652d8c9733b7c209beaa0eb3c5fefd11a90d34b5f95d63bdb7e0941f601f01"
+    },
+    {
+      "path": "performance/compact-expert-tiles-deployment.json",
+      "sha256": "ed663b2eb4eb596f67a47ac613a445444d1fb4384be0c0a6e5d9d25f24bb347d"
+    },
+    {
+      "path": "performance/compact-expert-tiles-launch.json",
+      "sha256": "2f4c7d8f21155ffcc7808242fd6f73737146f6f8ab9ffd53b6477a37ba793157"
+    },
+    {
+      "path": "performance/core8k-compact-expert-tiles-dflash4-q8-cache6144.json",
+      "sha256": "8cf5fad65339cfcfd37ac5b617c0cde4f88a4b7b6c3dde0ed7a760cefe564107"
+    },
+    {
+      "path": "performance/core8k-compact-expert-tiles-warm-repeat.json",
+      "sha256": "1a24ef4b0c92b34804ac959bace98ddc58ab793aa4442d780708af118a64f561"
+    },
+    {
+      "path": "performance/one-readback-wait-deployment.json",
+      "sha256": "6f96d12e73ded45531cd6f428462333e1e54bb5931a6a5f749a5903eb39654cc"
+    },
+    {
+      "path": "performance/one-readback-wait-launch.json",
+      "sha256": "84eb29c85137da3a9c46198b95607241a0e774c59fd860e706d2b811b15ba77d"
+    },
+    {
+      "path": "performance/core8k-one-readback-wait-dflash4-q8-cache6144.json",
+      "sha256": "ccaef4c6f9b94c4b6646222c1ad749914654f4bb4fcc803e8faca1566eaf1e27"
+    },
+    {
+      "path": "performance/fused-bulk-gate-up-deployment.json",
+      "sha256": "75695f50613ce724ea67ce8bdf0353204159b550a7a67aae06c9397a95ffa7fe"
+    },
+    {
+      "path": "performance/fused-bulk-gate-up-launch.json",
+      "sha256": "8da023cd2b6a14f88b778f530b5f1f0d807043dc086baa9c2e924bcb021ba280"
+    },
+    {
+      "path": "performance/core8k-fused-bulk-gate-up-dflash4-q8-cache6144.json",
+      "sha256": "a1010809c3b860ac5aaa839ac8e5c20d2cac5eca16ecd5699658b259161ccbed"
+    },
+    {
+      "path": "performance/compact-decode-slots-deployment.json",
+      "sha256": "7238fd2559d97cf35285cd95b9eb80f688d6d4bf0846866c4231ecc69c33b230"
+    },
+    {
+      "path": "performance/compact-decode-slots-launch.json",
+      "sha256": "db1081b3be821ff251abd1ed76ef663b18b2d0668887a7e0ac544b86a3daef30"
+    },
+    {
+      "path": "performance/core8k-compact-decode-slots-dflash4-q8-cache6144.json",
+      "sha256": "1d7e493c9265371cef550ec372f5c8bee89b209ccc56949fee948b8f18087065"
+    },
+    {
+      "path": "performance/core8k-compact-decode-slots-warm-repeat.json",
+      "sha256": "4232551234752911de4b723de5a43133cdb3d1fe215891c8074e2bade58648b4"
+    },
+    {
+      "path": "performance/core8k-cache-decision-evidence.json",
+      "sha256": "cbc856891778f6a501aeb8e5b6d9574e80d6f5041633874983e0f330dfaa293c"
+    },
+    {
+      "path": "performance/checkpoint-core8k-production-baseline.json",
+      "sha256": "e04b1a255350751c1933f14b9f4aa36dc9c68e95e24645173aad559a439907d0"
+    },
+    {
+      "path": "performance/production-baseline-deployment.json",
+      "sha256": "ba513a8c30adaee06ae43ce03930fa746b6049553570ffb431f2fab85c849239"
+    },
+    {
+      "path": "performance/production-baseline-launch.json",
+      "sha256": "e3acbdab8e75443fab04ce1e71e1f3b568ad6050cc514d55b9c5d108a472d299"
+    },
+    {
+      "path": "performance/core8k-production-baseline-dflash4-q8-cache6144.json",
+      "sha256": "8bf761718d6790b6b86a1e6ae422e946aace4c6c3462bec7cee822f8d117910d"
+    },
+    {
+      "path": "performance/dflash-window-injection-deployment.json",
+      "sha256": "fd17dce866f83f1e9b3dca1e0bfe0850a7b65261f5ecd1a867f35c5fb56f9e1b"
+    },
+    {
+      "path": "performance/dflash-window-injection-production-launch.json",
+      "sha256": "0b1352ed4227be23f0fc7bca23046f388e97c13c35ff14c37be54e98cb439e5c"
+    },
+    {
+      "path": "performance/core8k-dflash-window-injection-production-dflash4-q8-cache6144.json",
+      "sha256": "f1daa2398851fc50d5cb9558cc605ee3cdb4705b2c0abd4ad8059850d309e26f"
+    },
+    {
+      "path": "performance/dflash-window-chunks-deployment.json",
+      "sha256": "7c6bb881746b71ad475d6ea677c5ac63d078530107bc7343bad5c23f8377fa0e"
+    },
+    {
+      "path": "performance/dflash-window-chunks-profile-launch.json",
+      "sha256": "e70c550aee3796f7ebaa357e926b7e6a7c821d8c38b8a981fdf9c8b5645bcdfd"
+    },
+    {
+      "path": "performance/core8k-dflash-window-chunks-profile-dflash4-q8-cache6144.json",
+      "sha256": "01a4c788d8063ee1a065ce30b3b2f32d7149a464fb277a04c1756bffe3c448e5"
+    },
+    {
+      "path": "E:/poolside/logs/core8k-nodraft-20261010-225936.stderr.log",
+      "exists": true,
+      "sha256": "425b1bcaf5b0b82b9acfc90ff50a82d2fc3113145967833acb74a40ce5214b5b"
+    },
+    {
+      "path": "E:/poolside/logs/core8k-dflash4-q8-20261010-230719.stderr.log",
+      "exists": true,
+      "sha256": "c1d82bba5b89e4926b63bd48e92cccdb47b5776236b0cdea68571b3b716d4926"
+    },
+    {
+      "path": "E:/poolside/logs/core8k-budgeted-native-20261010-231807.profiler.log",
+      "exists": true,
+      "sha256": "f28b6bb190ad6ce169163a568b18ff11d67fc76815c4bd25888771c0718f4aa3"
+    },
+    {
+      "path": "E:/poolside/logs/core8k-phase-memory-20261011-001937.stderr.log",
+      "exists": true,
+      "sha256": "e5c986c5efb5239d4971776d033358da1334ae782626c6cac7adb10945bdc97b"
+    },
+    {
+      "path": "E:/poolside/logs/core8k-dflash-window-injection-production-20261011-032952.stderr.log",
+      "exists": true,
+      "sha256": "3135bae4b547b5c35dbfbb836b970c01b86cb4a119121d496bfff41df12edb86"
+    }
+  ],
+  "gaps": [
+    "The owner?s original 130278-token request and output token IDs were not found.",
+    "No direct ro99 execution or controlled same-prompt Niko/Laguna comparison was found.",
+    "Initial short 512-batch launch profiling state is unverified.",
+    "The failed trace is not usable Nsight evidence.",
+    "Single executions with changing outputs and draft acceptance cannot establish a repeatable speedup."
+  ]
+}

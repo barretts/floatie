@@ -1,0 +1,202 @@
+{
+  "timestamp": "2026-10-11T09:11:57.177615-05:00",
+  "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+  "same_request": true,
+  "same_binaries": true,
+  "same_output_tokens": true,
+  "same_draft_counts": true,
+  "on_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 10588.745,
+    "prompt_per_token_ms": 1.3130884176587303,
+    "prompt_per_second": 761.563339187033,
+    "predicted_n": 80,
+    "predicted_ms": 5268.215,
+    "predicted_per_token_ms": 65.8526875,
+    "predicted_per_second": 15.185409099666584,
+    "draft_n": 100,
+    "draft_n_accepted": 53
+  },
+  "off_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 10356.797,
+    "prompt_per_token_ms": 1.2843250248015874,
+    "prompt_per_second": 778.619103956561,
+    "predicted_n": 80,
+    "predicted_ms": 5101.707,
+    "predicted_per_token_ms": 63.7713375,
+    "predicted_per_second": 15.681025978167698,
+    "draft_n": 100,
+    "draft_n_accepted": 53
+  },
+  "on_checkpoints_correct": true,
+  "off_checkpoints_correct": true,
+  "on_profile": {
+    "prefill": {
+      "raw": "0.34.270.440 I CUDA hybrid MoE profile [prefill]: layer_calls=47 target_tokens_per_layer=8060.0 cache_hits=0 cache_misses=3788200 h2d_weight_MiB=42912.00 cpu_fused_ms=0.00 entry_event_wait_ms=4055.56 readback_wait_ms=2841.29 host_prepare_submit_ms=130.99 gpu_cached_interval_ms=0.00 gpu_streamed_interval_ms=4223.07 gpu_weight_copy_interval_ms=6764.99 gpu_cache_refresh_interval_ms=47.28 gpu_attention_interval_ms=0.00 gpu_cpu_wait_interval_ms=0.00 gpu_between_moe_readback_interval_ms=0.00",
+      "fields": {
+        "layer_calls": 47,
+        "target_tokens_per_layer": 8060.0,
+        "cache_hits": 0,
+        "cache_misses": 3788200,
+        "h2d_weight_MiB": 42912.0,
+        "cpu_fused_ms": 0.0,
+        "entry_event_wait_ms": 4055.56,
+        "readback_wait_ms": 2841.29,
+        "host_prepare_submit_ms": 130.99,
+        "gpu_cached_interval_ms": 0.0,
+        "gpu_streamed_interval_ms": 4223.07,
+        "gpu_weight_copy_interval_ms": 6764.99,
+        "gpu_cache_refresh_interval_ms": 47.28,
+        "gpu_attention_interval_ms": 0.0,
+        "gpu_cpu_wait_interval_ms": 0.0,
+        "gpu_between_moe_readback_interval_ms": 0.0
+      }
+    },
+    "decode": {
+      "raw": "0.37.530.367 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=76.0 cache_hits=19330 cache_misses=16390 h2d_weight_MiB=4910.04 cpu_fused_ms=1603.54 entry_event_wait_ms=251.22 readback_wait_ms=572.96 host_prepare_submit_ms=338.16 gpu_cached_interval_ms=520.41 gpu_streamed_interval_ms=0.00 gpu_weight_copy_interval_ms=0.00 gpu_cache_refresh_interval_ms=850.32 gpu_attention_interval_ms=220.45 gpu_cpu_wait_interval_ms=497.15 gpu_between_moe_readback_interval_ms=752.63",
+      "fields": {
+        "layer_calls": 752,
+        "target_tokens_per_layer": 76.0,
+        "cache_hits": 19330,
+        "cache_misses": 16390,
+        "h2d_weight_MiB": 4910.04,
+        "cpu_fused_ms": 1603.54,
+        "entry_event_wait_ms": 251.22,
+        "readback_wait_ms": 572.96,
+        "host_prepare_submit_ms": 338.16,
+        "gpu_cached_interval_ms": 520.41,
+        "gpu_streamed_interval_ms": 0.0,
+        "gpu_weight_copy_interval_ms": 0.0,
+        "gpu_cache_refresh_interval_ms": 850.32,
+        "gpu_attention_interval_ms": 220.45,
+        "gpu_cpu_wait_interval_ms": 497.15,
+        "gpu_between_moe_readback_interval_ms": 752.63
+      }
+    },
+    "cpu": {
+      "raw": "0.37.512.098 I CUDA hybrid MoE CPU profile: calls=752 jobs=16390 groups_1_2_3_4=(10006,2448,404,69) scheduled_weight_MiB=46280.11 setup_ms=57.75 gate_up_ms=905.62 down_quant_ms=19.65 down_ms=619.67",
+      "fields": {
+        "calls": 752,
+        "jobs": 16390,
+        "scheduled_weight_MiB": 46280.11,
+        "setup_ms": 57.75,
+        "gate_up_ms": 905.62,
+        "down_quant_ms": 19.65,
+        "down_ms": 619.67
+      }
+    },
+    "capacity": {
+      "raw": "0.37.530.330 I CUDA hybrid MoE cache capacity [retrospective]: observed=35720 actual_hits=19330 best_fixed_capacity_hits=24696 greedy_global_capacity_hits=24872 budget_MiB=8192 global_experts_per_layer_min=29 global_experts_per_layer_max=62; estimates use this past window, not future routing",
+      "fields": {
+        "observed": 35720,
+        "actual_hits": 19330,
+        "best_fixed_capacity_hits": 24696,
+        "greedy_global_capacity_hits": 24872,
+        "budget_MiB": 8192,
+        "global_experts_per_layer_min": 29,
+        "global_experts_per_layer_max": 62
+      }
+    },
+    "bulk_selection": [
+      "0.24.794.704 I CUDA hybrid MoE bulk prefill: 1290.0 MiB layer atlas, two layer buffers with fused gate/up projections, three uploads per layer, eligible_layers=47/47"
+    ],
+    "cache_reclaim": [
+      "0.24.783.423 I CUDA hybrid MoE bulk prefill reserve: 128 MiB reclaimed from warm cache; prefill_cache_MiB=4992 free_MiB=3133.1 required_with_margin_MiB=3126.4"
+    ],
+    "cache_phase": [
+      "0.24.132.358 I CUDA hybrid MoE phase cache: 5120 MiB budget, 0.00 MiB hot experts uploaded, 261.46 ms transition",
+      "0.24.783.403 I CUDA hybrid MoE phase cache: 4992 MiB budget, 0.00 MiB hot experts uploaded, 0.00 ms transition",
+      "0.34.258.566 I CUDA hybrid MoE phase cache: 8192 MiB budget, 3137.11 MiB hot experts uploaded, 897.65 ms transition"
+    ]
+  },
+  "off_profile": {
+    "prefill": {
+      "raw": "0.34.329.747 I CUDA hybrid MoE profile [prefill]: layer_calls=47 target_tokens_per_layer=8060.0 cache_hits=0 cache_misses=3788200 h2d_weight_MiB=42792.14 cpu_fused_ms=0.00 entry_event_wait_ms=3954.65 readback_wait_ms=2798.77 host_prepare_submit_ms=357.91 gpu_cached_interval_ms=0.00 gpu_streamed_interval_ms=4184.98 gpu_weight_copy_interval_ms=6770.94 gpu_cache_refresh_interval_ms=47.94 gpu_attention_interval_ms=0.00 gpu_cpu_wait_interval_ms=0.00 gpu_between_moe_readback_interval_ms=0.00",
+      "fields": {
+        "layer_calls": 47,
+        "target_tokens_per_layer": 8060.0,
+        "cache_hits": 0,
+        "cache_misses": 3788200,
+        "h2d_weight_MiB": 42792.14,
+        "cpu_fused_ms": 0.0,
+        "entry_event_wait_ms": 3954.65,
+        "readback_wait_ms": 2798.77,
+        "host_prepare_submit_ms": 357.91,
+        "gpu_cached_interval_ms": 0.0,
+        "gpu_streamed_interval_ms": 4184.98,
+        "gpu_weight_copy_interval_ms": 6770.94,
+        "gpu_cache_refresh_interval_ms": 47.94,
+        "gpu_attention_interval_ms": 0.0,
+        "gpu_cpu_wait_interval_ms": 0.0,
+        "gpu_between_moe_readback_interval_ms": 0.0
+      }
+    },
+    "decode": {
+      "raw": "0.37.444.402 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=76.0 cache_hits=19178 cache_misses=16542 h2d_weight_MiB=4793.77 cpu_fused_ms=1555.61 entry_event_wait_ms=250.41 readback_wait_ms=576.65 host_prepare_submit_ms=329.93 gpu_cached_interval_ms=515.72 gpu_streamed_interval_ms=0.00 gpu_weight_copy_interval_ms=0.00 gpu_cache_refresh_interval_ms=828.59 gpu_attention_interval_ms=217.48 gpu_cpu_wait_interval_ms=482.24 gpu_between_moe_readback_interval_ms=737.81",
+      "fields": {
+        "layer_calls": 752,
+        "target_tokens_per_layer": 76.0,
+        "cache_hits": 19178,
+        "cache_misses": 16542,
+        "h2d_weight_MiB": 4793.77,
+        "cpu_fused_ms": 1555.61,
+        "entry_event_wait_ms": 250.41,
+        "readback_wait_ms": 576.65,
+        "host_prepare_submit_ms": 329.93,
+        "gpu_cached_interval_ms": 515.72,
+        "gpu_streamed_interval_ms": 0.0,
+        "gpu_weight_copy_interval_ms": 0.0,
+        "gpu_cache_refresh_interval_ms": 828.59,
+        "gpu_attention_interval_ms": 217.48,
+        "gpu_cpu_wait_interval_ms": 482.24,
+        "gpu_between_moe_readback_interval_ms": 737.81
+      }
+    },
+    "cpu": {
+      "raw": "0.37.426.504 I CUDA hybrid MoE CPU profile: calls=752 jobs=16542 groups_1_2_3_4=(10051,2467,423,72) scheduled_weight_MiB=46600.90 setup_ms=57.53 gate_up_ms=861.85 down_quant_ms=24.16 down_ms=611.21",
+      "fields": {
+        "calls": 752,
+        "jobs": 16542,
+        "scheduled_weight_MiB": 46600.9,
+        "setup_ms": 57.53,
+        "gate_up_ms": 861.85,
+        "down_quant_ms": 24.16,
+        "down_ms": 611.21
+      }
+    },
+    "capacity": {
+      "raw": "0.37.444.367 I CUDA hybrid MoE cache capacity [retrospective]: observed=35720 actual_hits=19178 best_fixed_capacity_hits=24709 greedy_global_capacity_hits=24891 budget_MiB=8192 global_experts_per_layer_min=28 global_experts_per_layer_max=63; estimates use this past window, not future routing",
+      "fields": {
+        "observed": 35720,
+        "actual_hits": 19178,
+        "best_fixed_capacity_hits": 24709,
+        "greedy_global_capacity_hits": 24891,
+        "budget_MiB": 8192,
+        "global_experts_per_layer_min": 28,
+        "global_experts_per_layer_max": 63
+      }
+    },
+    "bulk_selection": [
+      "0.24.827.695 I CUDA hybrid MoE bulk prefill: 900.0 MiB layer atlas, two layer buffers with fused gate/up projections, three uploads per layer, eligible_layers=45/47"
+    ],
+    "cache_reclaim": [],
+    "cache_phase": [
+      "0.24.407.948 I CUDA hybrid MoE phase cache: 5120 MiB budget, 0.00 MiB hot experts uploaded, 253.16 ms transition",
+      "0.34.319.289 I CUDA hybrid MoE phase cache: 8192 MiB budget, 3137.11 MiB hot experts uploaded, 891.17 ms transition"
+    ]
+  },
+  "observed_prefill_relative_percent": -2.190514551063416,
+  "observed_generation_relative_percent": -3.1606151229590984,
+  "initial_guard_observation": "wide-bulk-guard-observation.json",
+  "decision": "Reject the larger-atlas candidate and calculated cache reclaim; restore the original source and complete baseline binary set. Keep the retained budgeted cache admission.",
+  "limitations": [
+    "The first revision stayed at 45/47 layers because of its memory guard and did not exercise larger atlases.",
+    "The revised candidate exercised 47/47 layers using 1290 MiB atlases and a 128 MiB prefill budget reduction. The control used 45/47 layers and 900 MiB atlases.",
+    "Same-binary, same-request pair with identical output and draft counts shows no speed improvement; no guaranteed isolated regression percentage is claimed from one pair.",
+    "GPU snapshots were taken after inference completed and show idle clocks; they are not peak memory or active clock measurements.",
+    "900/30 at 8k remains unmet; full API and near-full 128k remain unverified."
+  ]
+}

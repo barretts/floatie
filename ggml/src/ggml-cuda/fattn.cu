@@ -5,6 +5,7 @@
 #include "fattn-vec.cuh"
 #include "fattn-wmma-f16.cuh"
 #include "fattn.cuh"
+#include "moe-hybrid.cuh"
 
 template <int DKQ, int DV, int ncols2>
 static void ggml_cuda_flash_attn_ext_mma_f16_switch_ncols1(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
@@ -580,6 +581,7 @@ size_t ggml_cuda_flash_attn_ext_get_alloc_size(int device, const ggml_tensor * d
 
 void ggml_cuda_flash_attn_ext(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
     ggml_cuda_set_device(ctx.device);
+    const size_t interval = ggml_cuda_moe_hybrid_attention_begin(ctx, dst);
     switch (ggml_cuda_get_best_fattn_kernel(ggml_cuda_get_device(), dst)) {
         case BEST_FATTN_KERNEL_NONE:
             GGML_ABORT("fatal error");
@@ -596,6 +598,7 @@ void ggml_cuda_flash_attn_ext(ggml_backend_cuda_context & ctx, ggml_tensor * dst
             ggml_cuda_flash_attn_ext_mma_f16(ctx, dst);
             break;
     }
+    ggml_cuda_moe_hybrid_attention_end(ctx, interval);
 }
 
 bool ggml_cuda_flash_attn_ext_supported(int device, const ggml_tensor * dst) {

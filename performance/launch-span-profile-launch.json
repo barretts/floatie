@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-10-11T04:49:28.2673345-05:00",
+  "wrapper_pid": 27912,
+  "stdout_log": "E:\\poolside\\logs\\core8k-launch-span-profile-20261011-044928.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-launch-span-profile-20261011-044928.stderr.log",
+  "moe_source_sha256": "96394D6A50EE5CAE22CDA56D365B96FFF93C27F953C74ED5BA1BBC0B143DEBC7",
+  "cuda_source_sha256": "29BF88D604B7551B765F4C0464220B78501CDDA9AFC30036739598C83984BDC6",
+  "cuda_dll_sha256": "5BF921AD35C5563BF005FDBC057A40F27B2C7CE305E8A294C3483336B40392EC",
+  "llama_dll_sha256": "5B8A05BD34E3FFAC76FF56E11E88726362AFB6DD0E74DD613C39BD46E9B0B86E",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "profile": true,
+  "readback_span": true,
+  "timeline": false,
+  "verbosity": 4,
+  "cpu_doorbell": "default enabled",
+  "pin_experts": true,
+  "adaptive_cache": true
+}

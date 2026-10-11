@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-10-11T06:05:25.4776450-05:00",
+  "stopped_native_pids": [
+    3220
+  ],
+  "backup_directory": "E:\\poolside\\backups\\before-hybrid-span-graphs-20261011-055200",
+  "source_sha256": "29BF88D604B7551B765F4C0464220B78501CDDA9AFC30036739598C83984BDC6",
+  "cuda_dll_sha256": "941E44CE64569042CA73B5FDA0109F8411E9490816CB9F1FF103956FF797857C",
+  "cpu_source_sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+  "cpu_dll_sha256": "7BC86BE0D91C083B088E7B2DA516FD93784822F48EED2798963290AB77C6C7DB",
+  "reason": "Optional GPU section graph replay did not improve end-to-end throughput; restore the retained CUDA engine. Corrected CPU placement profiling remains."
+}

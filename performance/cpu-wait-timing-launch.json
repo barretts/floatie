@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-10-11T03:42:35.5135947-05:00",
+  "wrapper_pid": 20828,
+  "stdout_log": "E:\\poolside\\logs\\core8k-cpu-wait-timing-20261011-034235.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-cpu-wait-timing-20261011-034235.stderr.log",
+  "source_sha256": "5D3BEA69E54B1A14BF58E9BEBE802A62F2F542EABD97B0F95875BDED5DE528F3",
+  "llama_common_dll_sha256": "F6D0457994F82EAB6C33AE2FFD091C6F1327A0638AB8C3F9A930596453370B58",
+  "cuda_dll_sha256": "4E905EFA528A8AEC60002F5AD43B748056873905EADE6F46767549784E0A609C",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "profile": true,
+  "timeline": false,
+  "verbosity": 5,
+  "pin_experts": true,
+  "adaptive_cache": true
+}

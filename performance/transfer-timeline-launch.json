@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-10-11T02:31:52.6419293-05:00",
+  "wrapper_pid": 28528,
+  "stdout_log": "E:\\poolside\\logs\\core8k-transfer-timeline-20261011-023152.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-transfer-timeline-20261011-023152.stderr.log",
+  "source_sha256": "2F518289428A546EFD6B8AC509CF25A9F3105A490BF010396E05156D677333CA",
+  "cuda_dll_sha256": "3A4E411C21547D53D9123209DECB0426BAB7408402E2911ED299DAFB0DEC46C7",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "profile": true,
+  "timeline": true,
+  "pin_experts": true,
+  "adaptive_cache": true
+}

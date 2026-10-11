@@ -1,0 +1,32 @@
+0.00.040.712 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.152.512 I srv          init: The UI is disabled
+0.00.152.535 I srv          init: Use --ui/--no-ui (or deprecated --webui/--no-webui) to enable/disable
+0.00.168.621 I srv    load_model: loading model 'E:\poolside\models\Laguna-S-2.1-UD-IQ3_S.gguf'
+0.00.388.185 W load: special_eos_id is not in special_eog_ids - the tokenizer config may be incorrect
+0.00.388.196 W load: special_eot_id is not in special_eog_ids - the tokenizer config may be incorrect
+CUDA hybrid MoE: pinned 41.91 GiB of expert RAM
+0.22.776.453 I common_speculative_init_result: DFlash working batch = 512, ubatch = 512
+0.23.024.084 W load: special_eos_id is not in special_eog_ids - the tokenizer config may be incorrect
+0.24.099.212 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 8192, kv_unified = 'false'
+0.24.099.289 I common_speculative_impl_draft_dflash: adding speculative implementation 'draft-dflash'
+0.24.099.296 I common_speculative_impl_draft_dflash: - n_max=4, n_min=0, p_min=0.00
+0.24.099.297 I common_speculative_impl_draft_dflash: - block_size=16, mask_token_id=12, n_extract=6
+0.24.113.168 W srv          init: --cache-idle-slots requires --cache-ram, disabling
+0.24.140.946 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+0.24.140.986 I srv  llama_server: model loaded
+0.24.140.989 I srv  llama_server: listening on http://127.0.0.1:1235
+0.24.375.923 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.24.375.988 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.34.549.383 I process: injected 512 target rows for seq 0, skipped 7548 outside the 512-token window (506.07 ms)
+0.34.549.458 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   8060, progress = 1.00, t =  10.17 s / 792.26 tokens per second
+0.42.752.999 I slot print_timing: id  0 | task 0 | prompt eval time =   11426.70 ms /  8064 tokens (    1.42 ms per token,   705.72 tokens per second)
+0.42.753.014 I slot print_timing: id  0 | task 0 |        eval time =    6950.28 ms /    80 tokens (   86.88 ms per token,    11.51 tokens per second)
+0.42.753.016 I slot print_timing: id  0 | task 0 |       total time =   18376.97 ms /  8144 tokens
+0.42.753.017 I slot print_timing: id  0 | task 0 |    graphs reused =         24
+0.42.753.027 I slot print_timing: id  0 | task 0 | draft acceptance = 0.53000 (   53 accepted /   100 generated), mean len =  3.12
+0.42.753.415 I slot      release: id  0 | task 0 | stop processing: n_tokens = 8143, truncated = 0
+Exception: E:\poolside\launch.ps1:115
+Line |
+ 115 |  . DE -ne 0) { throw "Laguna server exited with code $LASTEXITCODE. Read .
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Laguna server exited with code -1. Read E:\poolside\logs\laguna-20261011-032953.log.

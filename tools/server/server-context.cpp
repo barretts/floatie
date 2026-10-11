@@ -3647,7 +3647,20 @@ private:
         if (!common_speculative_process(spec.get(), batch_view)) {
             SRV_ERR("%s", "failed to process speculative batch\n");
 
-            // TODO: handle error
+            // The target batch has already succeeded, but the draft may have
+            // processed only part of it. Neither cache is safe to reuse. The
+            // outer handler aborts all active slots, so invalidate their prompt
+            // state before release can make it available for another request.
+            for (auto & slot : slots) {
+                if (slot.is_processing()) {
+                    slot.prompt_clear(true);
+                    slot.prompt.data.main.clear();
+                    slot.prompt.data.drft.clear();
+                    slot.prompt.checkpoints.clear();
+                    slot.spec_ckpt.clear();
+                }
+            }
+
             throw std::runtime_error("failed to process speculative batch");
         }
 

@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-10-11T07:15:05.1821291-05:00",
+  "stopped_native_pids": [],
+  "backup_directory": "E:\\poolside\\backups\\before-iq2-weight-cache-20261011-071504",
+  "build_log": "E:\\poolside\\logs\\iq2-weight-cache-build-20261011-071504.log",
+  "build_status": "complete",
+  "source_files": [
+    {
+      "file": "ggml\\include\\ggml-cpu-moe.h",
+      "original_sha256": "679B289E25322591854B24BCA95D02FE97CE1CE747BA2678EE9521314C7F9C04",
+      "candidate_sha256": "A74D92EFDF66FE767BD0792FBB784CAEA46FA19E3D511E9DCCD68C4C602B695A"
+    },
+    {
+      "file": "src\\CMakeLists.txt",
+      "original_sha256": "918ABC450AE62C3A5B7D9B8145C54B920138848F68AE9AC8A1EC08760CE96C55",
+      "candidate_sha256": "0DB6092DDB75224346C3F9CBB5EBA05BAEBC65C6E450AAC3F0919F52F9940913"
+    },
+    {
+      "file": "src\\llama-model.cpp",
+      "original_sha256": "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB",
+      "candidate_sha256": "BBC3C1C8146FB023F834DFBC34EFE477508ACDEB06B283C1586A459F715AB1AC"
+    },
+    {
+      "file": "ggml\\src\\ggml-cpu\\moe.cpp",
+      "original_sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+      "candidate_sha256": "3C1B94E6AD111067C1E5C641BA62507AF07161F0E15B85DD5E2041F97343D379"
+    },
+    {
+      "file": "ggml\\src\\ggml-cpu\\moe-iq.cpp",
+      "original_sha256": "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+      "candidate_sha256": "D82068EEF92E9FA1C44888CB65191F124A05352AC853D54FA484660B389D7B1A"
+    },
+    {
+      "file": "ggml\\src\\ggml-cpu\\moe-iq.h",
+      "original_sha256": "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+      "candidate_sha256": "A6AE48B910BF1DFDC233332E02B06C700D42B7FA3BEAC48B0CB44925813F3A19"
+    }
+  ],
+  "scope": "Exact IQ2_S nibble labels prepared during model loading. Original GPU weights, CPU activations, dot reduction order, routing and quantization retained; 24 GiB free-RAM reserve.",
+  "build_exit_code": 0,
+  "cpu_dll_sha256": "EF661CCB7580D49B0FBE56AE45746AB9C8FD6D1B1F09372498C10C98ADF0C47D",
+  "cuda_dll_sha256": "13DA3D114EBFFA25F9FA9D925A78813D734C137418ACCD628283BF081DB2EF8C",
+  "llama_dll_sha256": "DA7599E05FBE2EEEA7C01429A0B483D8A5091439B3BAF68D6E9DF675B189B1B7"
+}

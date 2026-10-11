@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-10-11T04:56:16.1481364-05:00",
+  "stopped_native_pids": [
+    21464
+  ],
+  "backup_directory": "E:\\poolside\\backups\\before-decode-bounds-20261011-045615",
+  "build_log": "E:\\poolside\\logs\\decode-bounds-build-20261011-045615.log",
+  "build_status": "complete",
+  "source_sha256": "9D2E36F4D5BD4B0947CD9D4C7267C754581850EE049F655BA985231308CC7007",
+  "scope": "Optional exact stream-K mask bounds for small batches. Ignore padded query rows and only skip negative infinity. Original attention masks, windows, positions and KV types remain.",
+  "build_exit_code": 0,
+  "cuda_dll_sha256": "6C54939A8170096A0D00C2472D0A64D5A6778DF451A41D6B39ABCDB7A1199709"
+}

@@ -1,0 +1,54 @@
+{
+  "on_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 10295.385,
+    "prompt_per_token_ms": 1.276709449404762,
+    "prompt_per_second": 783.2635690651684,
+    "predicted_n": 80,
+    "predicted_ms": 5118.726,
+    "predicted_per_token_ms": 63.984075,
+    "predicted_per_second": 15.628888907122594,
+    "draft_n": 100,
+    "draft_n_accepted": 53
+  },
+  "off_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 10265.839,
+    "prompt_per_token_ms": 1.2730455109126984,
+    "prompt_per_second": 785.517871456975,
+    "predicted_n": 80,
+    "predicted_ms": 4771.375,
+    "predicted_per_token_ms": 59.6421875,
+    "predicted_per_second": 16.766655314243796,
+    "draft_n": 96,
+    "draft_n_accepted": 55
+  },
+  "same_binaries": true,
+  "same_request": true,
+  "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+  "same_output_tokens": false,
+  "both_checkpoint_order_correct": true,
+  "prefill_change_pct": -0.2869829540129043,
+  "generation_change_pct": -6.7858877384724074,
+  "gpu_expert_on_ms": 3393.79,
+  "gpu_expert_off_ms": 4201.82,
+  "gpu_expert_change_pct": -19.23047631740531,
+  "profile_lines": {
+    "on": [
+      "0.33.052.085 I CUDA hybrid MoE profile [prefill]: layer_calls=47 target_tokens_per_layer=8060.0 cache_hits=0 cache_misses=3788200 h2d_weight_MiB=42787.10 cpu_fused_ms=0.00 entry_event_wait_ms=3958.88 readback_wait_ms=2830.19 host_prepare_submit_ms=337.04 gpu_cached_interval_ms=0.00 gpu_streamed_interval_ms=3393.79 gpu_weight_copy_interval_ms=6775.27 gpu_cache_refresh_interval_ms=47.71 gpu_attention_interval_ms=0.00 gpu_cpu_wait_interval_ms=0.00 gpu_between_moe_readback_interval_ms=0.00",
+      "0.36.177.659 I CUDA hybrid MoE CPU profile: calls=752 jobs=16598 groups_1_2_3_4=(10073,2490,407,81) scheduled_weight_MiB=46731.47 setup_ms=58.55 gate_up_ms=872.26 down_quant_ms=17.80 down_ms=624.37"
+    ],
+    "off": [
+      "0.32.833.088 I CUDA hybrid MoE profile [prefill]: layer_calls=47 target_tokens_per_layer=8060.0 cache_hits=0 cache_misses=3788200 h2d_weight_MiB=42778.34 cpu_fused_ms=0.00 entry_event_wait_ms=3992.64 readback_wait_ms=2811.99 host_prepare_submit_ms=351.90 gpu_cached_interval_ms=0.00 gpu_streamed_interval_ms=4201.82 gpu_weight_copy_interval_ms=6777.55 gpu_cache_refresh_interval_ms=46.87 gpu_attention_interval_ms=0.00 gpu_cpu_wait_interval_ms=0.00 gpu_between_moe_readback_interval_ms=0.00",
+      "0.35.905.578 I CUDA hybrid MoE CPU profile: calls=752 jobs=16628 groups_1_2_3_4=(10185,2425,447,63) scheduled_weight_MiB=46991.04 setup_ms=57.78 gate_up_ms=851.21 down_quant_ms=18.45 down_ms=609.13"
+    ]
+  },
+  "decision": "Archive candidate and restore baseline. RecordedGPUexpertinterval19.23%lower butprefillflat. Copyinterval6.78secondsunchanged. Existingwholeexpertinterval doesnotisolatehelperruntime. Noend-to-endgain;900/30unmet.",
+  "limits": "Same8064prompt/80output/fixedsettings/allcodescorrect, profileenabled. Outputtokens anddraftacceptancediffer. Sourcehelperchangesonlyintegerindex construction, notfloatoperations; do notassertsourceofoutputnondeterminismwithouttrace.",
+  "receipts": {
+    "on": "performance/core8k-single-id-on-dflash4-q8-cache6144.json",
+    "off": "performance/core8k-single-id-off-dflash4-q8-cache6144.json"
+  }
+}

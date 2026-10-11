@@ -1,0 +1,42 @@
+{
+  "staged_at": "2026-10-10T19:56:41.1424857-05:00",
+  "backup": "E:\\poolside\\backups\\before-core-streaming-20261010-195640",
+  "files": [
+    {
+      "path": "ggml\\include\\ggml.h",
+      "sha256": "25ba154dbad1b4c14fcaf61e2e0c79a3357a26523285ac221685210cd147e047"
+    },
+    {
+      "path": "ggml\\src\\ggml.c",
+      "sha256": "6a704969411f20f09b70b1fd17e529423d16a0d7b3f06e6927566654761204f0"
+    },
+    {
+      "path": "ggml\\src\\ggml-cpu\\CMakeLists.txt",
+      "sha256": "8f1a2eb6a23108a5e3b3e503b4b4824b300745a60515ed85df67efcfdee18043"
+    },
+    {
+      "path": "ggml\\src\\ggml-cpu\\moe-iq.cpp",
+      "sha256": "6a746c8780829f8ad3f9b9df415d6ee59d154270995e41d4825e23aca941a290"
+    },
+    {
+      "path": "ggml\\src\\ggml-cpu\\moe-iq.h",
+      "sha256": "710eef81f8facd0f9cae057bd0170d511b5bafc5b9e8930729afd0951d801df4"
+    },
+    {
+      "path": "ggml\\src\\ggml-cpu\\moe.cpp",
+      "sha256": "592df5998d737e964492b2927cb9144e7201c08f8f0cea47420dc162ab39eff5"
+    },
+    {
+      "path": "ggml\\src\\ggml-cuda\\ggml-cuda.cu",
+      "sha256": "e45e5b45f63435067c6d07e79186c7743d28b356ef7f0849450772343f2561a3"
+    },
+    {
+      "path": "ggml\\src\\ggml-cuda\\moe-hybrid.cu",
+      "sha256": "8b40b508e47cd316f8aa66e09443a9ebaff98b21ebf2d360efdbaa59c806e2d9"
+    },
+    {
+      "path": "src\\llama-graph.cpp",
+      "sha256": "b51548f16fa7cb6b2039356410a757f80e0a3be5ef0f5dadda4adb728086845e"
+    }
+  ]
+}

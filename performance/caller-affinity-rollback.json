@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-11T05:44:22.2420720-05:00",
+  "stopped_native_pids": [
+    32760
+  ],
+  "backup": "E:\\poolside\\backups\\before-caller-affinity-20261011-053504",
+  "cpu_source_sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+  "cpu_dll_sha256": "3D48ABD4F81B0203585F22464367C9901DDE7A8BD9BDA274E9B9B556AC37E26F",
+  "reason": "No measured gain from scoped caller affinity; restore corrected placement measurement and pre-candidate CPU binary."
+}

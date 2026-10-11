@@ -1,0 +1,6 @@
+{
+  "settings": "8192 context; 6144 MiB cache; 8192 batch; DFlash4 q8; profile; pinned; adaptive; GPU misses0",
+  "wrapper_pid": 19904,
+  "stderr": "E:\\poolside\\logs\\core8k-bulk-prefill-20261011-000046.stderr.log",
+  "stdout": "E:\\poolside\\logs\\core8k-bulk-prefill-20261011-000046.stdout.log"
+}

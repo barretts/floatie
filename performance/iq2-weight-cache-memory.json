@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-10-11T07:20:24.9632827-05:00",
+  "free_ram_after_request_gib": 28.549571990966797,
+  "prepared_tensor_count": 92,
+  "preparation_lines": [
+    "0.39.546.706 I Exact IQ2 CPU weight cache: prepared 92 tensors in 17797.24 ms before requests",
+    "0.41.164.077 I Exact IQ2 CPU weight cache: prepared 0 tensors in 0.00 ms before requests"
+  ]
+}

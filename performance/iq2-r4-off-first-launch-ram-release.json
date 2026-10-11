@@ -1,0 +1,75 @@
+{
+  "timestamp": "2026-10-11T14:25:45.7834348-05:00",
+  "iq2_r4": 0,
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "moe_threads": 16,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "pin_experts": true,
+  "adaptive_cache": true,
+  "profile": true,
+  "readback_span": true,
+  "timeline": false,
+  "wrapper_pid": 31504,
+  "stdout_log": "E:\\poolside\\logs\\iq2-r4-off-20261011-142544.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\iq2-r4-off-20261011-142544.stderr.log",
+  "binaries": [
+    {
+      "file": "cublas64_12.dll",
+      "sha256": "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142"
+    },
+    {
+      "file": "cublasLt64_12.dll",
+      "sha256": "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49"
+    },
+    {
+      "file": "cudart64_12.dll",
+      "sha256": "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746"
+    },
+    {
+      "file": "ggml-base.dll",
+      "sha256": "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA"
+    },
+    {
+      "file": "ggml-cpu.dll",
+      "sha256": "7D163740DF973FEB665EFB3069C0B93394AA67EC793E187B0CABB12AC5C3684A"
+    },
+    {
+      "file": "ggml-cuda.dll",
+      "sha256": "3ED9F766B107F0612CC9FB0669E1758429C1FAD03EB08CE7F1614A77DB06BBE8"
+    },
+    {
+      "file": "ggml.dll",
+      "sha256": "966F7860EF6A36E216A6E8D61D72DDAA129EE14E392AE5B2773F8592ACC6BEF3"
+    },
+    {
+      "file": "llama-common.dll",
+      "sha256": "257382B726AF1AC23686E445D427F5BFB19E81ABE82F2AAE8068E530D3D3973A"
+    },
+    {
+      "file": "llama-server-impl.dll",
+      "sha256": "17FE00E46FE6C012D5F9E542332B69828A14C5D93B0B8EAC6704C53FB239B315"
+    },
+    {
+      "file": "llama-server.exe",
+      "sha256": "52913DA34E08C54C40273F062D3C418059C527142B57A662AF6CE1E83E1C614A"
+    },
+    {
+      "file": "llama.dll",
+      "sha256": "F3C0628E26AFA02E9C4CB8095E58328F02532DFBC885A10D3ADEF57EB93931DF"
+    },
+    {
+      "file": "mtmd.dll",
+      "sha256": "542201895032475CFC8391FC380E7BB183AE5DD1B325CF420E49741C5BFB986E"
+    }
+  ],
+  "stopped": [
+    {
+      "pid": 16372,
+      "executable": "E:\\poolside\\build\\bin\\llama-server.exe"
+    }
+  ]
+}

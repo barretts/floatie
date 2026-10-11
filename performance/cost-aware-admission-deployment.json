@@ -1,0 +1,7 @@
+{
+  "at": "2026-10-11T01:47:33.1393040-05:00",
+  "backup": "E:\\poolside\\backups\\before-cost-aware-admission-20261011-014732",
+  "stopped_native_pid": 12376,
+  "source_sha256": "6EBD1A186DC8B34E0031AB998C5C03F7C3DCC06BD8510A8031F919957D949493",
+  "change": "Allow adaptive admission after each verification batch when predicted avoided CPU time exceeds the measured PCIe transfer cost; retain one admission per layer call."
+}

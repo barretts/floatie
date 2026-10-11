@@ -1,0 +1,60 @@
+{
+  "timestamp": "2026-10-11T13:30:00.1144001-05:00",
+  "status": "archived_candidate_restored_for_measurement",
+  "research_directory": "E:\\poolside\\research\\laguna-research-20261011",
+  "baseline_backup_directory": "E:\\poolside\\backups\\before-decode-cache-fit-20261011-092541",
+  "source_sha256": "B931FD3E55472528FA63B7846322F4A8185880C408E91AF62BEED6A2E3FA608D",
+  "binaries": [
+    {
+      "file": "cublas64_12.dll",
+      "sha256": "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142"
+    },
+    {
+      "file": "cublasLt64_12.dll",
+      "sha256": "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49"
+    },
+    {
+      "file": "cudart64_12.dll",
+      "sha256": "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746"
+    },
+    {
+      "file": "ggml-base.dll",
+      "sha256": "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA"
+    },
+    {
+      "file": "ggml-cpu.dll",
+      "sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E"
+    },
+    {
+      "file": "ggml-cuda.dll",
+      "sha256": "1087314CE481A82F8C0B0627720B660B77A4F0ADA29FDB60CEB5E7DAC6EC32B2"
+    },
+    {
+      "file": "ggml.dll",
+      "sha256": "47DD2E6AE7538D27DC4F94C4EC5569EBEA4E78579D72A34BEF1F8468A798DBA2"
+    },
+    {
+      "file": "llama-common.dll",
+      "sha256": "4CE650D500D57370A8DBDA23C04CC022EA6F3019ED08B7CE33915F655475B5DD"
+    },
+    {
+      "file": "llama-server-impl.dll",
+      "sha256": "515F3B1C23DC1F91C61BFA3A3E364F5400F651FA679DF080E22A162E10EB4160"
+    },
+    {
+      "file": "llama-server.exe",
+      "sha256": "0855D72B81D501F51A08D6FCBDB4E52629DD0DD3FAD7F3E9580D6C8954A900EF"
+    },
+    {
+      "file": "llama.dll",
+      "sha256": "03AF4A1A15ABEA96C088BDB06622EFDFE905ED853B4855A2A7CBDB5658DCF718"
+    },
+    {
+      "file": "mtmd.dll",
+      "sha256": "53AA3EB603D218828CE5E3F393559471092133080900B1CACDE645614650B3B1"
+    }
+  ],
+  "candidate_default_enabled": false,
+  "candidate_speedup_established": false,
+  "no_rebuild_required": true
+}

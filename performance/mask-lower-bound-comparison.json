@@ -1,0 +1,43 @@
+﻿{
+    "as_of":  "2026-10-11T03:24:59.4707328-05:00",
+    "request_sha256":  "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+    "same_request":  true,
+    "context_size":  8192,
+    "prompt_cache_disabled":  true,
+    "profiling_disabled":  true,
+    "previous_receipt":  "core8k-mapped-metadata-production-dflash4-q8-cache6144.json",
+    "current_receipt":  "core8k-mask-lower-bound-production-dflash4-q8-cache6144.json",
+    "before_timings":  {
+                           "cache_n":  0,
+                           "prompt_n":  8064,
+                           "prompt_ms":  13520.228,
+                           "prompt_per_token_ms":  1.6766155753968253,
+                           "prompt_per_second":  596.4396458402921,
+                           "predicted_n":  80,
+                           "predicted_ms":  6645.14,
+                           "predicted_per_token_ms":  83.06425,
+                           "predicted_per_second":  12.03887352260449,
+                           "draft_n":  101,
+                           "draft_n_accepted":  53
+                       },
+    "after_timings":  {
+                          "cache_n":  0,
+                          "prompt_n":  8064,
+                          "prompt_ms":  11959.468,
+                          "prompt_per_token_ms":  1.4830689484126984,
+                          "prompt_per_second":  674.2774845837624,
+                          "predicted_n":  80,
+                          "predicted_ms":  6396.186,
+                          "predicted_per_token_ms":  79.952325,
+                          "predicted_per_second":  12.507453660665904,
+                          "draft_n":  96,
+                          "draft_n_accepted":  54
+                      },
+    "prefill_percent_change":  13.050413279252875317684013050,
+    "generation_percent_change":  3.8922257732967807519341948800,
+    "caveats":  [
+                    "One completed production run per candidate; clocks were not locked.",
+                    "Draft acceptance and cache-hit trajectories differ; generation change is not an isolated causal measurement.",
+                    "All three checkpoint codes were recalled in order; this does not verify every inference feature or long-context behavior."
+                ]
+}

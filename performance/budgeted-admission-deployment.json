@@ -1,0 +1,65 @@
+{
+  "timestamp": "2026-10-11T07:36:19.8163055-05:00",
+  "stopped_native_pids": [
+    32660
+  ],
+  "backup_directory": "E:\\poolside\\backups\\before-budgeted-admission-20261011-073614",
+  "backup_binaries": [
+    {
+      "file": "cublas64_12.dll",
+      "sha256": "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142"
+    },
+    {
+      "file": "cublasLt64_12.dll",
+      "sha256": "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49"
+    },
+    {
+      "file": "cudart64_12.dll",
+      "sha256": "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746"
+    },
+    {
+      "file": "ggml-base.dll",
+      "sha256": "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA"
+    },
+    {
+      "file": "ggml-cpu.dll",
+      "sha256": "7BC86BE0D91C083B088E7B2DA516FD93784822F48EED2798963290AB77C6C7DB"
+    },
+    {
+      "file": "ggml-cuda.dll",
+      "sha256": "941E44CE64569042CA73B5FDA0109F8411E9490816CB9F1FF103956FF797857C"
+    },
+    {
+      "file": "ggml.dll",
+      "sha256": "941F4509CDA7422F7AFB71D78B936174612319380B6DF68B509D304DF6B9037D"
+    },
+    {
+      "file": "llama-common.dll",
+      "sha256": "E77F2026C399203A41E990D7EA817076D350AB175995E79D8AC470234DAA3F3D"
+    },
+    {
+      "file": "llama-server-impl.dll",
+      "sha256": "8A121E43D4CA83669007C027F6504DA83B0215308D1CFF033F4BA3153FE342E9"
+    },
+    {
+      "file": "llama-server.exe",
+      "sha256": "8CDE39E7CB520BDDE8A0106AA0DD706A69DBC024F5911C38ACB1C1DA24A39555"
+    },
+    {
+      "file": "llama.dll",
+      "sha256": "5B8A05BD34E3FFAC76FF56E11E88726362AFB6DD0E74DD613C39BD46E9B0B86E"
+    },
+    {
+      "file": "mtmd.dll",
+      "sha256": "F620604B0776C1B2F9BD2932A6D5C7C562A6918CD821BD9074A7695043F1DC10"
+    }
+  ],
+  "build_log": "E:\\poolside\\logs\\budgeted-admission-build-20261011-073614.log",
+  "build_status": "complete",
+  "source_sha256": "2DCE16BB388AE776F4107A78204C30B8EDE84515C55416B30F7A1EC0257AAAD6",
+  "scope": "Heat-ranked GPU cache admission bounded by measured CPU/GPU overlap and calibrated H2D throughput. All current expert computations preserved; same-binary enabled/disabled comparison on the saved request.",
+  "build_exit_code": 0,
+  "cpu_dll_sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E",
+  "cuda_dll_sha256": "64BE1731639C295BBB5356D86E4E590BC06CA09BDD5ECB36B2BE4C39FEB1AC74",
+  "llama_dll_sha256": "03AF4A1A15ABEA96C088BDB06622EFDFE905ED853B4855A2A7CBDB5658DCF718"
+}

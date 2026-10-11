@@ -1,0 +1,123 @@
+{
+  "timestamp": "2026-10-11T09:13:20.6483913-05:00",
+  "status": "complete",
+  "backup_directory": "E:\\poolside\\backups\\before-wide-bulk-20261011-085205",
+  "reason": "Equivalent saved request and identical output/draft counts showed no speed gain from larger atlases.",
+  "retained_budgeted_admission": true,
+  "stopped_native_pids": [
+    6452
+  ],
+  "rejected_binaries": [
+    {
+      "file": "cublas64_12.dll",
+      "sha256": "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142"
+    },
+    {
+      "file": "cublasLt64_12.dll",
+      "sha256": "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49"
+    },
+    {
+      "file": "cudart64_12.dll",
+      "sha256": "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746"
+    },
+    {
+      "file": "ggml-base.dll",
+      "sha256": "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA"
+    },
+    {
+      "file": "ggml-cpu.dll",
+      "sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E"
+    },
+    {
+      "file": "ggml-cuda.dll",
+      "sha256": "27FFE5C1B6EE229E87B5FCC9D48380D6D0AEDF835173E498A1633CAF98B3A3D3"
+    },
+    {
+      "file": "ggml.dll",
+      "sha256": "47DD2E6AE7538D27DC4F94C4EC5569EBEA4E78579D72A34BEF1F8468A798DBA2"
+    },
+    {
+      "file": "llama-common.dll",
+      "sha256": "1683289B142283FF03D804F494FF92B437922D34D58687AF862D080500CD8117"
+    },
+    {
+      "file": "llama-server-impl.dll",
+      "sha256": "7F2A413855B5B1742BA4FEDD01B35475F79ADC71876759ED7DAAF6E3C1394E81"
+    },
+    {
+      "file": "llama-server.exe",
+      "sha256": "15F92FF2B114AB6942C2BA21344180BBF00F15E07E3EEA6880EBC23D1A806AAA"
+    },
+    {
+      "file": "llama.dll",
+      "sha256": "9432D34B13AE8EA511F3AEABF7F6D25EAA8074ACBB043FE659D583965FFC3FA8"
+    },
+    {
+      "file": "mtmd.dll",
+      "sha256": "0DA82DEA046503484425C57865444FA9A0527F85898DBDE295E493C879C5A61D"
+    }
+  ],
+  "restored_source_sha256": "AF3E081FB5C00FA2135AE0858895074F2937D17FB69FAB89D6B70E5271246A5B",
+  "restored_binaries": [
+    {
+      "file": "cublas64_12.dll",
+      "sha256": "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142",
+      "match": true
+    },
+    {
+      "file": "cublasLt64_12.dll",
+      "sha256": "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49",
+      "match": true
+    },
+    {
+      "file": "cudart64_12.dll",
+      "sha256": "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746",
+      "match": true
+    },
+    {
+      "file": "ggml-base.dll",
+      "sha256": "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA",
+      "match": true
+    },
+    {
+      "file": "ggml-cpu.dll",
+      "sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E",
+      "match": true
+    },
+    {
+      "file": "ggml-cuda.dll",
+      "sha256": "465D152C90671D4CF70D9DCFD0B99A5135B7DB7D71691CFADBFEC45B68006EC2",
+      "match": true
+    },
+    {
+      "file": "ggml.dll",
+      "sha256": "47DD2E6AE7538D27DC4F94C4EC5569EBEA4E78579D72A34BEF1F8468A798DBA2",
+      "match": true
+    },
+    {
+      "file": "llama-common.dll",
+      "sha256": "4CE650D500D57370A8DBDA23C04CC022EA6F3019ED08B7CE33915F655475B5DD",
+      "match": true
+    },
+    {
+      "file": "llama-server-impl.dll",
+      "sha256": "515F3B1C23DC1F91C61BFA3A3E364F5400F651FA679DF080E22A162E10EB4160",
+      "match": true
+    },
+    {
+      "file": "llama-server.exe",
+      "sha256": "56A839707A3EF9DCA966905221357F71EF4A37DBCF54574CD32F432E4B834A7E",
+      "match": true
+    },
+    {
+      "file": "llama.dll",
+      "sha256": "03AF4A1A15ABEA96C088BDB06622EFDFE905ED853B4855A2A7CBDB5658DCF718",
+      "match": true
+    },
+    {
+      "file": "mtmd.dll",
+      "sha256": "53AA3EB603D218828CE5E3F393559471092133080900B1CACDE645614650B3B1",
+      "match": true
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "on_receipt": "performance/core8k-research-cache-fit-on-dflash4-q8-cache6144.json",
+  "off_receipt": "performance/core8k-research-nodraft-cache-fit-q8-cache6144.json",
+  "same_request": true,
+  "same_binaries": true,
+  "same_cache_fit_policy": true,
+  "same_output_length": true,
+  "same_actual_output_tokens": false,
+  "all_checkpoint_codes_recalled": true,
+  "draft_on_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 11195.031,
+    "prompt_per_token_ms": 1.388272693452381,
+    "prompt_per_second": 720.3195774982669,
+    "predicted_n": 80,
+    "predicted_ms": 4978.58,
+    "predicted_per_token_ms": 62.23225,
+    "predicted_per_second": 16.06883890587276,
+    "draft_n": 96,
+    "draft_n_accepted": 54
+  },
+  "draft_off_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 10359.586,
+    "prompt_per_token_ms": 1.2846708829365079,
+    "prompt_per_second": 778.4094847033464,
+    "predicted_n": 80,
+    "predicted_ms": 7044.177,
+    "predicted_per_token_ms": 88.0522125,
+    "predicted_per_second": 11.356898045009377
+  },
+  "draft_off_cache_fit": [
+    "0.30.460.962 I CUDA hybrid MoE decode cache fit: released_prefill_MiB=332.60 free_MiB=6097.00 reserve_MiB=768 old_budget_MiB=5120 target_budget_MiB=10449"
+  ],
+  "draft_off_phase_cache": [
+    "0.22.028.248 I CUDA hybrid MoE phase cache: 5120 MiB budget, 0.00 MiB hot experts uploaded, 247.06 ms transition",
+    "0.31.918.669 I CUDA hybrid MoE phase cache: 10449 MiB budget, 5450.55 MiB hot experts uploaded, 1457.68 ms transition"
+  ],
+  "draft_on_relative_generation_percent": 41.489681796817536,
+  "decision": "Keep DFlash4. Disabling the draft did not improve throughput on this local engine/request, despite using a larger expert cache from the freed draft VRAM.",
+  "limitations": [
+    "One architecture comparison, not a repeatability study.",
+    "Outputs differ after a common prefix; both have80 tokens and correct checkpoints.",
+    "Automatic cache budgets differ because removing the draft frees VRAM.",
+    "Do not compare first16 profiling windows as equal accepted-output windows across draft configurations."
+  ]
+}

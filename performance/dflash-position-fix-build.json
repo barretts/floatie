@@ -1,0 +1,9 @@
+{
+  "started_at": "2026-10-11T16:56:53.6416111-05:00",
+  "completed_at": "2026-10-11T16:57:11.2660058-05:00",
+  "exit_code": 0,
+  "target": "llama-server",
+  "build_directory": "E:\\poolside\\build",
+  "build_log": "C:\\code\\poolside-strata\\performance\\dflash-position-fix-build.log",
+  "no_tests_or_inference": true
+}

@@ -1,0 +1,64 @@
+{
+  "as_of": "2026-10-11T06:19:25.854311+00:00",
+  "workload": {
+    "configured_context": 8192,
+    "prompt_tokens": 8064,
+    "output_tokens": 80,
+    "cache_prompt": false,
+    "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c"
+  },
+  "latest_run": "core8k-application-power-dflash4-q8-cache6144.json",
+  "timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 15392.386,
+    "prompt_per_token_ms": 1.9087780257936509,
+    "prompt_per_second": 523.8953856796471,
+    "predicted_n": 80,
+    "predicted_ms": 6527.368,
+    "predicted_per_token_ms": 81.5921,
+    "predicted_per_second": 12.256088518373714,
+    "draft_n": 96,
+    "draft_n_accepted": 54
+  },
+  "checkpoint_order_correct": true,
+  "launch": {
+    "at": "2026-10-11T01:10:53.1064087-05:00",
+    "stopped_native_pid": 18264,
+    "wrapper_pid": 33044,
+    "stdout": "E:\\poolside\\logs\\core8k-application-power-20261011-011053.stdout.log",
+    "stderr": "E:\\poolside\\logs\\core8k-application-power-20261011-011053.stderr.log",
+    "settings": "8192 context; 6144 MiB base cache; 8192 batch; DFlash4 q8; phase memory; profile; pinned; adaptive; GPU misses0",
+    "application_power_policy": "prefer maximum performance",
+    "source_sha256": "7EA4B2B7192835BD744972D5934CB0D666FF538B933E0E62C10166605CA53BAD",
+    "cuda_dll_sha256": "5B54E8045667AEF5030BB0CF8F2A0AEF327C7648E73E0BCDECDCE314C4148F12"
+  },
+  "application_policy_outcome": "Saved and read back, but decode remained P3 at roughly 900 MHz and generation was 12.26 tok/s; policy restored. Causal effect of direct clock hold remains unmeasured.",
+  "restoration_readback": {
+    "at": "2026-10-11T06:13:03.204983+00:00",
+    "global": {
+      "name": "Base Profile",
+      "applications": 0,
+      "predefined": true,
+      "power_status": -160,
+      "power_error": "NVAPI_SETTING_NOT_FOUND"
+    },
+    "applications": [
+      {
+        "application": "E:\\poolside\\build\\bin\\llama-server.exe",
+        "find_status": -166,
+        "find_error": "NVAPI_EXECUTABLE_NOT_FOUND"
+      }
+    ]
+  },
+  "gpu_telemetry": "application-power-gpu.csv",
+  "next_measurement": "Same 8k request with a temporary 2400-2700 MHz SM clock hold; Windows administrator rights required. User UAC availability requested, not yet granted.",
+  "clock_helper": "../tools/laguna-clock-hold.ps1",
+  "completion": {
+    "target_prefill_tps": 900,
+    "target_generation_tps": 30,
+    "targets_met": false,
+    "current_128k_speed_verified": false
+  },
+  "stability": "User reports app windows closed while desktop stayed visible; prior event-log checks did not identify the cause."
+}

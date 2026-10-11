@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-10-11T03:07:00.1336799-05:00",
+  "stopped_native_pid": 16896,
+  "backup_directory": "E:\\poolside\\backups\\before-mask-lower-bound-20261011-030656",
+  "source_hashes": [
+    {
+      "file": "ggml\\src\\ggml-cuda\\fattn-common.cuh",
+      "sha256": "60D65006A9DD61E47AB4B67CC9C9432430D4B9DA49937D3FD5F50613DFD491E9"
+    },
+    {
+      "file": "ggml\\src\\ggml-cuda\\fattn-mma-f16.cuh",
+      "sha256": "35D18179CECC6FB6CF3C0EBAE6B6512AF08342C6336960E2DB72008A5BA2D6D3"
+    }
+  ],
+  "build_log": "E:\\poolside\\logs\\mask-lower-bound-build-20261011-030656.log",
+  "build_status": "complete",
+  "build_exit_code": 0,
+  "cuda_dll_sha256": "62EBE1C83CFAC8F757FBED05E24B4C7F2480C55CC40CED01BD27BFC04EE64FA5"
+}

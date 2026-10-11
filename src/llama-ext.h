@@ -86,6 +86,9 @@ using llama_memory_breakdown = std::map<ggml_backend_buffer_type_t, llama_memory
 LLAMA_API int32_t llama_model_n_expert (const struct llama_model * model);
 LLAMA_API int32_t llama_model_n_devices(const struct llama_model * model);
 
+// Returns the window only when every layer uses standard sliding attention.
+LLAMA_API int32_t llama_model_n_swa_all(const struct llama_model * model);
+
 LLAMA_API ggml_backend_dev_t llama_model_get_device(const struct llama_model * model, int i);
 
 LLAMA_API llama_memory_breakdown llama_get_memory_breakdown(const struct llama_context * ctx);

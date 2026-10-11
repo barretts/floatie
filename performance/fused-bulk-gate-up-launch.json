@@ -1,0 +1,8 @@
+{
+  "wrapper_pid": 27528,
+  "stdout": "E:\\poolside\\logs\\core8k-fused-bulk-gate-up-20261011-005255.stdout.log",
+  "stderr": "E:\\poolside\\logs\\core8k-fused-bulk-gate-up-20261011-005255.stderr.log",
+  "settings": "8192 context; 6144 MiB base cache; 8192 batch; DFlash4 q8; phase memory; profile; pinned; adaptive; GPU misses0",
+  "cuda_dll_sha256": "5B54E8045667AEF5030BB0CF8F2A0AEF327C7648E73E0BCDECDCE314C4148F12",
+  "source_sha256": "7EA4B2B7192835BD744972D5934CB0D666FF538B933E0E62C10166605CA53BAD"
+}

@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "verified_utc": "2026-10-10T23:32:59.217475+00:00",
+  "operation": "DFlash metadata-only copy; no quantization or inference",
+  "source": {
+    "path": "E:\\poolside\\models\\Laguna-S-2.1-DFlash-Q8_0.gguf",
+    "repository": "https://huggingface.co/dev7a/Laguna-S-2.1-DFlash-GGUF",
+    "sha256": "94d5d6d93acb2dfb1209599bc099ebc5b30e959a3a1200dcaebfb01e3f480e43",
+    "bytes": 1188535328,
+    "tensor_data_offset": 3686432
+  },
+  "output": {
+    "path": "E:\\poolside\\models\\Laguna-S-2.1-DFlash-Q8_0-swa512.gguf",
+    "sha256": "4bbdd9eff6db17c65fa040b4a547ac853f0c3e23f65df22e2aac83ac03fb948a",
+    "bytes": 1188535552,
+    "tensor_data_offset": 3686656
+  },
+  "official_metadata_provenance": {
+    "repository_revision": "19036076775e9ba6758595f78af99cb976ef8ff0",
+    "artifact_url": "https://huggingface.co/poolside/Laguna-S-2.1-GGUF/resolve/19036076775e9ba6758595f78af99cb976ef8ff0/laguna-s-2.1-DFlash-BF16.gguf",
+    "http_range": "bytes=0-8388607",
+    "range_sha256": "3d5dd439bd7719a73bd89dbe45ebd4ab765c1325f02528800823778ee1885199",
+    "metadata_prefix_bytes": 3678257,
+    "metadata_prefix_sha256": "41b65d4238c9e074aaab01df079dd7635726d6ccf092e1dfa30a02287dc0913c",
+    "correction_discussion": "https://huggingface.co/poolside/Laguna-S-2.1-GGUF/discussions/12",
+    "observed_utc_date": "2026-10-10"
+  },
+  "metadata_before": {
+    "dflash.attention.sliding_window": null,
+    "dflash.attention.sliding_window_pattern": null,
+    "dflash.rope.dimension_count": null,
+    "dflash.rope.scaling.type": null
+  },
+  "metadata_after": {
+    "dflash.attention.sliding_window": {
+      "type": 4,
+      "value": 512
+    },
+    "dflash.attention.sliding_window_pattern": {
+      "type": 9,
+      "value": {
+        "item_type": 4,
+        "items": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    "dflash.rope.dimension_count": {
+      "type": 4,
+      "value": 128
+    },
+    "dflash.rope.scaling.type": {
+      "type": 8,
+      "value": "none"
+    }
+  },
+  "official_metadata_entry_hex": {
+    "dflash.attention.sliding_window": "1f0000000000000064666c6173682e617474656e74696f6e2e736c6964696e675f77696e646f770400000000020000",
+    "dflash.attention.sliding_window_pattern": "270000000000000064666c6173682e617474656e74696f6e2e736c6964696e675f77696e646f775f7061747465726e09000000040000000600000000000000010000000100000001000000010000000100000001000000",
+    "dflash.rope.dimension_count": "1b0000000000000064666c6173682e726f70652e64696d656e73696f6e5f636f756e740400000080000000",
+    "dflash.rope.scaling.type": "180000000000000064666c6173682e726f70652e7363616c696e672e747970650800000004000000000000006e6f6e65"
+  },
+  "tensor_count": 76,
+  "tensor_descriptor_bytes": 4430,
+  "tensor_descriptor_sha256": "05622dc571ee3566cc0532495ba47556ae47efae937e4788a69429a7fe7d2af9",
+  "tensor_payload_bytes": 1184848896,
+  "source_tensor_payload_sha256": "8437edb6262d450ba224ffa546ee986af0408405c305d874eb9e9ef2f7715339",
+  "output_tensor_payload_sha256": "8437edb6262d450ba224ffa546ee986af0408405c305d874eb9e9ef2f7715339",
+  "verified": {
+    "source_matches_pinned_artifact": true,
+    "all_other_metadata_identical": true,
+    "tensor_descriptors_identical": true,
+    "tensor_payload_identical": true
+  }
+}

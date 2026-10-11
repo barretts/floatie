@@ -1,0 +1,6 @@
+{
+  "wrapper_pid": 7892,
+  "stdout": "E:\\poolside\\logs\\core8k-compact-expert-tiles-20261011-002751.stdout.log",
+  "stderr": "E:\\poolside\\logs\\core8k-compact-expert-tiles-20261011-002751.stderr.log",
+  "settings": "8192 context; 6144 MiB base cache; 8192 batch; DFlash4 q8; phase memory; profile; pinned; adaptive; GPU misses0"
+}

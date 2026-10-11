@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-10-11T03:28:40.8204120-05:00",
+  "stopped_native_pid": 12316,
+  "backup_directory": "E:\\poolside\\backups\\before-dflash-window-injection-20261011-032840",
+  "source_hashes": [
+    {
+      "file": "src\\llama-model.cpp",
+      "sha256": "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB"
+    },
+    {
+      "file": "src\\llama-ext.h",
+      "sha256": "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3"
+    },
+    {
+      "file": "common\\speculative.cpp",
+      "sha256": "50E9034A93BB43DD3AE2FE13DAC780F58E92AD9E74BAF2ABA50C234D7F824F8D"
+    }
+  ],
+  "build_log": "E:\\poolside\\logs\\dflash-window-injection-build-20261011-032840.log",
+  "build_status": "complete",
+  "build_exit_code": 0,
+  "cuda_dll_sha256": "62EBE1C83CFAC8F757FBED05E24B4C7F2480C55CC40CED01BD27BFC04EE64FA5",
+  "llama_dll_sha256": "00151E0ED94A6EC45A2B8EF1365D8869B2C63B4B3A9684011FAD0F84502C83AD",
+  "server_sha256": "8CDE39E7CB520BDDE8A0106AA0DD706A69DBC024F5911C38ACB1C1DA24A39555"
+}

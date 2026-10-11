@@ -1,0 +1,200 @@
+﻿{
+    "as_of":  "2026-10-11T04:05:29.6047296-05:00",
+    "goal_turn_classification":  "progress",
+    "workload":  {
+                     "context_size":  8192,
+                     "prompt_tokens":  8064,
+                     "response_tokens":  80,
+                     "request_sha256":  "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+                     "cache_prompt":  false
+                 },
+    "latest_receipt":  "core8k-cpu-doorbell-production-dflash4-q8-cache6144.json",
+    "latest_timings":  {
+                           "cache_n":  0,
+                           "prompt_n":  8064,
+                           "prompt_ms":  11229.962,
+                           "prompt_per_token_ms":  1.3926044146825396,
+                           "prompt_per_second":  718.0790104187352,
+                           "predicted_n":  80,
+                           "predicted_ms":  5700.684,
+                           "predicted_per_token_ms":  71.25855,
+                           "predicted_per_second":  14.033403710852943,
+                           "draft_n":  96,
+                           "draft_n_accepted":  55
+                       },
+    "checkpoint_order_correct":  true,
+    "runtime":  {
+                    "native_processes":  [
+                                             {
+                                                 "Id":  27028,
+                                                 "Path":  "E:\\poolside\\build\\bin\\llama-server.exe",
+                                                 "StartTime":  "\/Date(1791709133501)\/"
+                                             }
+                                         ],
+                    "launch_receipt":  "cpu-doorbell-production-launch.json",
+                    "health":  {
+                                   "status":  "ok"
+                               },
+                    "model_id":  "laguna-s-2.1-iq3-s",
+                    "cuda_dll_sha256":  "140CC1E7312FF2456D73B79AC160CA362750B6F1024B76102B45E3527FC1DEA1",
+                    "llama_dll_sha256":  "00151E0ED94A6EC45A2B8EF1365D8869B2C63B4B3A9684011FAD0F84502C83AD",
+                    "llama_common_dll_sha256":  "F6D0457994F82EAB6C33AE2FFD091C6F1327A0638AB8C3F9A930596453370B58",
+                    "profile":  false,
+                    "timeline":  false,
+                    "cpu_doorbell":  "default enabled; no environment override",
+                    "telemetry_helpers":  "Stopped after each measurement",
+                    "niko_server":  "Not launched in this turn"
+                },
+    "source_integrity":  [
+                             {
+                                 "file":  "ggml/include/ggml.h",
+                                 "staged_sha256":  "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+                                 "deployed_sha256":  "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml.c",
+                                 "staged_sha256":  "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+                                 "deployed_sha256":  "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cpu/CMakeLists.txt",
+                                 "staged_sha256":  "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+                                 "deployed_sha256":  "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cpu/moe.cpp",
+                                 "staged_sha256":  "8D806D616518DF3A34CFC5326D9F03F86B6D8311C0113B8C935CBEECE22CD2FE",
+                                 "deployed_sha256":  "8D806D616518DF3A34CFC5326D9F03F86B6D8311C0113B8C935CBEECE22CD2FE",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cpu/moe-iq.cpp",
+                                 "staged_sha256":  "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+                                 "deployed_sha256":  "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cpu/moe-iq.h",
+                                 "staged_sha256":  "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+                                 "deployed_sha256":  "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/ggml-cuda.cu",
+                                 "staged_sha256":  "1238A6B91AB4860BD353918DA31888334E7E58453C4FB6209D2EE068012CD8C5",
+                                 "deployed_sha256":  "1238A6B91AB4860BD353918DA31888334E7E58453C4FB6209D2EE068012CD8C5",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/moe-hybrid.cu",
+                                 "staged_sha256":  "3191A8F8CFC6D98108AA49B1485D3F5CE871507F533259CCAA180BD4DFCE14F3",
+                                 "deployed_sha256":  "3191A8F8CFC6D98108AA49B1485D3F5CE871507F533259CCAA180BD4DFCE14F3",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/moe-hybrid.cuh",
+                                 "staged_sha256":  "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772",
+                                 "deployed_sha256":  "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/mmq.cu",
+                                 "staged_sha256":  "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+                                 "deployed_sha256":  "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-alloc.c",
+                                 "staged_sha256":  "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+                                 "deployed_sha256":  "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-backend.cpp",
+                                 "staged_sha256":  "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+                                 "deployed_sha256":  "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "src/llama-graph.cpp",
+                                 "staged_sha256":  "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+                                 "deployed_sha256":  "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "src/models/dflash.cpp",
+                                 "staged_sha256":  "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+                                 "deployed_sha256":  "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "common/speculative.cpp",
+                                 "staged_sha256":  "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9",
+                                 "deployed_sha256":  "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/fattn.cu",
+                                 "staged_sha256":  "7D85565227A6649BD7196AD10B6F28FA353DB6DAC778DDDD29DBB4E1B5DDBF3C",
+                                 "deployed_sha256":  "7D85565227A6649BD7196AD10B6F28FA353DB6DAC778DDDD29DBB4E1B5DDBF3C",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/fattn-common.cuh",
+                                 "staged_sha256":  "60D65006A9DD61E47AB4B67CC9C9432430D4B9DA49937D3FD5F50613DFD491E9",
+                                 "deployed_sha256":  "60D65006A9DD61E47AB4B67CC9C9432430D4B9DA49937D3FD5F50613DFD491E9",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/fattn-mma-f16.cuh",
+                                 "staged_sha256":  "35D18179CECC6FB6CF3C0EBAE6B6512AF08342C6336960E2DB72008A5BA2D6D3",
+                                 "deployed_sha256":  "35D18179CECC6FB6CF3C0EBAE6B6512AF08342C6336960E2DB72008A5BA2D6D3",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "src/llama-model.cpp",
+                                 "staged_sha256":  "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB",
+                                 "deployed_sha256":  "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "src/llama-ext.h",
+                                 "staged_sha256":  "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3",
+                                 "deployed_sha256":  "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3",
+                                 "match":  true
+                             }
+                         ],
+    "retained_changes":  [
+                             "DFlash standard-window-only guard verifies every draft layer. Large contiguous prefill batches inject at least the final 512 feature rows; the skip boundary is rounded down to the original ubatch boundary, retaining 892 of 8060 rows in this workload. Verification blocks and full/mixed/nonstandard attention keep their original path. Absolute positions are unchanged.",
+                             "CPU result reduction uses mapped pinned RAM with a monotonically increasing completion ticket. Each GPU block waits at most 10 ms, then any unfinished block reduces in a second launch queued after CPU completion. The original transfer path remains available when disabled or without unified addressing.",
+                             "A profiling-only GPU interval measures CPU-result waiting; it is inactive in production."
+                         ],
+    "measured_costs":  "core8k-cpu-wait-analysis.json",
+    "controlled_comparison":  "cpu-doorbell-comparison.json",
+    "production_comparison":  "cpu-doorbell-production-comparison.json",
+    "previous_checkpoint":  "checkpoint-core8k-mask-lower-bound.json",
+    "tradeoffs":  [
+                      "Mapped access uses PCIe for CPU result reads. GPU wait bounds and fallback preserve progress under delayed CPU scheduling.",
+                      "Coarse busy GPU telemetry showed higher power and more P2 samples with the handoff enabled; sampling did not isolate generation exactly.",
+                      "The single checkpoint workload verifies limited functionality; full feature compatibility and near-full 128k performance remain obligations."
+                  ],
+    "next_action":  "Measure CPU attention-mask construction during prefill. Source uses generic per-cell causal/SWA updates even for contiguous single-sequence positions; only implement a range-fill fast path if the cost is material, preserving generic fallback. Generation still spends substantial time in CPU expert computation and GPU-to-CPU input readback; the next handoff candidate should publish input/IDs through mapped RAM before considering graph integration.",
+    "rejected_hypotheses":  [
+                                "The cache already applies exponential recency per token; whole-prefill frequency initialization is not the identified defect.",
+                                "Draft generation consumed only about 5% of generation time in the measured profile and is not the main response bottleneck."
+                            ],
+    "pending_clock_measurement":  "No administrator clock hold, UAC helper, or manual clock lock was launched. The optional earlier question remains unanswered.",
+    "completion":  {
+                       "prefill_target_tps":  900,
+                       "generation_target_tps":  30,
+                       "initial_context_gate":  8192,
+                       "eventual_context_target":  131072,
+                       "achieved":  false,
+                       "long_context_candidate_verified":  false,
+                       "all_api_features_verified":  false
+                   },
+    "stability":  "App-window disappearance remains unexplained. Only verified Laguna server processes and telemetry helpers created for this work were stopped; no GPU/driver reset or other desktop-application stop was issued."
+}

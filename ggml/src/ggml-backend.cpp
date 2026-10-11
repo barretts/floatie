@@ -1505,8 +1505,27 @@ static bool ggml_backend_sched_alloc_splits(ggml_backend_sched_t sched) {
         }
     }
 
+    bool trim_buffers = false;
+    const char * phase_buffers = getenv("GGML_MOE_PHASE_BUFFERS");
+    if (phase_buffers && atoi(phase_buffers) != 0) {
+        bool hybrid_decode = false;
+        for (int i = 0; i < sched->graph.n_nodes; ++i) {
+            const auto * node = sched->graph.nodes[i];
+            if (node->op == GGML_OP_MOE_HYBRID) {
+                hybrid_decode = node->src[3]->ne[2] <= 32;
+                if (!hybrid_decode) {
+                    break;
+                }
+            }
+        }
+        if (hybrid_decode) {
+            for (int i = 0; i < sched->n_backends; ++i) {
+                trim_buffers |= ggml_gallocr_get_buffer_size(sched->galloc, i) > 128 * 1024 * 1024;
+            }
+        }
+    }
     // allocate graph
-    if (backend_ids_changed || !ggml_gallocr_alloc_graph(sched->galloc, &sched->graph)) {
+    if (backend_ids_changed || trim_buffers || !ggml_gallocr_alloc_graph(sched->galloc, &sched->graph)) {
 #ifndef NDEBUG
         GGML_LOG_DEBUG("%s: failed to allocate graph, reserving (backend_ids_changed = %d)\n", __func__, backend_ids_changed);
 #endif
@@ -1514,7 +1533,7 @@ static bool ggml_backend_sched_alloc_splits(ggml_backend_sched_t sched) {
         if (sched->debug_realloc > 0) {
             // we are interested only in situations where the graph was reallocated even though its size remained the same [GGML_SCHED_DEBUG_REALLOC]
             // example: https://github.com/ggml-org/llama.cpp/pull/17143
-            const bool unexpected = !backend_ids_changed && sched->debug_prev_graph_size == sched->debug_graph_size;
+            const bool unexpected = !backend_ids_changed && !trim_buffers && sched->debug_prev_graph_size == sched->debug_graph_size;
 
             if (unexpected || sched->debug_realloc > 1) {
                 GGML_ABORT("%s: unexpected graph reallocation (graph size = %d, nodes = %d, leafs = %d), debug_realloc = %d\n", __func__,

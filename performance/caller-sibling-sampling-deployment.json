@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-10-11T05:26:16.5105525-05:00",
+  "stopped_native_pids": [
+    22816
+  ],
+  "backup_directory": "E:\\poolside\\backups\\before-caller-sibling-sampling-20261011-052616",
+  "build_log": "E:\\poolside\\logs\\caller-sibling-sampling-build-20261011-052616.log",
+  "build_status": "complete",
+  "source_sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+  "scope": "Correct physical-core sampling to include both sibling processors. Worker affinity and inference calculations are unchanged.",
+  "build_exit_code": 0,
+  "cpu_dll_sha256": "3D48ABD4F81B0203585F22464367C9901DDE7A8BD9BDA274E9B9B556AC37E26F"
+}

@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-10-11T04:07:18.0813480-05:00",
+  "stopped_native_pid": 27028,
+  "backup_directory": "E:\\poolside\\backups\\before-mask-timing-20261011-040718",
+  "source_sha256": "3ADFCC0DC00F0FDC9AFC106F8E324D5124F82B385890B4AD488151D4ED1C5D2B",
+  "build_log": "E:\\poolside\\logs\\mask-timing-build-20261011-040718.log",
+  "build_status": "complete",
+  "reason": "Profile attention-mask CPU construction only for batches over 32 tokens; inactive during production.",
+  "build_exit_code": 0,
+  "llama_dll_sha256": "05BB22286B68EEBF61F42522FA15F6837B864C71BB869638F925ABB8580F186A"
+}

@@ -1,0 +1,12 @@
+{
+  "wrapper_pid": 14576,
+  "stdout": "E:\\poolside\\logs\\core8k-recency-submit-20261010-233816.stdout.log",
+  "stderr": "E:\\poolside\\logs\\core8k-recency-submit-20261010-233816.stderr.log",
+  "context": 8192,
+  "expert_cache_mib": 6144,
+  "batch": 8192,
+  "draft_max": 4,
+  "draft_kv": "q8_0",
+  "gpu_misses_per_token": 0,
+  "recency": "Same per-token decay during prefill and decode."
+}

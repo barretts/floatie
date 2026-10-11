@@ -1,0 +1,171 @@
+{
+  "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+  "same_request": true,
+  "same_binaries": true,
+  "same_output_tokens": false,
+  "output_common_prefix_tokens": 73,
+  "same_draft_counts": false,
+  "on_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 10201.28,
+    "prompt_per_token_ms": 1.2650396825396826,
+    "prompt_per_second": 790.489036669908,
+    "predicted_n": 80,
+    "predicted_ms": 5136.361,
+    "predicted_per_token_ms": 64.20451249999999,
+    "predicted_per_second": 15.5752292333035,
+    "draft_n": 100,
+    "draft_n_accepted": 53
+  },
+  "off_timings": {
+    "cache_n": 0,
+    "prompt_n": 8064,
+    "prompt_ms": 10203.731,
+    "prompt_per_token_ms": 1.2653436259920634,
+    "prompt_per_second": 790.2991562596073,
+    "predicted_n": 80,
+    "predicted_ms": 4602.161,
+    "predicted_per_token_ms": 57.5270125,
+    "predicted_per_second": 17.383138051884757,
+    "draft_n": 88,
+    "draft_n_accepted": 56
+  },
+  "on_checkpoints_correct": true,
+  "off_checkpoints_correct": true,
+  "on_profile": {
+    "hybrid": {
+      "raw": "0.35.361.971 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=76.0 cache_hits=19312 cache_misses=16408 h2d_weight_MiB=4695.98 cpu_fused_ms=1548.05 entry_event_wait_ms=249.11 readback_wait_ms=550.08 host_prepare_submit_ms=346.42 gpu_cached_interval_ms=523.80 gpu_streamed_interval_ms=0.00 gpu_weight_copy_interval_ms=0.00 gpu_cache_refresh_interval_ms=813.92 gpu_attention_interval_ms=219.83 gpu_cpu_wait_interval_ms=476.35 gpu_between_moe_readback_interval_ms=755.25",
+      "fields": {
+        "layer_calls": 752,
+        "target_tokens_per_layer": 76.0,
+        "cache_hits": 19312,
+        "cache_misses": 16408,
+        "h2d_weight_MiB": 4695.98,
+        "cpu_fused_ms": 1548.05,
+        "entry_event_wait_ms": 249.11,
+        "readback_wait_ms": 550.08,
+        "host_prepare_submit_ms": 346.42,
+        "gpu_cached_interval_ms": 523.8,
+        "gpu_streamed_interval_ms": 0.0,
+        "gpu_weight_copy_interval_ms": 0.0,
+        "gpu_cache_refresh_interval_ms": 813.92,
+        "gpu_attention_interval_ms": 219.83,
+        "gpu_cpu_wait_interval_ms": 476.35,
+        "gpu_between_moe_readback_interval_ms": 755.25
+      }
+    },
+    "cpu": {
+      "raw": "0.35.343.912 I CUDA hybrid MoE CPU profile: calls=752 jobs=16408 groups_1_2_3_4=(9852,2403,478,79) scheduled_weight_MiB=45878.20 setup_ms=58.85 gate_up_ms=867.24 down_quant_ms=18.23 down_ms=602.86",
+      "fields": {
+        "calls": 752,
+        "jobs": 16408,
+        "scheduled_weight_MiB": 45878.2,
+        "setup_ms": 58.85,
+        "gate_up_ms": 867.24,
+        "down_quant_ms": 18.23,
+        "down_ms": 602.86,
+        "groups_1_2_3_4": [
+          9852,
+          2403,
+          478,
+          79
+        ]
+      }
+    },
+    "placement": {
+      "raw": "0.35.343.945 I CUDA hybrid MoE CPU placement: samples=1504 worker_core_samples=197 reserved_core_samples=1307 caller_thread_id=33504 other_thread_samples=0 worker_affinity_successes=15 worker_affinity_failures=0",
+      "fields": {
+        "samples": 1504,
+        "worker_core_samples": 197,
+        "reserved_core_samples": 1307,
+        "caller_thread_id": 33504,
+        "other_thread_samples": 0,
+        "worker_affinity_successes": 15,
+        "worker_affinity_failures": 0
+      }
+    },
+    "admission": {
+      "raw": "0.35.361.974 I CUDA hybrid MoE cache admission [decode]: budgeted_refresh_calls=625 budgeted_refresh_MiB=4528.36",
+      "fields": {
+        "budgeted_refresh_calls": 625,
+        "budgeted_refresh_MiB": 4528.36
+      }
+    },
+    "acceptance_logs": [
+      "0.32.779.687 I CUDA hybrid MoE accepted-prefix history: calls=1 valid_rows=4 rejected_rows=1 corrected_layers=47 verified_rows=5 valid_prefix=4",
+      "0.35.735.518 I CUDA hybrid MoE accepted-prefix history: calls=16 valid_rows=53 rejected_rows=27 corrected_layers=47 verified_rows=5 valid_prefix=5"
+    ]
+  },
+  "off_profile": {
+    "hybrid": {
+      "raw": "0.35.998.428 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=76.0 cache_hits=19235 cache_misses=16485 h2d_weight_MiB=4650.54 cpu_fused_ms=1548.54 entry_event_wait_ms=244.69 readback_wait_ms=498.67 host_prepare_submit_ms=348.54 gpu_cached_interval_ms=525.82 gpu_streamed_interval_ms=0.00 gpu_weight_copy_interval_ms=0.00 gpu_cache_refresh_interval_ms=804.54 gpu_attention_interval_ms=219.34 gpu_cpu_wait_interval_ms=489.56 gpu_between_moe_readback_interval_ms=753.29",
+      "fields": {
+        "layer_calls": 752,
+        "target_tokens_per_layer": 76.0,
+        "cache_hits": 19235,
+        "cache_misses": 16485,
+        "h2d_weight_MiB": 4650.54,
+        "cpu_fused_ms": 1548.54,
+        "entry_event_wait_ms": 244.69,
+        "readback_wait_ms": 498.67,
+        "host_prepare_submit_ms": 348.54,
+        "gpu_cached_interval_ms": 525.82,
+        "gpu_streamed_interval_ms": 0.0,
+        "gpu_weight_copy_interval_ms": 0.0,
+        "gpu_cache_refresh_interval_ms": 804.54,
+        "gpu_attention_interval_ms": 219.34,
+        "gpu_cpu_wait_interval_ms": 489.56,
+        "gpu_between_moe_readback_interval_ms": 753.29
+      }
+    },
+    "cpu": {
+      "raw": "0.35.979.495 I CUDA hybrid MoE CPU profile: calls=752 jobs=16485 groups_1_2_3_4=(10311,2347,396,73) scheduled_weight_MiB=47011.08 setup_ms=56.74 gate_up_ms=860.07 down_quant_ms=18.49 down_ms=612.23",
+      "fields": {
+        "calls": 752,
+        "jobs": 16485,
+        "scheduled_weight_MiB": 47011.08,
+        "setup_ms": 56.74,
+        "gate_up_ms": 860.07,
+        "down_quant_ms": 18.49,
+        "down_ms": 612.23,
+        "groups_1_2_3_4": [
+          10311,
+          2347,
+          396,
+          73
+        ]
+      }
+    },
+    "placement": {
+      "raw": "0.35.979.517 I CUDA hybrid MoE CPU placement: samples=1504 worker_core_samples=16 reserved_core_samples=1488 caller_thread_id=11276 other_thread_samples=0 worker_affinity_successes=15 worker_affinity_failures=0",
+      "fields": {
+        "samples": 1504,
+        "worker_core_samples": 16,
+        "reserved_core_samples": 1488,
+        "caller_thread_id": 11276,
+        "other_thread_samples": 0,
+        "worker_affinity_successes": 15,
+        "worker_affinity_failures": 0
+      }
+    },
+    "admission": {
+      "raw": "0.35.998.431 I CUDA hybrid MoE cache admission [decode]: budgeted_refresh_calls=623 budgeted_refresh_MiB=4482.91",
+      "fields": {
+        "budgeted_refresh_calls": 623,
+        "budgeted_refresh_MiB": 4482.91
+      }
+    },
+    "acceptance_logs": []
+  },
+  "cpu_selection_reduction_percent": 0.46709129511677283,
+  "cpu_wall_time_reduction_percent": 0.031642708615858106,
+  "observed_generation_relative_percent": -10.40035932053842,
+  "decision": "Reject the optional accepted-prefix cache-history candidate and restore all six original sources and the saved complete binary set. Keep the previously retained budgeted cache admission.",
+  "limitations": [
+    "Generation outputs and draft acceptance differ, so the observed end-to-end speed gap is not an isolated estimate of cache-policy cost.",
+    "Both profile windows covered 752 MoE calls and 76 evaluated target rows per layer; the candidate reduced CPU selections by less than 0.5 percent and CPU time was essentially unchanged.",
+    "The acceptance callback correctly matched all 47 layers in its logged calls; matching does not imply a performance improvement.",
+    "No new tests or parameter sweeps were used. 900/30 at 8k and near-full 128k remain unmet or unverified."
+  ]
+}

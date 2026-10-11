@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-10-11T06:57:23.1240542-05:00",
+  "stopped_native_pids": [
+    9548
+  ],
+  "wrapper_pid": 27084,
+  "stdout_log": "E:\\poolside\\logs\\core8k-refresh-overlap-off-20261011-065723.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-refresh-overlap-off-20261011-065723.stderr.log",
+  "source_sha256": "A89A5C1E2387AEB788AB29A6A8B0067700D000946CC8C532EFFC6C2BC4C283BB",
+  "cpu_dll_sha256": "18F9559682D3F74DD1CA9DFF190F890BAA970B0538B8E4D77D1911D6AF04F07C",
+  "cuda_dll_sha256": "7EE197C7502514ECC1F6BC2E7F601491279A96154AA5049360E0444C22B9D5ED",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "pin_experts": true,
+  "adaptive_cache": true,
+  "profile": true,
+  "readback_span": true,
+  "timeline": false,
+  "refresh_overlap": false
+}

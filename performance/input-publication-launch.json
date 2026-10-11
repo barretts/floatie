@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-10-11T04:33:50.4263525-05:00",
+  "wrapper_pid": 26772,
+  "stdout_log": "E:\\poolside\\logs\\core8k-input-publication-20261011-043350.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-input-publication-20261011-043350.stderr.log",
+  "moe_source_sha256": "8327C40945ABC2DCF9FAD24CB9D4D50D5460B238A3DE8B3344FB947297B8FB7A",
+  "cuda_dll_sha256": "4FD758684E079929B7D4DE48A500D19DED657AE69CB04B7717FC98405A6E445B",
+  "llama_dll_sha256": "5B8A05BD34E3FFAC76FF56E11E88726362AFB6DD0E74DD613C39BD46E9B0B86E",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "profile": true,
+  "timeline": false,
+  "verbosity": 4,
+  "input_doorbell": 1,
+  "cpu_doorbell": "engine default enabled",
+  "pin_experts": true,
+  "adaptive_cache": true
+}

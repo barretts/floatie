@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-11T01:39:54.1073702-05:00",
+  "wrapper_pid": 15192,
+  "stdout": "E:\\poolside\\logs\\core8k-cache-capacity-profile-20261011-013954.stdout.log",
+  "stderr": "E:\\poolside\\logs\\core8k-cache-capacity-profile-20261011-013954.stderr.log",
+  "settings": "8192 context; 6144 MiB base cache; 8192 batch; DFlash4 q8; phase memory; profile; pinned; adaptive; GPU misses0",
+  "source_sha256": "1E32271CBACD3ACABA0E174989F1578D0C14F9819EBD60E5CADC36BB8FA29B32",
+  "cuda_dll_sha256": "8630FE53C842BEC768FA0D99DB2C69FD053C9F92EC00D0DA8BE8212894C87518"
+}

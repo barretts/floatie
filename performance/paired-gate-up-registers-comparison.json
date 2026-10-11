@@ -1,0 +1,63 @@
+﻿{
+    "timestamp":  "2026-10-11T06:42:06.9788473-05:00",
+    "same_request":  true,
+    "request_sha256":  "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+    "same_cpu_binary":  true,
+    "same_cuda_binary":  true,
+    "on_timings":  {
+                       "cache_n":  0,
+                       "prompt_n":  8064,
+                       "prompt_ms":  10683.264,
+                       "prompt_per_token_ms":  1.3248095238095237,
+                       "prompt_per_second":  754.8254915351713,
+                       "predicted_n":  80,
+                       "predicted_ms":  5536.761,
+                       "predicted_per_token_ms":  69.2095125,
+                       "predicted_per_second":  14.448880852902988,
+                       "draft_n":  100,
+                       "draft_n_accepted":  53
+                   },
+    "off_timings":  {
+                        "cache_n":  0,
+                        "prompt_n":  8064,
+                        "prompt_ms":  10344.861,
+                        "prompt_per_token_ms":  1.2828448660714287,
+                        "prompt_per_second":  779.5174821585325,
+                        "predicted_n":  80,
+                        "predicted_ms":  5139.49,
+                        "predicted_per_token_ms":  64.243625,
+                        "predicted_per_second":  15.565746795888309,
+                        "draft_n":  96,
+                        "draft_n_accepted":  54
+                    },
+    "on_checkpoints_correct":  true,
+    "off_checkpoints_correct":  true,
+    "same_output_tokens":  false,
+    "on_profile":  [
+                       "0.37.459.599 I CUDA hybrid MoE CPU profile: calls=752 jobs=18612 groups_1_2_3_4=(10705,2845,559,135) scheduled_weight_MiB=50988.47 setup_ms=61.92 gate_up_ms=1025.68 down_quant_ms=20.33 down_ms=631.15 paired_gate_up_groups=10411",
+                       "0.37.459.631 I CUDA hybrid MoE CPU placement: samples=1504 worker_core_samples=1300 reserved_core_samples=204 caller_thread_id=28528 other_thread_samples=0 worker_affinity_successes=15 worker_affinity_failures=0",
+                       "0.37.459.646 I CUDA hybrid MoE CPU drain profile: gate_up_wall_ms=1025.27 gate_up_longest_drain_ms=1021.22 gate_up_drain_span_ms=1022.95 down_quant_wall_ms=20.02 down_quant_longest_drain_ms=17.92 down_quant_drain_span_ms=18.60 down_wall_ms=630.43 down_longest_drain_ms=628.41 down_drain_span_ms=628.63",
+                       "0.37.459.859 I CUDA hybrid launch profile: calls=16 target_tokens=76 hybrid_nodes=752 ordinary_dispatches=23776 fused_nodes=12112 host_hybrid_ms=2899.03 host_outside_hybrid_ms=400.35",
+                       "0.37.479.477 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=76.0 cache_hits=17108 cache_misses=18612 h2d_weight_MiB=670.50 cpu_fused_ms=1740.28 entry_event_wait_ms=222.40 readback_wait_ms=602.13 host_prepare_submit_ms=302.57 gpu_cached_interval_ms=508.39 gpu_streamed_interval_ms=0.00 gpu_weight_copy_interval_ms=0.00 gpu_cache_refresh_interval_ms=128.86 gpu_attention_interval_ms=221.15 gpu_cpu_wait_interval_ms=1321.18 gpu_between_moe_readback_interval_ms=769.96"
+                   ],
+    "off_profile":  [
+                        "0.36.346.683 I CUDA hybrid MoE CPU profile: calls=752 jobs=18734 groups_1_2_3_4=(10558,2895,598,148) scheduled_weight_MiB=50827.83 setup_ms=65.44 gate_up_ms=1005.28 down_quant_ms=19.01 down_ms=610.17 paired_gate_up_groups=0",
+                        "0.36.346.705 I CUDA hybrid MoE CPU placement: samples=1504 worker_core_samples=219 reserved_core_samples=1285 caller_thread_id=18424 other_thread_samples=0 worker_affinity_successes=15 worker_affinity_failures=0",
+                        "0.36.346.720 I CUDA hybrid MoE CPU drain profile: gate_up_wall_ms=1004.75 gate_up_longest_drain_ms=1002.49 gate_up_drain_span_ms=1003.03 down_quant_wall_ms=18.68 down_quant_longest_drain_ms=16.77 down_quant_drain_span_ms=17.35 down_wall_ms=609.18 down_longest_drain_ms=607.85 down_drain_span_ms=608.04",
+                        "0.36.346.903 I CUDA hybrid launch profile: calls=16 target_tokens=76 hybrid_nodes=752 ordinary_dispatches=23776 fused_nodes=12112 host_hybrid_ms=2813.69 host_outside_hybrid_ms=419.80",
+                        "0.36.365.973 I CUDA hybrid MoE profile [decode]: layer_calls=752 target_tokens_per_layer=76.0 cache_hits=16986 cache_misses=18734 h2d_weight_MiB=670.50 cpu_fused_ms=1701.03 entry_event_wait_ms=232.47 readback_wait_ms=572.23 host_prepare_submit_ms=276.72 gpu_cached_interval_ms=498.01 gpu_streamed_interval_ms=0.00 gpu_weight_copy_interval_ms=0.00 gpu_cache_refresh_interval_ms=126.69 gpu_attention_interval_ms=217.08 gpu_cpu_wait_interval_ms=1305.47 gpu_between_moe_readback_interval_ms=746.76"
+                    ],
+    "generation_relative_percent":  -7.1751516816420338144677013300,
+    "compiler_observation":  "Revised assembly uses YMM8 and YMM10 for both gate and up VPSIGNB operations and YMM11/YMM12 as floating-point accumulators. This corrected register reuse did not establish a throughput gain.",
+    "decision":  "Reject both paired IQ2 kernels and restore the retained CPU source and binary. Preserve worker-phase evidence, then remove the temporary timing code.",
+    "limitations":  [
+                        "Caller placement differs substantially and output/draft acceptance differ. No isolated speed percentage is claimed.",
+                        "Checkpoint recall is correct for this saved request; full API coverage and 128k performance remain unverified.",
+                        "The source preserves standard floating-point order, but no standalone numerical equivalence test was authored."
+                    ],
+    "next_source_findings":  [
+                                 "At decode, the cache remains capped at configured budget plus 2048 MiB, despite 1627 MiB free reported after this request. Runtime free memory is context dependent.",
+                                 "Current first-16 window cache hits were 16986/35720; the hindsight fixed-capacity estimate was 24643. This is past-window evidence, not a prediction.",
+                                 "Decode refresh uploads are queued after CPU expert computation and therefore add to the transition into the next layer. They can potentially be queued after cached GPU reads and before the CPU-ready wait, preserving stream order."
+                             ]
+}

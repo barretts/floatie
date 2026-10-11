@@ -1,0 +1,5 @@
+FATAL ERROR: C:\dvs\p4\build\sw\devtools\Agora\Rel\CUDA12.6\QuadD\Target\quadd_d\quadd_d\jni\EventSource\ETWSession.cpp(150): Throw in function void __cdecl QuadDDaemon::EventSource::ETWSession::Start(void)
+Dynamic exception type: struct boost::wrapexcept<class boost::unknown_exception>
+std::exception::what: Unknown exception
+[struct QuadDCommon::tag_message * __ptr64] = ReflexStatsTraceLoggingProvider provider requires administrator privileges
+class QuadDCommon::AccessDeniedException

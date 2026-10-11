@@ -1,0 +1,46 @@
+﻿{
+    "timestamp":  "2026-10-11T08:11:14.4295318-05:00",
+    "request_sha256":  "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+    "same_request":  true,
+    "same_cpu_binary":  true,
+    "same_cuda_binary":  true,
+    "same_llama_binary":  true,
+    "same_output_tokens":  false,
+    "same_draft_counts":  true,
+    "on_timings":  {
+                       "cache_n":  0,
+                       "prompt_n":  8064,
+                       "prompt_ms":  10209.541,
+                       "prompt_per_token_ms":  1.2660641121031746,
+                       "prompt_per_second":  789.849416344966,
+                       "predicted_n":  80,
+                       "predicted_ms":  4849.045,
+                       "predicted_per_token_ms":  60.6130625,
+                       "predicted_per_second":  16.49809395458281,
+                       "draft_n":  93,
+                       "draft_n_accepted":  54
+                   },
+    "off_timings":  {
+                        "cache_n":  0,
+                        "prompt_n":  8064,
+                        "prompt_ms":  10206.625,
+                        "prompt_per_token_ms":  1.2657025049603174,
+                        "prompt_per_second":  790.0750737878583,
+                        "predicted_n":  80,
+                        "predicted_ms":  4948.467,
+                        "predicted_per_token_ms":  61.85583749999999,
+                        "predicted_per_second":  16.166622915743403,
+                        "draft_n":  93,
+                        "draft_n_accepted":  54
+                    },
+    "on_checkpoints_correct":  true,
+    "off_checkpoints_correct":  true,
+    "observed_generation_relative_percent":  2.0503418714406545370793293500,
+    "profiled_comparison":  "budgeted-admission-profile-comparison.json",
+    "decision":  "Retain measured-overlap cache admission and enable it by default, with the existing cadence as fallback when timing or upload calibration is unavailable.",
+    "limitations":  [
+                        "The production outputs differ slightly despite identical draft counts. The profiled pair had identical tokens and acceptance.",
+                        "Observed production and profiled gains are small; GPU boost and CPU caller placement can vary. No universal isolated percentage is claimed.",
+                        "900/30 at 8k remains unmet. Full API and 128k behavior remain unverified."
+                    ]
+}

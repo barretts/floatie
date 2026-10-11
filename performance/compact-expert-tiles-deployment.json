@@ -1,0 +1,9 @@
+{
+  "backup": "E:\\poolside\\backups\\before-compact-expert-tiles-20261011-002508",
+  "source_sha256": {
+    "ggml\\src\\ggml-cuda\\mmq.cu": "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+    "ggml\\src\\ggml-cuda\\moe-hybrid.cu": "A6F7FD4CBB66CDFFC609DB531838F5AD9D656F8B4453C3D6F921D5C311246EDF"
+  },
+  "change": "Bound matrix tile grids by the largest expert group and restrict each bulk tile to its actual expert range; dense MMQ for a single expert.",
+  "status": "deployed; awaiting compilation and live inference"
+}

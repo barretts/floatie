@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-10-11T06:15:33.0842178-05:00",
+  "stopped_native_pids": [
+    22416
+  ],
+  "backup_directory": "E:\\poolside\\backups\\before-phase-drain-profile-20261011-061532",
+  "build_log": "E:\\poolside\\logs\\phase-drain-profile-build-20261011-061532.log",
+  "build_status": "complete",
+  "cpu_source_sha256": "155606D90EBB96E9A83ABF7208AB726B8A3DDE2C2EF311AE97679ED3A118482F",
+  "cuda_source_sha256": "29BF88D604B7551B765F4C0464220B78501CDDA9AFC30036739598C83984BDC6",
+  "scope": "Profile-only worker drain duration, active drain span and total phase wall time. Original expert tasks, row grouping, quantization and numerical kernels are unchanged.",
+  "build_exit_code": 0,
+  "cpu_dll_sha256": "F640D1596A262ABBBC5A5DAE4EC3FAD077DDD40BC34EDB03AC6AF1FD1B49A2E8",
+  "cuda_dll_sha256": "F549F69B335A506B252E4CC00F8A36BF5A99553809C7F0F5999BE5BD0ADDE77A"
+}

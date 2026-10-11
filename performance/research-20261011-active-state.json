@@ -1,0 +1,281 @@
+{
+  "timestamp": "2026-10-11T14:13:00.7101406-05:00",
+  "sources": [
+    {
+      "file": "common/speculative.cpp",
+      "staged_sha256": "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9",
+      "deployed_sha256": "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/include/ggml.h",
+      "staged_sha256": "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+      "deployed_sha256": "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/include/ggml-cpu-moe.h",
+      "staged_sha256": "679B289E25322591854B24BCA95D02FE97CE1CE747BA2678EE9521314C7F9C04",
+      "deployed_sha256": "679B289E25322591854B24BCA95D02FE97CE1CE747BA2678EE9521314C7F9C04",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/src/ggml.c",
+      "staged_sha256": "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+      "deployed_sha256": "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/src/ggml-alloc.c",
+      "staged_sha256": "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+      "deployed_sha256": "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/src/ggml-backend.cpp",
+      "staged_sha256": "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+      "deployed_sha256": "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/CMakeLists.txt",
+      "staged_sha256": "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+      "deployed_sha256": "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/moe.cpp",
+      "staged_sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+      "deployed_sha256": "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/moe-iq.cpp",
+      "staged_sha256": "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+      "deployed_sha256": "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/src/ggml-cpu/moe-iq.h",
+      "staged_sha256": "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+      "deployed_sha256": "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/fattn.cu",
+      "staged_sha256": "7D85565227A6649BD7196AD10B6F28FA353DB6DAC778DDDD29DBB4E1B5DDBF3C",
+      "deployed_sha256": "7D85565227A6649BD7196AD10B6F28FA353DB6DAC778DDDD29DBB4E1B5DDBF3C",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/fattn-common.cuh",
+      "staged_sha256": "9D84509C1C955A3D090E1E692901C2D1723BE0693322CD1EEB51BDDA289B7935",
+      "deployed_sha256": "9D84509C1C955A3D090E1E692901C2D1723BE0693322CD1EEB51BDDA289B7935",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/fattn-mma-f16.cuh",
+      "staged_sha256": "35D18179CECC6FB6CF3C0EBAE6B6512AF08342C6336960E2DB72008A5BA2D6D3",
+      "deployed_sha256": "35D18179CECC6FB6CF3C0EBAE6B6512AF08342C6336960E2DB72008A5BA2D6D3",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/ggml-cuda.cu",
+      "staged_sha256": "29BF88D604B7551B765F4C0464220B78501CDDA9AFC30036739598C83984BDC6",
+      "deployed_sha256": "29BF88D604B7551B765F4C0464220B78501CDDA9AFC30036739598C83984BDC6",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/mmq.cu",
+      "staged_sha256": "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+      "deployed_sha256": "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/moe-hybrid.cu",
+      "staged_sha256": "AF3E081FB5C00FA2135AE0858895074F2937D17FB69FAB89D6B70E5271246A5B",
+      "deployed_sha256": "AF3E081FB5C00FA2135AE0858895074F2937D17FB69FAB89D6B70E5271246A5B",
+      "baseline_match": true
+    },
+    {
+      "file": "ggml/src/ggml-cuda/moe-hybrid.cuh",
+      "staged_sha256": "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772",
+      "deployed_sha256": "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772",
+      "baseline_match": true
+    },
+    {
+      "file": "src/CMakeLists.txt",
+      "staged_sha256": "918ABC450AE62C3A5B7D9B8145C54B920138848F68AE9AC8A1EC08760CE96C55",
+      "deployed_sha256": "918ABC450AE62C3A5B7D9B8145C54B920138848F68AE9AC8A1EC08760CE96C55",
+      "baseline_match": true
+    },
+    {
+      "file": "src/llama-context.cpp",
+      "staged_sha256": "FD1094FD6EA5F29FD71CE8E1A1355B6550BEC5E5F611A427D9F06D6958C56E97",
+      "deployed_sha256": "FD1094FD6EA5F29FD71CE8E1A1355B6550BEC5E5F611A427D9F06D6958C56E97",
+      "baseline_match": true
+    },
+    {
+      "file": "src/llama-ext.h",
+      "staged_sha256": "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3",
+      "deployed_sha256": "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3",
+      "baseline_match": true
+    },
+    {
+      "file": "src/llama-graph.cpp",
+      "staged_sha256": "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+      "deployed_sha256": "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+      "baseline_match": true
+    },
+    {
+      "file": "src/llama-kv-cache.cpp",
+      "staged_sha256": "062FE7E82FA79841BCC759F68B2A57EF8F57E8089F577DDFDD55D6F79D49CDC7",
+      "deployed_sha256": "062FE7E82FA79841BCC759F68B2A57EF8F57E8089F577DDFDD55D6F79D49CDC7",
+      "baseline_match": true
+    },
+    {
+      "file": "src/llama-model.cpp",
+      "staged_sha256": "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB",
+      "deployed_sha256": "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB",
+      "baseline_match": true
+    },
+    {
+      "file": "src/models/dflash.cpp",
+      "staged_sha256": "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+      "deployed_sha256": "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+      "baseline_match": true
+    }
+  ],
+  "binaries": [
+    {
+      "file": "cublas64_12.dll",
+      "sha256": "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142",
+      "launch_match": true
+    },
+    {
+      "file": "cublasLt64_12.dll",
+      "sha256": "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49",
+      "launch_match": true
+    },
+    {
+      "file": "cudart64_12.dll",
+      "sha256": "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746",
+      "launch_match": true
+    },
+    {
+      "file": "ggml-base.dll",
+      "sha256": "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA",
+      "launch_match": true
+    },
+    {
+      "file": "ggml-cpu.dll",
+      "sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E",
+      "launch_match": true
+    },
+    {
+      "file": "ggml-cuda.dll",
+      "sha256": "465D152C90671D4CF70D9DCFD0B99A5135B7DB7D71691CFADBFEC45B68006EC2",
+      "launch_match": true
+    },
+    {
+      "file": "ggml.dll",
+      "sha256": "47DD2E6AE7538D27DC4F94C4EC5569EBEA4E78579D72A34BEF1F8468A798DBA2",
+      "launch_match": true
+    },
+    {
+      "file": "llama-common.dll",
+      "sha256": "4CE650D500D57370A8DBDA23C04CC022EA6F3019ED08B7CE33915F655475B5DD",
+      "launch_match": true
+    },
+    {
+      "file": "llama-server-impl.dll",
+      "sha256": "515F3B1C23DC1F91C61BFA3A3E364F5400F651FA679DF080E22A162E10EB4160",
+      "launch_match": true
+    },
+    {
+      "file": "llama-server.exe",
+      "sha256": "56A839707A3EF9DCA966905221357F71EF4A37DBCF54574CD32F432E4B834A7E",
+      "launch_match": true
+    },
+    {
+      "file": "llama.dll",
+      "sha256": "03AF4A1A15ABEA96C088BDB06622EFDFE905ED853B4855A2A7CBDB5658DCF718",
+      "launch_match": true
+    },
+    {
+      "file": "mtmd.dll",
+      "sha256": "53AA3EB603D218828CE5E3F393559471092133080900B1CACDE645614650B3B1",
+      "launch_match": true
+    }
+  ],
+  "servers": [
+    {
+      "ProcessId": 12448,
+      "ExecutablePath": "E:\\poolside\\build\\bin\\llama-server.exe",
+      "CreationDate": "2026-10-11T14:11:02.780944-05:00"
+    }
+  ],
+  "builds": [],
+  "health": {
+    "v1/models": {
+      "models": [
+        {
+          "name": "laguna-s-2.1-iq3-s",
+          "model": "laguna-s-2.1-iq3-s",
+          "modified_at": "",
+          "size": "",
+          "digest": "",
+          "type": "model",
+          "description": "",
+          "tags": [
+            ""
+          ],
+          "capabilities": [
+            "completion"
+          ],
+          "parameters": "",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "",
+            "families": [
+              ""
+            ],
+            "parameter_size": "",
+            "quantization_level": ""
+          }
+        }
+      ],
+      "object": "list",
+      "data": [
+        {
+          "id": "laguna-s-2.1-iq3-s",
+          "aliases": [
+            "laguna-s-2.1-iq3-s"
+          ],
+          "tags": [],
+          "object": "model",
+          "created": 1791745980,
+          "owned_by": "llamacpp",
+          "meta": {
+            "vocab_type": 2,
+            "n_vocab": 100352,
+            "n_ctx": 8192,
+            "n_ctx_train": 262144,
+            "n_embd": 3072,
+            "n_params": 117561977600,
+            "size": 48425176640,
+            "ftype": "IQ3_S - 3.4375 bpw"
+          }
+        }
+      ]
+    },
+    "health": {
+      "status": "ok"
+    }
+  },
+  "free_ram_gib": 65.077,
+  "gpu_idle_memory_mib_used_free": "14704, 1406",
+  "measurements_complete": true,
+  "profiling_enabled": false
+}

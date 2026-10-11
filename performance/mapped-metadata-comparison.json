@@ -1,0 +1,93 @@
+{
+  "as_of": "2026-10-11T07:52:18.622110+00:00",
+  "workload": {
+    "configured_context": 8192,
+    "prompt_tokens": 8064,
+    "output_tokens": 80,
+    "cache_prompt": false,
+    "request_sha256": "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c"
+  },
+  "baseline": {
+    "receipt": "core8k-production-baseline-dflash4-q8-cache6144.json",
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 8064,
+      "prompt_ms": 15822.242,
+      "prompt_per_token_ms": 1.9620835813492064,
+      "prompt_per_second": 509.6622842704593,
+      "predicted_n": 80,
+      "predicted_ms": 6549.195,
+      "predicted_per_token_ms": 81.8649375,
+      "predicted_per_second": 12.215241720547334,
+      "draft_n": 96,
+      "draft_n_accepted": 55
+    }
+  },
+  "candidate": {
+    "receipt": "core8k-mapped-metadata-production-dflash4-q8-cache6144.json",
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 8064,
+      "prompt_ms": 13520.228,
+      "prompt_per_token_ms": 1.6766155753968253,
+      "prompt_per_second": 596.4396458402921,
+      "predicted_n": 80,
+      "predicted_ms": 6645.14,
+      "predicted_per_token_ms": 83.06425,
+      "predicted_per_second": 12.03887352260449,
+      "draft_n": 101,
+      "draft_n_accepted": 53
+    }
+  },
+  "prefill_gain_percent": 17.02644363689725,
+  "generation_change_percent": -1.4438371501578562,
+  "trace": {
+    "baseline": {
+      "epoch": 1,
+      "event_count": 230,
+      "span_ms": 11546.474,
+      "copy_union_ms": 6768.127999999995,
+      "expert_union_ms": 4070.4329999999964,
+      "copy_expert_overlap_ms": 81.82400000000052,
+      "copy_without_measured_expert_ms": 6686.303999999995,
+      "expert_without_copy_ms": 3988.608999999996,
+      "outside_both_interval_ms": 789.7370000000092
+    },
+    "candidate": {
+      "epoch": 1,
+      "event_count": 230,
+      "span_ms": 9660.932,
+      "copy_union_ms": 6767.416000000003,
+      "expert_union_ms": 4094.7169999999937,
+      "copy_expert_overlap_ms": 1986.3359999999986,
+      "copy_without_measured_expert_ms": 4781.0800000000045,
+      "expert_without_copy_ms": 2108.380999999995,
+      "outside_both_interval_ms": 785.1350000000027
+    },
+    "evidence": "core8k-mapped-metadata-analysis.json"
+  },
+  "retained": true,
+  "implementation": "Stage bulk-prefill routing metadata through a kernel reading existing cudaHostAlloc pinned arrays, avoiding small H2D transfers behind the next weight upload. Fall back to ordinary copies on devices without unified addressing.",
+  "correctness": {
+    "checkpoint_order_correct": true,
+    "prompt_n": 8064,
+    "output_n": 80,
+    "truncated": false,
+    "all_ten_experts_preserved_by_code": true,
+    "scope": "Saved checkpoint request and code review; not broad model quality verification."
+  },
+  "conditions": {
+    "context_size": 8192,
+    "prompt_tokens": 8064,
+    "output_tokens": 80,
+    "cache_prompt": false,
+    "production_profiling": false,
+    "cold_server_runs": true,
+    "identical_request": true,
+    "parameters_unchanged": true,
+    "draft_acceptance_differs": true,
+    "gpu_clocks_not_locked": true
+  },
+  "tradeoffs": "Adds a small GPU staging kernel and PCIe reads of routing metadata. Weight payloads and quantization are unchanged. No additional model cache or pinned allocation.",
+  "documentation": "https://docs.nvidia.com/cuda/archive/12.6.0/cuda-runtime-api/group__CUDART__UNIFIED.html"
+}

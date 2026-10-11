@@ -256,6 +256,12 @@ static void parse_tensor_buffer_overrides(const std::string & value, std::vector
         if (buft) {
             buft_list[ggml_backend_buft_name(buft)] = buft;
         }
+        auto get_moe_buft = (ggml_backend_buffer_type_t (*)()) ggml_backend_reg_get_proc_address(
+                ggml_backend_dev_backend_reg(dev), "ggml_backend_cuda_moe_buffer_type");
+        if (get_moe_buft) {
+            auto * moe_buft = get_moe_buft();
+            buft_list[ggml_backend_buft_name(moe_buft)] = moe_buft;
+        }
     }
 
     for (const auto & override : string_split<std::string>(value, ',')) {

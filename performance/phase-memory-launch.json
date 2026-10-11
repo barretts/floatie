@@ -1,0 +1,6 @@
+{
+  "stdout": "E:\\poolside\\logs\\core8k-phase-memory-20261011-001937.stdout.log",
+  "stderr": "E:\\poolside\\logs\\core8k-phase-memory-20261011-001937.stderr.log",
+  "wrapper_pid": 23688,
+  "settings": "8192 context; 6144 MiB base cache; 8192 batch; DFlash4 q8; phase memory; profile; pinned; adaptive; GPU misses0"
+}

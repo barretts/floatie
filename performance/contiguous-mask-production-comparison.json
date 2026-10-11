@@ -1,0 +1,38 @@
+﻿{
+    "as_of":  "2026-10-11T04:43:25.4928161-05:00",
+    "prior_receipt":  "core8k-cpu-doorbell-production-dflash4-q8-cache6144.json",
+    "latest_receipt":  "core8k-contiguous-mask-production-dflash4-q8-cache6144.json",
+    "prior_timings":  {
+                          "cache_n":  0,
+                          "prompt_n":  8064,
+                          "prompt_ms":  11229.962,
+                          "prompt_per_token_ms":  1.3926044146825396,
+                          "prompt_per_second":  718.0790104187352,
+                          "predicted_n":  80,
+                          "predicted_ms":  5700.684,
+                          "predicted_per_token_ms":  71.25855,
+                          "predicted_per_second":  14.033403710852943,
+                          "draft_n":  96,
+                          "draft_n_accepted":  55
+                      },
+    "latest_timings":  {
+                           "cache_n":  0,
+                           "prompt_n":  8064,
+                           "prompt_ms":  10403.054,
+                           "prompt_per_token_ms":  1.290061259920635,
+                           "prompt_per_second":  775.1569875538471,
+                           "predicted_n":  80,
+                           "predicted_ms":  5522.063,
+                           "predicted_per_token_ms":  69.0257875,
+                           "predicted_per_second":  14.487339242598283,
+                           "draft_n":  93,
+                           "draft_n_accepted":  54
+                       },
+    "prefill_change_percent":  7.948704293950588693202077380,
+    "generation_change_percent":  3.2346787785651898258241065900,
+    "scope":  "Both production runs use the saved prompt and profiling disabled. The range-fill implementation only applies to prefill. Different generated tokens/speculative acceptance/cache trajectories and unlocked GPU clocks prevent isolating the generation difference.",
+    "profile_mask_fill_ms_before":  536.233,
+    "profile_mask_fill_ms_after":  27.114,
+    "profile_mask_fill_reduction_percent":  94.943615928150635,
+    "checkpoints_correct":  true
+}

@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-11T01:49:00.4619611-05:00",
+  "wrapper_pid": 31240,
+  "stdout": "E:\\poolside\\logs\\core8k-cost-aware-admission-20261011-014900.stdout.log",
+  "stderr": "E:\\poolside\\logs\\core8k-cost-aware-admission-20261011-014900.stderr.log",
+  "settings": "8192 context; 6144 MiB base cache; 8192 batch; DFlash4 q8; phase memory; profile; pinned; adaptive; GPU misses0",
+  "source_sha256": "6EBD1A186DC8B34E0031AB998C5C03F7C3DCC06BD8510A8031F919957D949493",
+  "cuda_dll_sha256": "F12BE4CDE49FAB6515792D7B84D7FA7E8D26B5A9DDACAEDF311E13F7A5B955F7"
+}

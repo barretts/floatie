@@ -921,6 +921,15 @@ static bool ggml_gallocr_reserve_n_impl(
                 realloc = true;
             }
         }
+        const char * phase_buffers = getenv("GGML_MOE_PHASE_BUFFERS");
+        const size_t cur_size = galloc->buffers[i] ? ggml_vbuffer_size(galloc->buffers[i]) : 0;
+        const bool trim = phase_buffers && atoi(phase_buffers) != 0 &&
+                cur_size > 128 * 1024 * 1024 && new_size < cur_size / 4;
+        realloc |= trim;
+        if (trim) {
+            GGML_LOG_INFO("MoE phase buffers: shrinking %s compute buffer from %.2f to %.2f MiB\n",
+                    ggml_backend_buft_name(galloc->bufts[i]), cur_size / 1048576.0, new_size / 1048576.0);
+        }
         if (realloc) {
 #ifndef NDEBUG
             {

@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-10-11T04:08:04.7079572-05:00",
+  "wrapper_pid": 27632,
+  "stdout_log": "E:\\poolside\\logs\\core8k-mask-timing-20261011-040804.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-mask-timing-20261011-040804.stderr.log",
+  "mask_source_sha256": "3ADFCC0DC00F0FDC9AFC106F8E324D5124F82B385890B4AD488151D4ED1C5D2B",
+  "llama_dll_sha256": "05BB22286B68EEBF61F42522FA15F6837B864C71BB869638F925ABB8580F186A",
+  "cuda_dll_sha256": "140CC1E7312FF2456D73B79AC160CA362750B6F1024B76102B45E3527FC1DEA1",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "profile": true,
+  "timeline": false,
+  "verbosity": 4,
+  "cpu_doorbell": "engine default enabled",
+  "pin_experts": true,
+  "adaptive_cache": true
+}

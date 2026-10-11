@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-10-11T09:18:30.7418088-05:00",
+  "healthy": "ok",
+  "api_model_ids": [
+    "laguna-s-2.1-iq3-s"
+  ],
+  "servers": [
+    {
+      "ProcessId": 15152,
+      "ExecutablePath": "E:\\poolside\\build\\bin\\llama-server.exe"
+    }
+  ],
+  "free_ram_gib": 67.42205047607422,
+  "gpu_idle_memory_columns": [
+    "used_mib",
+    "free_mib"
+  ],
+  "gpu_idle_memory": "14479, 1631"
+}

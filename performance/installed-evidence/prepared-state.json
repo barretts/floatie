@@ -1,0 +1,84 @@
+{
+  "status": "prepared_for_first_run",
+  "prepared_at_utc": "2026-10-10T22:43:41.834336+00:00",
+  "root": "E:\\poolside",
+  "source": {
+    "base_repository": "https://github.com/poolsideai/llama.cpp.git",
+    "base_branch": "laguna",
+    "base_commit": "06f8cebd7fe728687be3d19f8bdedb70d75883af",
+    "patch_sha256": "c50b7c6b26dec1d0ecda2fa4b6a43cca1400bf625cd4116c58f7bac0dd208d5b",
+    "files": {
+      "common/arg.cpp": "d11b4ea783062d9ba73275131cdd1fd571a8412419f4b6afb9d3d69f4299a227",
+      "ggml/include/ggml.h": "f702ebf51f7bc401966172d85c0b07a0e64ffebb3c99c4ca1733a914f4d6b6ed",
+      "ggml/src/ggml-cpu/CMakeLists.txt": "bc886583430eecde0e87f690195ada2d2e51db33e5484dbea608564d95988798",
+      "ggml/src/ggml-cpu/ggml-cpu.cpp": "8295a7e169effa8643e88065eeb9855b0f7716521e8556c77e4a0202a1c1292d",
+      "ggml/src/ggml-cuda/CMakeLists.txt": "17c5676f72aae717ec3fc0eedcecdb52a16e87a2f803493e6283bf0f472fe696",
+      "ggml/src/ggml-cuda/ggml-cuda.cu": "17c534ecbf151d549a2b9dcd883c0662c666daa47e69f50a86439c259b053b0a",
+      "ggml/src/ggml.c": "b5c57b9f6aab1b2df74d3ee6e0b975135dd3e0b56d54a0a3126a541899180a25",
+      "src/llama-graph.cpp": "18d283adbb723f744ac1c01937aeb14c41e36002e16e0cdfceb3cc872b0f80b0",
+      "ggml/include/ggml-cpu-moe.h": "679b289e25322591854b24bca95d02fe97ce1ce747ba2678ee9521314c7f9c04",
+      "ggml/src/ggml-cpu/moe.cpp": "482e10e442b784706300699847580d22d35d0644e1793bd1f8d1947f568ee27a",
+      "ggml/src/ggml-cuda/moe-hybrid.cu": "eba3b4be274fc0b964d52e75a66a7bfc4c6497497e3f9b68f7ce9e765938fc24",
+      "ggml/src/ggml-cuda/moe-hybrid.cuh": "c3eb78c32269a3ffbd4f21ef8a82a8d1a3b37953fe0520f8049d15f53f95fbe3"
+    },
+    "scope": "Source snapshot only; this script does not execute the inference runtime or tests."
+  },
+  "model_receipts": [
+    {
+      "artifact": {
+        "repo": "unsloth/Laguna-S-2.1-GGUF",
+        "revision": "750f92f90cf54159c4d7a610cb7b3e74498e75c6",
+        "file": "Laguna-S-2.1-UD-IQ3_S.gguf",
+        "bytes": 48428911520,
+        "sha256": "8a9ab3f8b3ff1723441cd251e873b295a7ef086d78dbae7515e5e27c8382b002"
+      },
+      "verified_sha256": "8a9ab3f8b3ff1723441cd251e873b295a7ef086d78dbae7515e5e27c8382b002",
+      "download_completed_utc": "2026-10-10T22:31:08Z"
+    },
+    {
+      "artifact": {
+        "repo": "dev7a/Laguna-S-2.1-DFlash-GGUF",
+        "revision": "0f7234ea9b0de138a2b9b119e805b82322dba0fd",
+        "file": "Laguna-S-2.1-DFlash-Q8_0.gguf",
+        "bytes": 1188535328,
+        "sha256": "94d5d6d93acb2dfb1209599bc099ebc5b30e959a3a1200dcaebfb01e3f480e43"
+      },
+      "verified_sha256": "94d5d6d93acb2dfb1209599bc099ebc5b30e959a3a1200dcaebfb01e3f480e43",
+      "download_completed_utc": "2026-10-10T22:31:26Z"
+    }
+  ],
+  "build": {
+    "result": "success",
+    "final_incremental_result": "success",
+    "compiler": "MSVC 14.44.35207",
+    "cuda_toolkit": "12.6",
+    "cuda_architecture": 89,
+    "full_log": "logs/build-20261010-173557.native.log",
+    "final_log": "logs/build-20261010-174202.native.log",
+    "runtime_dependencies_and_hashes": "logs/runtime-dependencies.json",
+    "runtime_imports": "all found by static import inspection"
+  },
+  "launch": {
+    "script": "launch.ps1",
+    "context_tokens": 131072,
+    "expert_cache_mib": 3072,
+    "cpu_workers": 16,
+    "draft_tokens_max": 4,
+    "kv_type": "q8_0",
+    "api": "http://127.0.0.1:1235/v1"
+  },
+  "execution": {
+    "server_started": false,
+    "model_initialized": false,
+    "inference_performed": false,
+    "tests_written_or_run": false,
+    "first_run_attempt_pending": true
+  },
+  "performance": {
+    "generation_target_tokens_per_second": 30,
+    "measured_tokens_per_second": null,
+    "measured_prefill_latency": null,
+    "measured_peak_vram": null,
+    "risk": "Cold long-context prefill repeatedly stages experts over PCIe; speed and memory fit require the first run."
+  }
+}

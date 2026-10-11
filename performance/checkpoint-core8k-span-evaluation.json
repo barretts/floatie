@@ -1,0 +1,229 @@
+﻿{
+    "timestamp":  "2026-10-11T06:09:29.3777464-05:00",
+    "goal_status":  "active",
+    "prior_goal_turn_classification":  "progress: CPU placement comparison rejected an unhelpful affinity candidate.",
+    "this_goal_turn_classification":  "progress: optional GPU section replay implemented and measured, then rejected and rolled back after both comparisons failed to improve throughput.",
+    "context_gate":  8192,
+    "latest_production_receipt":  "core8k-after-span-evaluation-production-dflash4-q8-cache6144.json",
+    "request_sha256":  "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+    "timings":  {
+                    "cache_n":  0,
+                    "prompt_n":  8064,
+                    "prompt_ms":  10359.548,
+                    "prompt_per_token_ms":  1.2846661706349207,
+                    "prompt_per_second":  778.4123399978454,
+                    "predicted_n":  80,
+                    "predicted_ms":  4571.599,
+                    "predicted_per_token_ms":  57.1449875,
+                    "predicted_per_second":  17.499347602447195,
+                    "draft_n":  86,
+                    "draft_n_accepted":  56
+                },
+    "checkpoint_order_correct":  true,
+    "checkpoint_codes":  [
+                             "COBALT-17",
+                             "MAPLE-42",
+                             "VIOLET-89"
+                         ],
+    "launch":  {
+                   "timestamp":  "2026-10-11T06:05:25.5458798-05:00",
+                   "wrapper_pid":  23008,
+                   "stdout_log":  "E:\\poolside\\logs\\core8k-after-span-evaluation-production-20261011-060525.stdout.log",
+                   "stderr_log":  "E:\\poolside\\logs\\core8k-after-span-evaluation-production-20261011-060525.stderr.log",
+                   "cuda_source_sha256":  "29BF88D604B7551B765F4C0464220B78501CDDA9AFC30036739598C83984BDC6",
+                   "cpu_source_sha256":  "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+                   "cpu_dll_sha256":  "7BC86BE0D91C083B088E7B2DA516FD93784822F48EED2798963290AB77C6C7DB",
+                   "cuda_dll_sha256":  "941E44CE64569042CA73B5FDA0109F8411E9490816CB9F1FF103956FF797857C",
+                   "llama_dll_sha256":  "5B8A05BD34E3FFAC76FF56E11E88726362AFB6DD0E74DD613C39BD46E9B0B86E",
+                   "context_size":  8192,
+                   "cache_mib":  6144,
+                   "batch_size":  8192,
+                   "draft_max":  4,
+                   "draft_kv_type":  "q8_0",
+                   "gpu_misses_per_token":  0,
+                   "profile":  false,
+                   "readback_span":  false,
+                   "gpu_span_graphs":  "candidate removed",
+                   "timeline":  false,
+                   "verbosity":  3,
+                   "cpu_doorbell":  "engine default enabled",
+                   "decode_bounds":  "engine default enabled",
+                   "pin_experts":  true,
+                   "adaptive_cache":  true
+               },
+    "live_servers":  [
+                         {
+                             "Id":  22416,
+                             "Path":  "E:\\poolside\\build\\bin\\llama-server.exe",
+                             "StartTime":  "\/Date(1791716727017)\/"
+                         }
+                     ],
+    "health":  {
+                   "status":  "ok"
+               },
+    "model_ids":  [
+                      "laguna-s-2.1-iq3-s"
+                  ],
+    "source_count":  21,
+    "source_integrity":  [
+                             {
+                                 "file":  "ggml/include/ggml.h",
+                                 "staged_sha256":  "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+                                 "deployed_sha256":  "25BA154DBAD1B4C14FCAF61E2E0C79A3357A26523285AC221685210CD147E047",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml.c",
+                                 "staged_sha256":  "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+                                 "deployed_sha256":  "6A704969411F20F09B70B1FD17E529423D16A0D7B3F06E6927566654761204F0",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cpu/CMakeLists.txt",
+                                 "staged_sha256":  "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+                                 "deployed_sha256":  "8F1A2EB6A23108A5E3B3E503B4B4824B300745A60515ED85DF67EFCFDEE18043",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cpu/moe.cpp",
+                                 "staged_sha256":  "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+                                 "deployed_sha256":  "4D86859B32305BE249DE05D08D8B4E6E1133D552653E0FBB2D724BDF459F0B9E",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cpu/moe-iq.cpp",
+                                 "staged_sha256":  "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+                                 "deployed_sha256":  "6A746C8780829F8AD3F9B9DF415D6EE59D154270995E41D4825E23ACA941A290",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cpu/moe-iq.h",
+                                 "staged_sha256":  "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+                                 "deployed_sha256":  "710EEF81F8FACD0F9CAE057BD0170D511B5BAFC5B9E8930729AFD0951D801DF4",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/ggml-cuda.cu",
+                                 "staged_sha256":  "29BF88D604B7551B765F4C0464220B78501CDDA9AFC30036739598C83984BDC6",
+                                 "deployed_sha256":  "29BF88D604B7551B765F4C0464220B78501CDDA9AFC30036739598C83984BDC6",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/moe-hybrid.cu",
+                                 "staged_sha256":  "96394D6A50EE5CAE22CDA56D365B96FFF93C27F953C74ED5BA1BBC0B143DEBC7",
+                                 "deployed_sha256":  "96394D6A50EE5CAE22CDA56D365B96FFF93C27F953C74ED5BA1BBC0B143DEBC7",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/moe-hybrid.cuh",
+                                 "staged_sha256":  "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772",
+                                 "deployed_sha256":  "87533ECE805E73FFCCC86C2B5B2F35799D4CAF083983EE11502569F3B03B5772",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/mmq.cu",
+                                 "staged_sha256":  "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+                                 "deployed_sha256":  "46671A59108D629361A4597D6B416316AF8A218BF78578699DF28E5A5DC9B5BA",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-alloc.c",
+                                 "staged_sha256":  "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+                                 "deployed_sha256":  "AE6AB93862FB8AD81CB1A496DA00B61527941832A7E03A19B64FDF88BCAE9234",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-backend.cpp",
+                                 "staged_sha256":  "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+                                 "deployed_sha256":  "C573529B45427D328E1FED62EFEA6B311D593C8DD70886D8A49194A2FFA15E82",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "src/llama-graph.cpp",
+                                 "staged_sha256":  "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+                                 "deployed_sha256":  "B51548F16FA7CB6B2039356410A757F80E0A3BE5EF0F5DADDA4ADB728086845E",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "src/models/dflash.cpp",
+                                 "staged_sha256":  "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+                                 "deployed_sha256":  "44F6E34FBD77D3499C5B6E7AB26E8FE099C9815B8497A43A2698122D3A888423",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "common/speculative.cpp",
+                                 "staged_sha256":  "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9",
+                                 "deployed_sha256":  "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/fattn.cu",
+                                 "staged_sha256":  "7D85565227A6649BD7196AD10B6F28FA353DB6DAC778DDDD29DBB4E1B5DDBF3C",
+                                 "deployed_sha256":  "7D85565227A6649BD7196AD10B6F28FA353DB6DAC778DDDD29DBB4E1B5DDBF3C",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/fattn-common.cuh",
+                                 "staged_sha256":  "9D84509C1C955A3D090E1E692901C2D1723BE0693322CD1EEB51BDDA289B7935",
+                                 "deployed_sha256":  "9D84509C1C955A3D090E1E692901C2D1723BE0693322CD1EEB51BDDA289B7935",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "ggml/src/ggml-cuda/fattn-mma-f16.cuh",
+                                 "staged_sha256":  "35D18179CECC6FB6CF3C0EBAE6B6512AF08342C6336960E2DB72008A5BA2D6D3",
+                                 "deployed_sha256":  "35D18179CECC6FB6CF3C0EBAE6B6512AF08342C6336960E2DB72008A5BA2D6D3",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "src/llama-model.cpp",
+                                 "staged_sha256":  "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB",
+                                 "deployed_sha256":  "D35CF7CE924AE43EE50E510936F12D22C6914E218F824A473B1F6D607EC4CEFB",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "src/llama-ext.h",
+                                 "staged_sha256":  "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3",
+                                 "deployed_sha256":  "2349C5560927F695511EEEC57A2AB5C51DEDA4D8186C868A25E3FE0CB6488DF3",
+                                 "match":  true
+                             },
+                             {
+                                 "file":  "src/llama-kv-cache.cpp",
+                                 "staged_sha256":  "062FE7E82FA79841BCC759F68B2A57EF8F57E8089F577DDFDD55D6F79D49CDC7",
+                                 "deployed_sha256":  "062FE7E82FA79841BCC759F68B2A57EF8F57E8089F577DDFDD55D6F79D49CDC7",
+                                 "match":  true
+                             }
+                         ],
+    "source_audit_correction":  "An intermediate one-row audit read a wrapped array instead of the 21 source entries. It was invalid, preserved separately, and replaced with a complete audit using the original filename list and explicit nonempty hash/count checks.",
+    "retained":  [
+                     "CPU-result mapped handoff",
+                     "Contiguous prefill attention-mask construction",
+                     "Flash-attention prefill and decode mask bounds",
+                     "DFlash window trimming",
+                     "Corrected optional CPU-placement profiling"
+                 ],
+    "rejected":  [
+                     "Scoped caller affinity",
+                     "GPU section graph replay: 75% fewer individual dispatches and 37.7% less profiled outside-hybrid host time, but no higher generation throughput."
+                 ],
+    "comparison_receipts":  [
+                                "hybrid-span-graphs-profile-comparison.json",
+                                "hybrid-span-graphs-production-comparison.json",
+                                "hybrid-span-graphs-rollback.json"
+                            ],
+    "targets":  {
+                    "prefill_tokens_per_second":  900,
+                    "generation_tokens_per_second":  30,
+                    "eventual_context":  131072
+                },
+    "outstanding":  [
+                        "Meet 8k speed targets first",
+                        "Near-full 128k performance remains unverified",
+                        "Full non-UI API feature coverage remains unverified"
+                    ],
+    "next":  "Measure and optimize the CPU expert matrix path and transfer synchronization. Singleton gate/up calls are separate standard vector dots; grouped calls already share the weight decoding. Do not repeat the reverted singleton IQ kernel or GPU-only replay unchanged.",
+    "performance_limits":  [
+                               "Newest generation observation differs in output and draft acceptance; it is not proof of an optimization gain.",
+                               "Profile intervals overlap and scheduled expert bytes are not measured DRAM traffic.",
+                               "No GPU reset, desktop process termination, new test files or setting sweeps were used."
+                           ]
+}

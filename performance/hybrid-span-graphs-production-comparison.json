@@ -1,0 +1,50 @@
+﻿{
+    "timestamp":  "2026-10-11T06:04:48.0876145-05:00",
+    "same_request":  true,
+    "request_sha256":  "046c2c8571b339b0763d886fb3937d35e465568a732f29947b40ad3a8ed0363c",
+    "same_cpu_binary":  true,
+    "same_cuda_binary":  true,
+    "profile_enabled":  false,
+    "readback_span_enabled":  false,
+    "same_output_tokens":  false,
+    "on_timings":  {
+                       "cache_n":  0,
+                       "prompt_n":  8064,
+                       "prompt_ms":  10361.022,
+                       "prompt_per_token_ms":  1.2848489583333333,
+                       "prompt_per_second":  778.3015999772995,
+                       "predicted_n":  80,
+                       "predicted_ms":  5105.498,
+                       "predicted_per_token_ms":  63.81872499999999,
+                       "predicted_per_second":  15.669382301197652,
+                       "draft_n":  100,
+                       "draft_n_accepted":  53
+                   },
+    "off_timings":  {
+                        "cache_n":  0,
+                        "prompt_n":  8064,
+                        "prompt_ms":  10349.311,
+                        "prompt_per_token_ms":  1.283396701388889,
+                        "prompt_per_second":  779.1823049862934,
+                        "predicted_n":  80,
+                        "predicted_ms":  4976.944,
+                        "predicted_per_token_ms":  62.211800000000004,
+                        "predicted_per_second":  16.074120986693842,
+                        "draft_n":  96,
+                        "draft_n_accepted":  54
+                    },
+    "on_checkpoints_correct":  true,
+    "off_checkpoints_correct":  true,
+    "generation_relative_percent":  -2.5179522154351874055838351800,
+    "decision":  "Revert optional GPU section graphs. Neither the profiled comparison nor normal server comparison showed higher generation throughput.",
+    "limitations":  [
+                        "Outputs and speculative acceptance differ; the timing difference does not isolate graph overhead.",
+                        "The profile confirms fewer individual dispatches and less outside-hybrid host time, but this did not translate into higher throughput.",
+                        "Attention profiling omits captured/replayed work; no attention speedup is claimed.",
+                        "Checkpoint recall is correct for the saved 8k request only. The 900/30 targets and 128k performance remain unmet or unverified."
+                    ],
+    "candidate_source_sha256":  "7BDC8DA51C258A79C346A102BC95994D13E587F507C8D2828CDCC65E76EB43C6",
+    "candidate_cuda_dll_sha256":  "3D75051E103F126B969EE617B53E36A269E86292BD3B45B9EBC43F3546ADC373",
+    "profile_comparison":  "hybrid-span-graphs-profile-comparison.json",
+    "next":  "CPU expert computation and input/output transfer synchronization."
+}

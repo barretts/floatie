@@ -1,0 +1,6 @@
+{
+  "backup": "E:\\poolside\\backups\\before-one-readback-wait-20261011-004259",
+  "source_sha256": "61C9D75E5241CFD809FD906D0B3B6DFF597C54D9921FDE0AB2877686CCCE0620",
+  "change": "Replace per-layer host event wait with a stream dependency before the required readback; preserve pinned metadata lifetime; measure host prepare and submit time.",
+  "status": "deployed; awaiting compilation and inference"
+}

@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-10-11T06:24:07.7441158-05:00",
+  "stopped_native_pids": [
+    15056
+  ],
+  "backup_directory": "E:\\poolside\\backups\\before-paired-gate-up-20261011-062407",
+  "build_log": "E:\\poolside\\logs\\paired-gate-up-build-20261011-062407.log",
+  "build_status": "complete",
+  "source_sha256": {
+    "moe.cpp": "5543030D4B018D977936AE29225A79505AD44B1E319AC486D706402C238E9E32",
+    "moe-iq.cpp": "F758E8FBB7FA7417FC283874F6E63B76D89F1A17051C3C7D4B1E1AAA2CB70B5B",
+    "moe-iq.h": "33175BD7E3CFFEE0AE93785B88E3B7B62AA50B23425332D86589592BB6B0D634"
+  },
+  "scope": "Optional paired singleton IQ2_S gate/up kernel, sharing activation loads and preserving the standard integer partial sums, floating-point FMA sequence and horizontal reduction order. Existing grouped kernels and other quantization formats use their prior paths.",
+  "build_exit_code": 0,
+  "cpu_dll_sha256": "C472C8756A7FD423D55B1131F626CE59CD7EFFA10A1C5C47A6D68C3E5B85AACE",
+  "cuda_dll_sha256": "F549F69B335A506B252E4CC00F8A36BF5A99553809C7F0F5999BE5BD0ADDE77A"
+}

@@ -30,6 +30,7 @@
 #include "ggml-cuda/im2col.cuh"
 #include "ggml-cuda/mmf.cuh"
 #include "ggml-cuda/mmq.cuh"
+#include "ggml-cuda/moe-hybrid.cuh"
 #include "ggml-cuda/mmvf.cuh"
 #include "ggml-cuda/mmvq.cuh"
 #include "ggml-cuda/norm.cuh"
@@ -1239,6 +1240,60 @@ ggml_backend_buffer_type_t ggml_backend_cuda_host_buffer_type() {
     return &ggml_backend_cuda_buffer_type_host;
 }
 
+// Expert weights are owned RAM. Only MOE_HYBRID may consume this buffer on CUDA.
+static const char * ggml_backend_cuda_moe_buffer_name(ggml_backend_buffer_type_t buft) {
+    GGML_UNUSED(buft);
+    return "CUDA_MOE_HOST";
+}
+
+static bool ggml_backend_buft_is_cuda_moe(ggml_backend_buffer_type_t buft) {
+    return buft->iface.get_name == ggml_backend_cuda_moe_buffer_name;
+}
+
+static void ggml_backend_cuda_moe_pinned_free(ggml_backend_buffer_t buffer) {
+    CUDA_CHECK(cudaHostUnregister(buffer->context));
+    ggml_aligned_free(buffer->context, buffer->size);
+}
+
+static ggml_backend_buffer_t ggml_backend_cuda_moe_alloc(ggml_backend_buffer_type_t buft, size_t size) {
+    ggml_backend_buffer_t buffer = ggml_backend_buft_alloc_buffer(ggml_backend_cpu_buffer_type(), size);
+    if (buffer) {
+        buffer->buft = buft;
+        const char * pin = std::getenv("GGML_CUDA_MOE_PINNED");
+        if (size > 0 && pin && pin[0] == '1' && pin[1] == '\0' &&
+                std::getenv("GGML_CUDA_NO_PINNED") == nullptr) {
+            // Register before the loader touches the expert pages. CPU buffer callbacks keep their raw pointer.
+            const cudaError_t err = cudaHostRegister(buffer->context, size, cudaHostRegisterPortable);
+            if (err == cudaSuccess) {
+                buffer->iface.free_buffer = ggml_backend_cuda_moe_pinned_free;
+                std::fprintf(stderr, "CUDA hybrid MoE: pinned %.2f GiB of expert RAM\n",
+                        double(size) / (1024.0 * 1024.0 * 1024.0));
+            } else {
+                std::fprintf(stderr, "CUDA hybrid MoE: expert pinning failed (%s); using pageable RAM\n",
+                        cudaGetErrorString(err));
+                (void) cudaGetLastError();
+            }
+        }
+    }
+    return buffer;
+}
+
+static ggml_backend_buffer_type_t ggml_backend_cuda_moe_buffer_type() {
+    static ggml_backend_buffer_type buft = {
+        {
+            ggml_backend_cuda_moe_buffer_name,
+            ggml_backend_cuda_moe_alloc,
+            ggml_backend_cpu_buffer_type()->iface.get_alignment,
+            nullptr,
+            ggml_backend_cpu_buffer_type()->iface.get_alloc_size,
+            ggml_backend_cpu_buffer_type()->iface.is_host,
+        },
+        ggml_backend_reg_dev_get(ggml_backend_cuda_reg(), 0),
+        nullptr,
+    };
+    return &buft;
+}
+
 //static bool ggml_backend_buffer_is_cuda_host(ggml_backend_buffer_t buffer) {
 //    return buffer->buft->iface.get_name == ggml_backend_cuda_host_buffer_type_name;
 //}
@@ -2119,6 +2174,9 @@ static bool ggml_cuda_compute_forward(ggml_backend_cuda_context & ctx, struct gg
         case GGML_OP_MUL_MAT:
             ggml_cuda_mul_mat(ctx, dst->src[0], dst->src[1], dst);
             break;
+        case GGML_OP_MOE_HYBRID:
+            ggml_cuda_op_moe_hybrid(ctx, dst);
+            break;
         case GGML_OP_MUL_MAT_ID:
             ggml_cuda_mul_mat_id(ctx, dst);
             break;
@@ -2283,6 +2341,7 @@ static const char * ggml_backend_cuda_get_name(ggml_backend_t backend) {
 static void ggml_backend_cuda_free(ggml_backend_t backend) {
     ggml_backend_cuda_context * cuda_ctx = (ggml_backend_cuda_context *)backend->context;
 
+    ggml_cuda_moe_hybrid_cleanup(*cuda_ctx);
     delete cuda_ctx;
     delete backend;
 }
@@ -2406,6 +2465,10 @@ static bool ggml_cuda_graph_check_compability(ggml_cgraph * cgraph) {
 
         if (ggml_cuda_is_view_or_noop(node)) {
             continue;
+        }
+
+        if (node->op == GGML_OP_MOE_HYBRID) {
+            return false; // CPU dispatch and readback cannot be captured.
         }
 
         // [TAG_MUL_MAT_ID_CUDA_GRAPHS]
@@ -3757,6 +3820,27 @@ static int ggml_cuda_try_fuse(ggml_backend_cuda_context * cuda_ctx, ggml_cgraph 
 
 static void ggml_cuda_graph_evaluate_and_capture(ggml_backend_cuda_context * cuda_ctx, ggml_cgraph * cgraph, const bool use_cuda_graph, const bool cuda_graph_update_required, const void * graph_key) {
     bool graph_evaluated_or_captured = false;
+    static const bool profile_hybrid_launch = [] {
+        const char * profile = std::getenv("GGML_CUDA_MOE_PROFILE");
+        const char * span = std::getenv("GGML_CUDA_MOE_PROFILE_READBACK_SPAN");
+        return profile && std::strcmp(profile, "1") == 0 && span && std::strcmp(span, "1") == 0;
+    }();
+    bool measure_launch = false;
+    int64_t target_tokens = 0;
+    if (profile_hybrid_launch && !use_cuda_graph) {
+        for (int i = 0; i < cgraph->n_nodes; ++i) {
+            const ggml_tensor * node = cgraph->nodes[i];
+            if (node->op == GGML_OP_MOE_HYBRID) {
+                target_tokens = std::max(target_tokens, node->src[3]->ne[2]);
+            }
+        }
+        measure_launch = target_tokens > 0 && target_tokens <= 32;
+    }
+    const int64_t launch_start = measure_launch ? ggml_time_us() : 0;
+    int64_t hybrid_us = 0;
+    int hybrid_nodes = 0;
+    int ordinary_dispatches = 0;
+    int fused_nodes = 0;
 
     // flag used to determine whether it is an integrated_gpu
     const bool integrated            = ggml_cuda_info().devices[cuda_ctx->device].integrated;
@@ -3898,6 +3982,10 @@ static void ggml_cuda_graph_evaluate_and_capture(ggml_backend_cuda_context * cud
                 int nodes_to_skip = ggml_cuda_try_fuse(cuda_ctx, cgraph, i);
 
                 if (nodes_to_skip != 0) {
+                    if (measure_launch) {
+                        ++ordinary_dispatches;
+                        fused_nodes += nodes_to_skip;
+                    }
 #ifdef GGML_CUDA_DEBUG
                     const int last_fused = i + nodes_to_skip;
                     GGML_LOG_INFO("nodes_fused: %d, first: %s (%s), last: %s (%s)\n",
@@ -3913,14 +4001,25 @@ static void ggml_cuda_graph_evaluate_and_capture(ggml_backend_cuda_context * cud
                     if (node->src[j] != nullptr) {
                         assert(node->src[j]->buffer);
                         assert(node->src[j]->buffer->buft == ggml_backend_cuda_buffer_type(cuda_ctx->device) ||
-                               (integrated && ggml_backend_buft_is_cuda_host(node->src[j]->buffer->buft)));
+                               (integrated && ggml_backend_buft_is_cuda_host(node->src[j]->buffer->buft)) ||
+                               (node->op == GGML_OP_MOE_HYBRID && j < 3 &&
+                                ggml_backend_buft_is_cuda_moe(node->src[j]->buffer->buft) &&
+                                node->src[j]->buffer->buft->device == ggml_backend_reg_dev_get(ggml_backend_cuda_reg(), cuda_ctx->device)));
                     }
                 }
 #else
                 GGML_UNUSED(integrated);
 #endif  // NDEBUG
 
+                const bool measure_hybrid = measure_launch && node->op == GGML_OP_MOE_HYBRID;
+                const int64_t hybrid_start = measure_hybrid ? ggml_time_us() : 0;
                 bool ok = ggml_cuda_compute_forward(*cuda_ctx, node);
+                if (measure_hybrid) {
+                    hybrid_us += ggml_time_us() - hybrid_start;
+                    ++hybrid_nodes;
+                } else if (measure_launch) {
+                    ++ordinary_dispatches;
+                }
                 if (!ok) {
                     GGML_LOG_ERROR("%s: op not supported %s (%s)\n", __func__, node->name, ggml_op_name(node->op));
                 }
@@ -3967,6 +4066,33 @@ static void ggml_cuda_graph_evaluate_and_capture(ggml_backend_cuda_context * cud
         graph_evaluated_or_captured = true;
 #endif  // USE_CUDA_GRAPH
     }
+    if (measure_launch) {
+        struct launch_totals {
+            int calls = 0;
+            int64_t target_tokens = 0;
+            int64_t hybrid_nodes = 0;
+            int64_t ordinary_dispatches = 0;
+            int64_t fused_nodes = 0;
+            int64_t hybrid_us = 0;
+            int64_t outside_hybrid_us = 0;
+        };
+        static thread_local launch_totals totals;
+        ++totals.calls;
+        totals.target_tokens += target_tokens;
+        totals.hybrid_nodes += hybrid_nodes;
+        totals.ordinary_dispatches += ordinary_dispatches;
+        totals.fused_nodes += fused_nodes;
+        totals.hybrid_us += hybrid_us;
+        totals.outside_hybrid_us += ggml_time_us() - launch_start - hybrid_us;
+        if (totals.calls == 16) {
+            GGML_LOG_INFO("CUDA hybrid launch profile: calls=%d target_tokens=%lld hybrid_nodes=%lld "
+                    "ordinary_dispatches=%lld fused_nodes=%lld host_hybrid_ms=%.2f host_outside_hybrid_ms=%.2f\n",
+                    totals.calls, static_cast<long long>(totals.target_tokens), static_cast<long long>(totals.hybrid_nodes),
+                    static_cast<long long>(totals.ordinary_dispatches), static_cast<long long>(totals.fused_nodes),
+                    double(totals.hybrid_us) / 1000.0, double(totals.outside_hybrid_us) / 1000.0);
+            totals = {};
+        }
+    }
 }
 
 #ifdef USE_CUDA_GRAPH
@@ -3990,6 +4116,8 @@ static enum ggml_status ggml_backend_cuda_graph_compute(ggml_backend_t backend, 
     ggml_backend_cuda_context * cuda_ctx = (ggml_backend_cuda_context *) backend->context;
 
     ggml_cuda_set_device(cuda_ctx->device);
+
+    ggml_cuda_moe_hybrid_prefill_begin(*cuda_ctx, cgraph);
 
     bool use_cuda_graph             = false;
     bool cuda_graph_update_required = false;
@@ -4072,6 +4200,8 @@ static void ggml_backend_cuda_event_wait(ggml_backend_t backend, ggml_backend_ev
 
 static void ggml_backend_cuda_graph_optimize(ggml_backend_t backend, ggml_cgraph * cgraph) {
     ggml_backend_cuda_context * cuda_ctx = (ggml_backend_cuda_context *) backend->context;
+
+    ggml_cuda_moe_hybrid_prepare_graph(*cuda_ctx, cgraph);
 
 #ifdef USE_CUDA_GRAPH
     const void * graph_key = ggml_cuda_graph_get_key(cgraph);
@@ -4582,6 +4712,15 @@ static ggml_backend_buffer_type_t ggml_backend_cuda_device_get_host_buffer_type(
 static bool ggml_backend_cuda_device_supports_op(ggml_backend_dev_t dev, const ggml_tensor * op) {
     ggml_backend_cuda_device_context * dev_ctx = (ggml_backend_cuda_device_context *) dev->context;
 
+    // Host expert pointers may only be consumed by the hybrid operator.
+    for (int i = 0; i < GGML_MAX_SRC; ++i) {
+        if (op->src[i] && op->src[i]->buffer &&
+            ggml_backend_buft_is_cuda_moe(op->src[i]->buffer->buft) &&
+            op->op != GGML_OP_MOE_HYBRID && !ggml_cuda_is_view_or_noop(op)) {
+            return false;
+        }
+    }
+
     // check if all the sources are allocated on this device
     for (int i = 0; i < GGML_MAX_SRC; i++) {
         if (op->src[i] && op->src[i]->buffer && ggml_backend_buft_is_cuda(op->src[i]->buffer->buft)) {
@@ -4637,6 +4776,22 @@ static bool ggml_backend_cuda_device_supports_op(ggml_backend_dev_t dev, const g
                     return false;
             }
             break;
+        case GGML_OP_MOE_HYBRID:
+            for (int i = 0; i < 3; ++i) {
+                const auto * w = op->src[i];
+                if (!w || !w->buffer || !ggml_backend_buft_is_cuda_moe(w->buffer->buft) ||
+                    w->buffer->buft->device != dev || !ggml_is_contiguous(w)) {
+                    return false;
+                }
+                switch (w->type) {
+                    case GGML_TYPE_IQ3_S: case GGML_TYPE_IQ2_S: case GGML_TYPE_IQ3_XXS:
+                    case GGML_TYPE_IQ4_XS: case GGML_TYPE_Q8_0: case GGML_TYPE_Q6_K:
+                        break;
+                    default: return false;
+                }
+            }
+            return op->src[3]->type == GGML_TYPE_F32 && op->src[4]->type == GGML_TYPE_I32 &&
+                   op->src[5] && op->src[5]->type == GGML_TYPE_F32;
         case GGML_OP_MUL_MAT:
         case GGML_OP_MUL_MAT_ID:
             {
@@ -4986,7 +5141,8 @@ static bool ggml_backend_cuda_device_supports_op(ggml_backend_dev_t dev, const g
 static bool ggml_backend_cuda_device_supports_buft(ggml_backend_dev_t dev, ggml_backend_buffer_type_t buft) {
     ggml_backend_cuda_device_context * dev_ctx = (ggml_backend_cuda_device_context *) dev->context;
     const bool integrated = ggml_cuda_info().devices[dev_ctx->device].integrated;
-    return (ggml_backend_buft_is_cuda(buft) && buft->device == dev) || (integrated && ggml_backend_buft_is_cuda_host(buft));
+    return ((ggml_backend_buft_is_cuda(buft) || ggml_backend_buft_is_cuda_moe(buft)) && buft->device == dev) ||
+           (integrated && ggml_backend_buft_is_cuda_host(buft));
 }
 
 static int64_t get_op_batch_size(const ggml_tensor * op) {
@@ -5153,6 +5309,9 @@ static void * ggml_backend_cuda_reg_get_proc_address(ggml_backend_reg_t reg, con
     }
     if (strcmp(name, "ggml_backend_unregister_host_buffer") == 0) {
         return (void *)ggml_backend_cuda_unregister_host_buffer;
+    }
+    if (strcmp(name, "ggml_backend_cuda_moe_buffer_type") == 0) {
+        return (void *)ggml_backend_cuda_moe_buffer_type;
     }
     if (strcmp(name, "ggml_backend_get_features") == 0) {
         return (void *)ggml_backend_cuda_get_features;

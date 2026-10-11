@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-10-11T04:13:29.8576134-05:00",
+  "stopped_native_pid": 8064,
+  "backup_directory": "E:\\poolside\\backups\\before-contiguous-mask-20261011-041329",
+  "source_sha256": "062FE7E82FA79841BCC759F68B2A57EF8F57E8089F577DDFDD55D6F79D49CDC7",
+  "build_log": "E:\\poolside\\logs\\contiguous-mask-build-20261011-041329.log",
+  "build_status": "complete",
+  "reason": "Use exact causal/window bounds to fill large single-sequence masks after verifying contiguous KV positions and empty padding. All other layouts retain the generic implementation.",
+  "build_exit_code": 0,
+  "llama_dll_sha256": "5B8A05BD34E3FFAC76FF56E11E88726362AFB6DD0E74DD613C39BD46E9B0B86E"
+}

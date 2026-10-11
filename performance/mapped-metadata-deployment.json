@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-11T02:40:28.4391696-05:00",
+  "stopped_native_pid": 27940,
+  "backup_directory": "E:\\poolside\\backups\\before-mapped-metadata-20261011-024024",
+  "source_sha256": "4F60BFA230234EFFDE39DE446D0E4084C7C423E94174E7C660194AB58AEC8A25",
+  "build_log": "E:\\poolside\\logs\\mapped-metadata-build-20261011-024024.log",
+  "build_status": "complete",
+  "build_exit_code": 0,
+  "cuda_dll_sha256": "8EE1145FA70BC1AB8F518840AC3990CD903BEAACA2CA336C5463877F85BA4724"
+}

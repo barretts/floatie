@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-11T16:56:34.3702473-05:00",
+  "backup": "E:\\poolside\\backups\\before-dflash-position-fix-20261011-165516",
+  "change": "Reset only the affected all-SWA draft sequence before trimmed suffix injection; invalidate active target/draft caches and prompt checkpoints after speculative processing failure.",
+  "sources": [
+    {
+      "file": "common\\speculative.cpp",
+      "baseline_sha256": "CA898B2B762312D9AEE819E8740A4F7B5E34FA47DB66A4652A328FABD5958FA9",
+      "staged_sha256": "F542594CFF884DF622FA16512E561F097577C2A0CD53F9EB375B53CD98B2839B",
+      "deployed_sha256": "F542594CFF884DF622FA16512E561F097577C2A0CD53F9EB375B53CD98B2839B",
+      "match": true
+    },
+    {
+      "file": "tools\\server\\server-context.cpp",
+      "baseline_sha256": "F9871B95385AA1CC8D196C08F5C2EF51087AC5A1D06D6766826B09303CF160D2",
+      "staged_sha256": "1C93A1A8F4A157BD5C4388403182C46E95C2BA5ABD44A591F426C3E26706274D",
+      "deployed_sha256": "1C93A1A8F4A157BD5C4388403182C46E95C2BA5ABD44A591F426C3E26706274D",
+      "match": true
+    }
+  ],
+  "build_status": "succeeded",
+  "no_tests_or_inference": true,
+  "performance_goal_resumed": false,
+  "build_receipt": "dflash-position-fix-build.json",
+  "result_receipt": "dflash-position-fix-result.json",
+  "runtime_regression_status": "not_run"
+}

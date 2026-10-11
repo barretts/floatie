@@ -1,0 +1,40 @@
+﻿{
+    "as_of":  "2026-10-11T04:25:41.2439575-05:00",
+    "before_receipt":  "core8k-mask-timing-dflash4-q8-cache6144.json",
+    "after_receipt":  "core8k-contiguous-mask-dflash4-q8-cache6144.json",
+    "same_request":  true,
+    "before_timings":  {
+                           "cache_n":  0,
+                           "prompt_n":  8064,
+                           "prompt_ms":  11191.094,
+                           "prompt_per_token_ms":  1.3877844742063492,
+                           "prompt_per_second":  720.5729841961831,
+                           "predicted_n":  80,
+                           "predicted_ms":  5638.772,
+                           "predicted_per_token_ms":  70.48465,
+                           "predicted_per_second":  14.18748621153684,
+                           "draft_n":  96,
+                           "draft_n_accepted":  55
+                       },
+    "after_timings":  {
+                          "cache_n":  0,
+                          "prompt_n":  8064,
+                          "prompt_ms":  10688.636,
+                          "prompt_per_token_ms":  1.3254756944444446,
+                          "prompt_per_second":  754.4461239020582,
+                          "predicted_n":  80,
+                          "predicted_ms":  5844.84,
+                          "predicted_per_token_ms":  73.0605,
+                          "predicted_per_second":  13.687286563875144,
+                          "draft_n":  96,
+                          "draft_n_accepted":  54
+                      },
+    "mask_before_ms":  536.233,
+    "mask_after_ms":  27.114,
+    "mask_percent_reduction":  94.943615928150635,
+    "prefill_percent_change":  4.7008617376436088695183305900,
+    "scope":  "Same saved 8064-token request with 8192 context, Profile enabled, verbosity 4, no prompt cache. Only contiguous-mask implementation changed. GPU clocks were not locked.",
+    "checkpoint_order_correct":  true,
+    "remaining":  "900 prefill / 30 generation targets and 128k remain unverified.",
+    "source_correction":  "The iSWA constructor already supports compact cache sizing: min(base cells, sliding window + ubatch), padded to 256, unless swa_full is enabled. Do not claim that the allocator must always reserve full 128k cells for SWA. Launcher and model runtime settings still need revalidation before the 128k stage."
+}

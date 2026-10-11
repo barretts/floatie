@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-10-11T09:06:34.1951346-05:00",
+  "launch_status": "started",
+  "context_size": 8192,
+  "cache_mib": 6144,
+  "batch_size": 8192,
+  "draft_max": 4,
+  "draft_kv_type": "q8_0",
+  "gpu_misses_per_token": 0,
+  "pin_experts": true,
+  "adaptive_cache": true,
+  "profile": true,
+  "readback_span": true,
+  "timeline": false,
+  "budgeted_admission": "engine default enabled",
+  "wide_bulk": false,
+  "source_sha256": "41B7049CEDA32D682FA1C211E05D175441BFC2CFD69E11016ADC96DB3FFDDBA2",
+  "cpu_dll_sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E",
+  "cuda_dll_sha256": "27FFE5C1B6EE229E87B5FCC9D48380D6D0AEDF835173E498A1633CAF98B3A3D3",
+  "llama_dll_sha256": "9432D34B13AE8EA511F3AEABF7F6D25EAA8074ACBB043FE659D583965FFC3FA8",
+  "common_dll_sha256": "1683289B142283FF03D804F494FF92B437922D34D58687AF862D080500CD8117",
+  "revision": "calculated prefill-cache reclaim",
+  "stopped_native_pids": [
+    23732
+  ],
+  "wrapper_pid": 16492,
+  "stdout_log": "E:\\poolside\\logs\\core8k-wide-bulk-reclaim-off-20261011-090637.stdout.log",
+  "stderr_log": "E:\\poolside\\logs\\core8k-wide-bulk-reclaim-off-20261011-090637.stderr.log"
+}

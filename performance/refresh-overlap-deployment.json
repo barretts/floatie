@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-10-11T06:54:50.5013402-05:00",
+  "stopped_native_pids": [
+    14892
+  ],
+  "backup_directory": "E:\\poolside\\backups\\before-refresh-overlap-20261011-065446",
+  "build_log": "E:\\poolside\\logs\\refresh-overlap-build-20261011-065446.log",
+  "build_status": "complete",
+  "source_sha256": "A89A5C1E2387AEB788AB29A6A8B0067700D000946CC8C532EFFC6C2BC4C283BB",
+  "scope": "Queue the unchanged decode cache refresh after cached GPU reads and before CPU-ready polling; compare on/off using the same binaries and saved 8064-token request.",
+  "build_exit_code": 0,
+  "cpu_dll_sha256": "18F9559682D3F74DD1CA9DFF190F890BAA970B0538B8E4D77D1911D6AF04F07C",
+  "cuda_dll_sha256": "7EE197C7502514ECC1F6BC2E7F601491279A96154AA5049360E0444C22B9D5ED",
+  "llama_dll_sha256": "5B8A05BD34E3FFAC76FF56E11E88726362AFB6DD0E74DD613C39BD46E9B0B86E"
+}

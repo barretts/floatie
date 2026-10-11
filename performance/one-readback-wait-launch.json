@@ -1,0 +1,8 @@
+{
+  "wrapper_pid": 28520,
+  "stdout": "E:\\poolside\\logs\\core8k-one-readback-wait-20261011-004447.stdout.log",
+  "stderr": "E:\\poolside\\logs\\core8k-one-readback-wait-20261011-004447.stderr.log",
+  "settings": "8192 context; 6144 MiB base cache; 8192 batch; DFlash4 q8; phase memory; profile; pinned; adaptive; GPU misses0",
+  "cuda_dll_sha256": "40EA18F8D6EBE60CC073AB4F07D86D1823A882597716AF2A240E5E573A9F58F9",
+  "source_sha256": "61C9D75E5241CFD809FD906D0B3B6DFF597C54D9921FDE0AB2877686CCCE0620"
+}

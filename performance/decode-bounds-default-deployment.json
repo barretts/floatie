@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-10-11T05:06:01.3338414-05:00",
+  "stopped_native_pids": [
+    31316
+  ],
+  "backup_directory": "E:\\poolside\\backups\\before-decode-bounds-default-20261011-050601",
+  "build_log": "E:\\poolside\\logs\\decode-bounds-default-build-20261011-050601.log",
+  "build_status": "complete",
+  "source_sha256": "9D84509C1C955A3D090E1E692901C2D1723BE0693322CD1EEB51BDDA289B7935",
+  "retained_comparison": "decode-bounds-comparison.json",
+  "scope": "Enable the verified exact decode mask-bounds path by default; explicit GGML_CUDA_FATTN_DECODE_BOUNDS=0 remains available.",
+  "build_exit_code": 0,
+  "cuda_dll_sha256": "941E44CE64569042CA73B5FDA0109F8411E9490816CB9F1FF103956FF797857C"
+}

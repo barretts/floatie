@@ -1,0 +1,7 @@
+{
+  "backup": "E:\\poolside\\backups\\before-internal-timings-20261010-232412",
+  "cuda_sha256": "42E416653EE0EF3D864F3AF304C1FCA5DFF0302128DF3D6D167D1BC82EE1622B",
+  "cpu_sha256": "8D806D616518DF3A34CFC5326D9F03F86B6D8311C0113B8C935CBEECE22CD2FE",
+  "profiler_failure": "Nsight Systems requires Windows administrator privileges for its ReflexStatsTraceLoggingProvider; no trace was produced.",
+  "diagnostic": "Use optional internal CUDA-event intervals and existing CPU-phase timings."
+}
