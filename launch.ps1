@@ -95,7 +95,8 @@ $serverArguments = @(
     '--fit', 'off', '--no-mmap', '--no-warmup', '--no-context-shift',
     '--cache-ram', '0', '--host', '127.0.0.1', '--port', [string]$Port,
     '--no-ui', '--metrics', '--jinja',
-    '--temp', '1.0', '--top-k', '20', '--top-p', '1.0', '--min-p', '0.0',
+    '--temp', '1.0', '--top-k', '20', '--top-p', '0.95', '--min-p', '0.0',
+    '--reasoning-budget', '2048',
     '--log-file', $logFile, '--log-timestamps', '--log-verbosity', $verbosity
 )
 if ($DraftMax -gt 0) {
@@ -109,6 +110,7 @@ if ($DraftMax -gt 0) {
 }
 Write-Host "Starting Laguna at http://127.0.0.1:$Port/v1 with $ContextSize context and $CacheMiB MiB expert cache."
 Write-Host "Batch: $BatchSize tokens; draft maximum: $DraftMax (0 disables drafting). Log: $logFile"
+Write-Host 'Generation defaults: temperature 1.0, top-k 20, top-p 0.95, min-p 0.0; thinking budget 2048 tokens.'
 Push-Location $PSScriptRoot
 try {
     & $binary @serverArguments

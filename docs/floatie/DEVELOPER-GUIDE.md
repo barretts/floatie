@@ -32,6 +32,8 @@ Weights retain their separate licenses and are downloaded locally, not committed
 
 ## Launch and API
 
+Both batch profiles inherit generation defaults from `launch.ps1`: temperature 1.0, top-k 20, top-p 0.95, min-p 0.0, and a 2,048-token thinking budget. The budget ends thinking so generation can continue with an answer or tool call. There is no separate server output cap; the request's output allowance and remaining context still apply. Request parameters can override these defaults, including `reasoning_budget_tokens` or `thinking_budget_tokens`. These defaults were aligned with the installed Strata configuration on October 11, 2026 after a reported all-thinking response exhausted an 8,192-token client output limit. The change has not been checked by inference; the owner will restart and try it. Strata's separate repeated-thinking detector is not implemented in Floatie.
+
 `Start-Floatie-8k.bat` sets context 8,192 and startup expert cache 6,144 MiB. `Start-Floatie-128k.bat` sets context 131,072 and startup expert cache 3,072 MiB. Both use batch/ubatch 8,192, MoE threads 16, DFlash maximum 4, Q8 KV, pinned host experts, adaptive caching, and ordinary GPU misses/token 0.
 
 Run one profile at a time. The API is `http://127.0.0.1:1235/v1`; the model alias is `laguna-s-2.1-iq3-s`. Allocation at 128k does not establish speed at 128k. The long-prefill repair remains unverified by execution.
