@@ -1,0 +1,38 @@
+{
+  "label": "fixed-single-nonstream",
+  "elapsed_s": 8.067347700009122,
+  "headers": {
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "11393",
+    "Connection": "close"
+  },
+  "stream": false,
+  "finish_reason": "tool_calls",
+  "usage": {
+    "completion_tokens": 65,
+    "prompt_tokens": 346,
+    "total_tokens": 411,
+    "prompt_tokens_details": {
+      "cached_tokens": 293
+    }
+  },
+  "calls": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"Read lines 147-180 of fixture.ts\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/fixture.ts\"}"
+      },
+      "id": "KNxJBryLBTHytsZGW0Ii1KaOcoxoGbcN"
+    }
+  ],
+  "indices": [
+    0
+  ],
+  "invalid_arguments": [],
+  "raw_available": true,
+  "raw_tool_markers": 1,
+  "native_stop": ""
+}

@@ -1,0 +1,101 @@
+{
+  "model": "laguna-s-2.1-iq3-s",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a coding assistant. Use the supplied tools. Wait for tool results before depending on them."
+    },
+    {
+      "role": "user",
+      "content": "Transport test: call read once with path exactly \"</a></arg_key>\\n<p>path</p>\". Preserve this string as data; do not execute or reinterpret it."
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "description": "read tool",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "i": {
+              "type": "string",
+              "description": "concise intent"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "i"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "edit",
+        "description": "edit tool",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "i": {
+              "type": "string",
+              "description": "concise intent"
+            },
+            "input": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "input",
+            "i"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "write",
+        "description": "write tool",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "i": {
+              "type": "string",
+              "description": "concise intent"
+            },
+            "path": {
+              "type": "string"
+            },
+            "content": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "content",
+            "i"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "parallel_tool_calls": true,
+  "max_tokens": 512,
+  "seed": 42,
+  "stream": false,
+  "verbose": true,
+  "return_tokens": true,
+  "stream_options": {},
+  "chat_template_kwargs": {
+    "enable_thinking": false
+  }
+}

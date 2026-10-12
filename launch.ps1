@@ -111,6 +111,7 @@ if ($DraftMax -gt 0) {
 Write-Host "Starting Laguna at http://127.0.0.1:$Port/v1 with $ContextSize context and $CacheMiB MiB expert cache."
 Write-Host "Batch: $BatchSize tokens; draft maximum: $DraftMax (0 disables drafting). Log: $logFile"
 Write-Host 'Generation defaults: temperature 1.0, top-k 20, top-p 0.95, min-p 0.0; thinking budget 2048 tokens.'
+Write-Host 'Parallel tool calls are enabled by default. Requests can set parallel_tool_calls=false.'
 Push-Location $PSScriptRoot
 try {
     & $binary @serverArguments

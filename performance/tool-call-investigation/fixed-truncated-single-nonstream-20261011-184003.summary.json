@@ -1,0 +1,43 @@
+{
+  "label": "fixed-truncated-single-nonstream",
+  "elapsed_s": 5.285794400027953,
+  "headers": {
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "10759",
+    "Connection": "close"
+  },
+  "stream": false,
+  "finish_reason": "length",
+  "usage": {
+    "completion_tokens": 8,
+    "prompt_tokens": 346,
+    "total_tokens": 354,
+    "prompt_tokens_details": {
+      "cached_tokens": 293
+    }
+  },
+  "calls": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{"
+      },
+      "id": "7OOWWLJC3RfSDIwok8UzDlvJ8fu6slnD"
+    }
+  ],
+  "indices": [
+    0
+  ],
+  "invalid_arguments": [
+    {
+      "index": 0,
+      "error": "Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+    }
+  ],
+  "raw_available": true,
+  "raw_tool_markers": 1,
+  "native_stop": ""
+}

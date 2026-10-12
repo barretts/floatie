@@ -1,0 +1,80 @@
+Laguna S 2.1 Local Inference Optimization Report
+Hardware: RTX 4060 Ti 16GB + Threadripper 1950X + 128GB DDR4-2133
+Executive Summary
+Current performance at 8k context: 779 tok/s prefill, 16.1 tok/s generation. Targets: 900 tok/s prefill and 30 tok/s generation.
+30 tok/s generation is plausible if expert-cache hit rate reaches ≥85–90% and residual misses are overlapped or cheapened. The current 16.1 tok/s indicates the GPU is frequently waiting on CPU experts or PCIe uploads.
+Highest-leverage path: (1) adaptive expert cache with high hit rate, (2) overlap residual GPU cache uploads with CPU work, (3) multi-token Zen-1 AVX2 kernels, (4) compact SWA KV so VRAM remains available for experts.
+1. Architecture Comparison
+Key Facts
+Qwen3.8-Flash-Next: 125B/6B active, GDN + QSA hybrid, large expert pool, MTP draft. Strata is specialized for this model.
+Laguna S 2.1: 118B/~8B active, 256 routed experts (top-10) + 1 shared, 12 global + 36 SWA-512 layers, softplus gating, GQA, DFlash draft.
+Strata speed comes from adaptive VRAM expert cache, concurrent CPU computation of misses, prefill streaming, and model-specific kernels.
+What transfers: expert cache idea, CPU/GPU overlap, prefill streaming, verification batching concept. What does not: attention kernels and exact quant kernels.
+Feasibility of 30 tok/s
+Plausible with high hit rate (≥85–90%), good overlap, and solid DFlash acceptance (~4–6). Hardware ceilings are Zen-1 AVX2 throughput and the measured 6.6 GB/s PCIe link.
+2. CPU Experts and GPU Cache Uploads
+CPU gate/up and down dominate the miss path. Worker overhead is negligible (~0.26%).
+Implement multi-token Zen-1 AVX2 kernels for the actual mixed quant formats that miss most often.
+Experiment with moving GPU cache-refresh uploads to a separate stream so they overlap CPU work (after GPU has finished reading cached weights).
+Measure carefully: overlap only helps if the upload was previously on the critical path.
+3. Sustaining Speed at 128k
+Global-layer KV grows linearly and competes with expert-cache VRAM. SWA layers (36 of 48) stay bounded by the 512-token window if compact allocation is used.
+Required: compact/ring SWA KV, efficient attention kernels, chunked prefill, and explicit VRAM trade-off between KV and expert cache.
+4. Path to 30 tok/s
+Priority
+Change
+Expected Impact
+1
+Adaptive expert cache (hit rate ≥85–90%)
+Highest
+2
+Overlap residual uploads with CPU work
+High (if currently serialized)
+3
+Multi-token Zen-1 AVX2 kernels
+Medium–High
+4
+Compact SWA KV (protect cache VRAM)
+Medium (critical later)
+5
+Confirm DFlash acceptance length
+Medium
+
+Realistic outcome: 25–35 tok/s at 8k is plausible with the above. 30 tok/s is not guaranteed if hit rate stays low.
+5. Adaptive Expert Caching Algorithms
+Classic LRU/LFU perform poorly because MoE access is layer-sequential within a forward pass, not primarily temporal. This produces collision misses.
+Priority
+Algorithm
+Cost
+Impact
+1
+Frequency-decay periodic swap (Strata-style)
+Low
+High
+2
+Least-Stale eviction
+Low–medium
+Medium–High
+3
+Offline profile + online adaptation
+Low
+Medium
+4
+HOT + STAGE with cheap predictor
+Medium–High
+Conditional
+5
+Admission filter / ARC
+Low
+Medium
+
+Strata adaptive tier: decay routing counts (default ×0.7) every few windows and swap highest-count missing experts into VRAM. Measured gains: misses −31%, hit rate 90.8% → 93.4%.
+Least-Stale: prefer evicting stale (previous-pass) experts, then far-layer experts. Directly attacks layer-sequential collisions.
+6. Recommended Measurement Plan
+On the identical 8k request, measure for each change: expert-cache hit rate, CPU expert time, upload time (CUDA events), DFlash acceptance length, and wall-clock tok/s. These numbers decide whether 30 tok/s is reachable.
+Key References
+poolside/Laguna-S-2.1 model card (Hugging Face)
+Niko1221/Strata HOW_IT_WORKS.md, DETAILS.md, and adaptive tier PRs
+SpecMD (Least-Stale eviction policy)
+ExpertFlow, Mira, and related MoE offloading literature
+End of report. All findings compiled from primary sources and hardware constraints stated in the original request.

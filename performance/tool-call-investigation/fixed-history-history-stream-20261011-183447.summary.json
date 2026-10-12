@@ -1,0 +1,48 @@
+{
+  "label": "fixed-history-history-stream",
+  "elapsed_s": 67.8835350999143,
+  "headers": {
+    "Transfer-Encoding": "chunked",
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "X-Accel-Buffering": "no",
+    "Content-Type": "text/event-stream",
+    "Connection": "close"
+  },
+  "stream": true,
+  "finish_reason": "tool_calls",
+  "usage": {
+    "completion_tokens": 763,
+    "prompt_tokens": 8486,
+    "total_tokens": 9249,
+    "prompt_tokens_details": {
+      "cached_tokens": 8485
+    }
+  },
+  "calls": [
+    {
+      "id": "wrnj55dHRzxwozhYxzjwcFRydfx3KRAm",
+      "type": "function",
+      "function": {
+        "name": "edit",
+        "arguments": "{\"i\":\"Convert static outcome lookups to Record per project rule\",\"input\":\"const VALID_OUTCOMES: ReadonlySet<Outcome> = new Set<Outcome>([\\n  \\\"ok\\\",\\n  \\\"no_matches\\\",\\n  \\\"transient_error\\\",\\n  \\\"permanent_error\\\",\\n  \\\"cancelled\\\",\\n]);\\n\\nconst TERMINAL_OUTCOMES: ReadonlySet<Outcome> = new Set<Outcome>([\\\"ok\\\", \\\"no_matches\\\", \\\"permanent_error\\\"]);\"}"
+      }
+    },
+    {
+      "id": "QVI9tW0TbamMvUKW7OntIDPpfH4seIi7",
+      "type": "function",
+      "function": {
+        "name": "edit",
+        "arguments": "{\"i\":\"Convert static outcome lookups to Record per project rule\",\"input\":\"const VALID_OUTCOMES: Record<Outcome, true> = {\\n  ok: true,\\n  no_matches: true,\\n  transient_error: true,\\n  permanent_error: true,\\n  cancelled: true,\\n};\\n\\nconst TERMINAL_OUTCOMES: Record<Outcome, true> = {\\n  ok: true,\\n  no_matches: true,\\n  permanent_error: true,\\n};\"}"
+      }
+    }
+  ],
+  "indices": [
+    0,
+    1
+  ],
+  "invalid_arguments": [],
+  "raw_available": true,
+  "raw_tool_markers": 2,
+  "native_stop": "</assistant>"
+}

@@ -1,0 +1,39 @@
+{
+  "label": "fixed-single-stream",
+  "elapsed_s": 5.321732399985194,
+  "headers": {
+    "Transfer-Encoding": "chunked",
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "X-Accel-Buffering": "no",
+    "Content-Type": "text/event-stream",
+    "Connection": "close"
+  },
+  "stream": true,
+  "finish_reason": "tool_calls",
+  "usage": {
+    "completion_tokens": 82,
+    "prompt_tokens": 346,
+    "total_tokens": 428,
+    "prompt_tokens_details": {
+      "cached_tokens": 341
+    }
+  },
+  "calls": [
+    {
+      "id": "GHERRJkE5PGZEhpQ6wVmdM9R1iel1EKZ",
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"Read lines 147-180 of the fixture file to inspect its contents\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/fixture.ts\"}"
+      }
+    }
+  ],
+  "indices": [
+    0
+  ],
+  "invalid_arguments": [],
+  "raw_available": true,
+  "raw_tool_markers": 1,
+  "native_stop": ""
+}

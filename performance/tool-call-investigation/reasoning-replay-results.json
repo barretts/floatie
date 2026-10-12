@@ -1,0 +1,63 @@
+{
+  "installed_adapter": "18.9.2",
+  "prior_reasoning_preserved": true,
+  "reasoning_effort": "omitted",
+  "parallel_tool_calls": "omitted",
+  "outgoing": {
+    "model": "laguna-s-2.1-iq3-s",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Read the fixture."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "reasoning_content": "PRESERVED_REASONING_2741",
+        "tool_calls": [
+          {
+            "id": "previous-read",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"i\":\"Inspect fixture\",\"path\":\"scratch.ts\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "content": "Fixture contents.",
+        "tool_call_id": "previous-read"
+      }
+    ],
+    "stream": true,
+    "stream_options": {
+      "include_usage": true
+    },
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "read",
+          "description": "Read a path.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "i": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "i",
+              "path"
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

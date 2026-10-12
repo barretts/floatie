@@ -1,0 +1,5 @@
+The rule reminder is about using Record<string, true> instead of Set for static string-keyed lookup tables. I need to correct this. The user explicitly asked to replace the static Set with a Record<string, true> for ready and done, and update accepts to return VALID[status] === true.
+
+Let me write the corrected file.</think><tool_call>write<arg_key>i</arg_key><arg_value>Replace static Set with Record</arg_value><arg_key>path</arg_key><arg_value>C:/code/poolside-strata/performance/tool-call-investigation/scratch/status-table.ts</arg_value><arg_key>content</arg_key><arg_value>export const VALID: Record<string, true> = { ready: true, done: true };
+export function accepts(status: string): boolean { return VALID[status] === true; }
+</arg_value></tool_call>

@@ -1,0 +1,80 @@
+{
+  "label": "instrument-text-ending-multiple-stream",
+  "elapsed_s": 11.384302800055593,
+  "headers": {
+    "Transfer-Encoding": "chunked",
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "X-Accel-Buffering": "no",
+    "Content-Type": "text/event-stream",
+    "Connection": "close"
+  },
+  "stream": true,
+  "finish_reason": "length",
+  "usage": {
+    "completion_tokens": 256,
+    "prompt_tokens": 377,
+    "total_tokens": 633,
+    "prompt_tokens_details": {
+      "cached_tokens": 372
+    }
+  },
+  "calls": [
+    {
+      "id": "kP64D8ZYgn1lLIAKECxjFdlYVauzYKKX",
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"read fixture.ts lines 147-180\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/fixture.ts\"}"
+      }
+    },
+    {
+      "id": "rNdkXOW2Tw1gmNXI795EXNwW6DbfnpRH",
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"read other.ts lines 1-4\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/other.ts\"}"
+      }
+    },
+    {
+      "id": "Zxwv4tVguoAvshQxoAqRiRWhcatzUeoi",
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"read fixture.ts\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/fixture.ts\"}"
+      }
+    },
+    {
+      "id": "ET6uNP7jW6RwOPiVxhmAGUrfCp8daDHM",
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"read other.ts\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/other.ts\"}"
+      }
+    },
+    {
+      "id": "n14bUiyqAAe9aWINfPZrb2YXtoQixLPN",
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"read fixture.ts"
+      }
+    }
+  ],
+  "indices": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "invalid_arguments": [
+    {
+      "index": 4,
+      "error": "Unterminated string starting at: line 1 column 6 (char 5)"
+    }
+  ],
+  "raw_available": true,
+  "raw_tool_markers": 5,
+  "native_stop": ""
+}

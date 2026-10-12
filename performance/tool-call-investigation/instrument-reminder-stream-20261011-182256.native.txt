@@ -1,0 +1,5 @@
+The rule wants me to use `Record<K, V>` instead of `Set` for a small, static lookup table. Let me fix that.<tool_call>write<arg_key>i</arg_key><arg_value>Convert Set to Record for static lookup</arg_value><arg_key>path</arg_key><arg_value>C:/code/poolside-strata/performance/tool-call-investigation/scratch/fixture.ts</arg_value><arg_key>content</arg_key><arg_value>export const VALID: Record<string, true> = {
+    ok: true,
+    no_matches: true,
+};
+</arg_value></tool_call>

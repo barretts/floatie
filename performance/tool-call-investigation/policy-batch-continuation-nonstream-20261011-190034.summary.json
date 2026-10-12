@@ -1,0 +1,39 @@
+{
+  "label": "policy-batch-continuation-nonstream",
+  "elapsed_s": 8.688303799950518,
+  "headers": {
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "11607",
+    "Connection": "close"
+  },
+  "stream": false,
+  "finish_reason": "tool_calls",
+  "usage": {
+    "completion_tokens": 53,
+    "prompt_tokens": 437,
+    "total_tokens": 490,
+    "prompt_tokens_details": {
+      "cached_tokens": 299
+    }
+  },
+  "calls": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"Inspect lookup\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/other.ts\"}"
+      },
+      "id": "Q8bwbbI1jjSPjhHKO8TPsbaOj7dYfhqk"
+    }
+  ],
+  "indices": [
+    0
+  ],
+  "invalid_arguments": [],
+  "raw_available": true,
+  "raw_tool_markers": 1,
+  "token_ids_captured": 53,
+  "native_stop": ""
+}

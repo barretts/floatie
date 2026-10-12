@@ -1,0 +1,39 @@
+{
+  "label": "order-baseline-chat",
+  "elapsed_s": 4.060137199936435,
+  "headers": {
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "12667",
+    "Connection": "close"
+  },
+  "stream": false,
+  "finish_reason": "tool_calls",
+  "usage": {
+    "completion_tokens": 76,
+    "prompt_tokens": 409,
+    "total_tokens": 485,
+    "prompt_tokens_details": {
+      "cached_tokens": 404
+    }
+  },
+  "calls": [
+    {
+      "type": "function",
+      "function": {
+        "name": "write",
+        "arguments": "{\"i\":\"Create constant\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/status-table.ts\",\"content\":\"export const READY = true;\\n\"}"
+      },
+      "id": "FX3SYjHfzIOGHfHb9TLQRvaxpp85E7Uo"
+    }
+  ],
+  "indices": [
+    0
+  ],
+  "invalid_arguments": [],
+  "raw_available": true,
+  "raw_tool_markers": 1,
+  "token_ids_captured": 76,
+  "native_stop": ""
+}

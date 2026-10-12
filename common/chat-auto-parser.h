@@ -230,6 +230,7 @@ struct parser_build_context {
     bool                              extracting_reasoning = false;
     const analyze_reasoning *         reasoning            = nullptr;
     const analyze_content *           content              = nullptr;
+    const std::vector<std::string> *   additional_stops     = nullptr;
 
     parser_build_context(common_chat_peg_builder & p, const generation_params & inputs);
 };

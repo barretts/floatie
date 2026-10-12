@@ -13,9 +13,10 @@
 
 - This is a full source checkout. Engine paths start at the root: `ggml/`, `common/`, `src/`, and `tools/server/`.
 - Historical `core-engine/` references describe the old partial overlay; remove that prefix to find current source.
-- `source-manifest.json` and `patches/floatie-engine.patch` record all 26 current changed engine files against the pinned base.
+- `source-manifest.json` and `patches/floatie-engine.patch` record all 30 current changed engine files against the pinned base.
 - `models/`, `build/`, `logs/`, and caches are local artifacts, not source to commit.
-- `performance/` holds saved workloads, measurements, comparisons, deployment/rollback receipts, and candidate archives. Historical absolute E: paths retain their original meaning. Selected installed evidence is bundled; other local logs/backups and supplied external research are unbundled.
+- `performance/` holds saved workloads, measurements, comparisons, deployment/rollback receipts, and candidate archives. Historical absolute E: paths retain their original meaning. Selected installed evidence is bundled; other local logs/backups remain unbundled.
+- `research/` preserves the owner-requested supplied research documents and existing text extractions. Read `research/INDEX.md` for portable links and local reconciliation records; `research/source-manifest.json` records original paths, sizes, and SHA256 hashes.
 - Poolside llama.cpp is the engine base. Niko1221/Strata supplied reference ideas and adapted CPU IQ code. ro99/strata is separate.
 - Preserve upstream notices and adapted-code provenance. Model licenses are separate from the code's MIT license.
 
@@ -40,7 +41,7 @@ CPU/GPU intervals overlap; do not sum them as serial costs. Expert evaluations, 
 
 Preserve quantized weights and selected experts. Dropping/substituting experts, routing bias, or further quantization require owner direction. Document changed floating-point reductions; do not assert identical output without evidence.
 
-The DFlash position repair was rebuilt in the original installation but has no execution regression or throughput measurement. The saved normal 770.83 / 15.85 tokens/sec result predates it.
+The DFlash position repair was initially rebuilt without an execution regression or throughput measurement. Later tool-protocol checks passed; the original long-prefill failure and nearly full 128k performance have not been independently reproduced. The saved normal 770.83 / 15.85 tokens/sec result predates both repairs. See `performance/TOOL-CALL-INVESTIGATION.md` for native termination and protocol verification, and `performance/OMP-LOOP-FOLLOWUP.md` for repaired named-argument ordering and restored parallel calls. Original OMP task convergence remains unverified.
 
 ## Process control
 
@@ -56,4 +57,4 @@ The DFlash position repair was rebuilt in the original installation but has no e
 - Distinguish experimental, measured baseline, and retained states. Archived candidates are not active code.
 - No commits, pushes, publication, PRs, or messages to others without current authorization. Authorization to publish this private fork applies to that task, not unrelated future submissions.
 - Keep documentation changes in documentation unless implementation/deployment is requested.
-- Keep weights, credentials, caches, temporary tools, and supplied external research outside the source package.
+- Keep weights, credentials, caches, temporary tools, runtime binaries, and machine backups outside the source package. Supplied research documents are included at the owner's explicit request; preserve their original bytes and attribution.

@@ -1,0 +1,39 @@
+{
+  "installed_adapter": "@oh-my-pi/pi-ai 18.9.2",
+  "scope": "Real installed OMP adapter, captured SSE plus an explicitly synthetic 98-call fixture; in-memory fetch only; no tools executed.",
+  "results": [
+    {
+      "name": "instrument-multiple-stream-20261011-182529.sse",
+      "expected": 2,
+      "calls": 2,
+      "uniqueIDs": 2,
+      "stopReason": "toolUse",
+      "malformed": 0,
+      "argumentValuesMatch": true,
+      "outgoing_parallel_tool_calls": "omitted",
+      "passed": true
+    },
+    {
+      "name": "instrument-text-ending-multiple-stream-20261011-182710.sse",
+      "expected": 5,
+      "calls": 5,
+      "uniqueIDs": 5,
+      "stopReason": "length",
+      "malformed": 1,
+      "argumentValuesMatch": true,
+      "outgoing_parallel_tool_calls": "omitted",
+      "passed": true
+    },
+    {
+      "name": "synthetic-98-fragmented (reconstructed API input; not historical raw output)",
+      "expected": 98,
+      "calls": 98,
+      "uniqueIDs": 98,
+      "stopReason": "length",
+      "malformed": 1,
+      "argumentValuesMatch": true,
+      "outgoing_parallel_tool_calls": "omitted",
+      "passed": true
+    }
+  ]
+}

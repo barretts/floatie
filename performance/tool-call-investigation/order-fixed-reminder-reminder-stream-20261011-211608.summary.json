@@ -1,0 +1,40 @@
+{
+  "label": "order-fixed-reminder-reminder-stream",
+  "elapsed_s": 7.5150401999708265,
+  "headers": {
+    "Transfer-Encoding": "chunked",
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "X-Accel-Buffering": "no",
+    "Content-Type": "text/event-stream",
+    "Connection": "close"
+  },
+  "stream": true,
+  "finish_reason": "tool_calls",
+  "usage": {
+    "completion_tokens": 119,
+    "prompt_tokens": 515,
+    "total_tokens": 634,
+    "prompt_tokens_details": {
+      "cached_tokens": 514
+    }
+  },
+  "calls": [
+    {
+      "id": "77eh8VdIm11MxmbguA7DwzIQgmyFL6B6",
+      "type": "function",
+      "function": {
+        "name": "write",
+        "arguments": "{\"i\":\"Comply with static lookup rule\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/fixture.ts\",\"content\":\"const VALID = { ok: true, no_matches: true };\\n\"}"
+      }
+    }
+  ],
+  "indices": [
+    0
+  ],
+  "invalid_arguments": [],
+  "raw_available": true,
+  "raw_tool_markers": 1,
+  "token_ids_captured": 119,
+  "native_stop": ""
+}

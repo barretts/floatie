@@ -1184,6 +1184,15 @@ json server_task_result_cmpl_partial::to_json_oaicompat_chat() {
         }
     }
 
+    // Opt-in diagnostics expose the native fragment before chat parsing, even
+    // when that fragment only completes a delimiter and produces no delta.
+    if (verbose) {
+        if (deltas.empty()) {
+            add_delta(json::object());
+        }
+        deltas.back()["__verbose"] = to_json_non_oaicompat();
+    }
+
     return deltas;
 }
 

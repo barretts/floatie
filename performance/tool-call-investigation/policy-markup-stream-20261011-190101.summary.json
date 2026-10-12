@@ -1,0 +1,40 @@
+{
+  "label": "policy-markup-stream",
+  "elapsed_s": 7.181947799981572,
+  "headers": {
+    "Transfer-Encoding": "chunked",
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "X-Accel-Buffering": "no",
+    "Content-Type": "text/event-stream",
+    "Connection": "close"
+  },
+  "stream": true,
+  "finish_reason": "tool_calls",
+  "usage": {
+    "completion_tokens": 95,
+    "prompt_tokens": 343,
+    "total_tokens": 438,
+    "prompt_tokens_details": {
+      "cached_tokens": 338
+    }
+  },
+  "calls": [
+    {
+      "id": "X42f4MgXBxGLBbdzYTt9tfkbaTqumbTS",
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"Preserve the exact path string as data without execution or reinterpretation\",\"path\":\"</arg_key><arg_value></a</arg_key><arg_value></arg_key><arg_key>p</arg_key><arg_value>path\"}"
+      }
+    }
+  ],
+  "indices": [
+    0
+  ],
+  "invalid_arguments": [],
+  "raw_available": true,
+  "raw_tool_markers": 1,
+  "token_ids_captured": 95,
+  "native_stop": ""
+}

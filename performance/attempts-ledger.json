@@ -13299,8 +13299,8 @@
   ],
   "documentation_date": "2026-10-11",
   "performance_goal_status": "paused",
-  "documentation_scope_note": "The original 336-file compilation was documentation-only. Subsequent owner-authorized correctness repair is recorded separately: two source edits, synchronized deployment and successful rebuild. No inference regression, tests, benchmarks or performance-goal resumption.",
-  "structured_attempt_entry_count": 72,
+  "documentation_scope_note": "Original 336-file inventory was documentation-only. Later owner-authorized correctness repairs include Stage 4 DFlash, Stage 5 native termination/diagnostics and Stage 6 named-argument ordering/restored parallel calls. Protocol execution does not resume performance work or establish new throughput.",
+  "structured_attempt_entry_count": 74,
   "attempt_count_note": "Entries include diagnostics, research review and separate revisions; some mechanisms recur across stages. This is not a count of unique isolated experiments.",
   "attempts": [
     {
@@ -19786,6 +19786,94 @@
         "dflash-position-fix-result.json"
       ],
       "performance_goal_resumed": false
+    },
+    {
+      "id": "laguna-native-tool-turn-and-omp-cardinality",
+      "title": "Native text turn termination, raw SSE diagnostics and one-call default for OMP",
+      "status": "implemented_deployed_protocol_checks_succeeded_historical_raw_unavailable",
+      "mechanism": "Honor configured parallel_tool_calls default in grammar construction; constrain ordinary OMP responses to one call before decoding; preserve explicit parallel batches and the native text turn marker. Opt-in native SSE diagnostics expose generated fragments/IDs.",
+      "documentation_section": "subsequent_tool_protocol_repair",
+      "structured_companion": "tool-call-investigation/live-verification.json",
+      "build_exit_code": 0,
+      "prior_build_exit_code": 2,
+      "runtime_checks": "42 HTTP captures / 21 paired requests; 751 offline assertions; 2940 live evidence assertions; 3 installed OMP adapter replay scenarios. Truncation, continuation, native termination, cancellation and recovery checked. Historical 98-call raw output was not logged.",
+      "performance_goal_resumed": false,
+      "throughput_claim": null,
+      "control_results": {
+        "parallel_stress_before": {
+          "native_calls": 5,
+          "parsed_calls": 5,
+          "finish_reason": "length",
+          "max_tokens": 256
+        },
+        "native_turn_patch_alone": {
+          "native_calls": 4,
+          "parsed_calls": 4,
+          "finish_reason": "length"
+        },
+        "single_default_after": {
+          "native_calls": 1,
+          "parsed_calls": 1,
+          "finish_reason": "tool_calls",
+          "native_stop": "</assistant>"
+        },
+        "explicit_parallel_after": {
+          "native_calls": 2,
+          "parsed_calls": 2,
+          "finish_reason": "tool_calls"
+        }
+      },
+      "evidence": [
+        "TOOL-CALL-INVESTIGATION.md",
+        "tool-call-investigation/offline-verification.json",
+        "tool-call-investigation/live-verification.json",
+        "tool-call-investigation/omp-replay-results.json",
+        "tool-call-investigation/deploy-policy-20261011-184452.json"
+      ]
+    },
+    {
+      "id": "laguna-named-arguments-and-parallel-default",
+      "title": "Repair forced argument order; restore parallel tool calls",
+      "status": "implemented_deployed_protocol_checks_succeeded_original_loop_unverified",
+      "mechanism": "Accept permutations of mandatory/optional tagged arguments without missing or duplicate declared keys, bounded at eight properties; larger schemas retain declaration order. Remove the prior one-call launcher default.",
+      "documentation_section": "omp_rewrite_loop_followup",
+      "build_exit_code": 0,
+      "runtime_checks": "1031 argument-order/live evidence assertions; 751 existing parser assertions; 13 post-fix HTTP chat captures; active cancellation/recovery; installed OMP reasoning-replay capture.",
+      "performance_goal_resumed": false,
+      "throughput_claim": null,
+      "control_results": {
+        "valid_sequences_before": "2/32",
+        "valid_sequences_after": "32/32",
+        "invalid_rejected_before": "4/5",
+        "invalid_rejected_after": "5/5",
+        "native_argument_order": [
+          "path",
+          "content",
+          "i"
+        ],
+        "chat_argument_order_before": [
+          "i",
+          "path",
+          "content"
+        ],
+        "chat_argument_order_after": [
+          "path",
+          "content",
+          "i"
+        ],
+        "default_parallel_calls_after": {
+          "nonstream": 2,
+          "stream": 2
+        }
+      },
+      "limits": "Historical native output unavailable. Reduced replay did not reproduce later cross-response loop. Owner-run fresh OMP task is being observed; no benchmark grader or investigation edits to benchmark.",
+      "evidence": [
+        "OMP-LOOP-FOLLOWUP.md",
+        "tool-call-investigation/order-verification.json",
+        "tool-call-investigation/offline-verification-after-order.json",
+        "tool-call-investigation/reasoning-replay-results.json",
+        "tool-call-investigation/deploy-order-20261011-210756.json"
+      ]
     }
   ],
   "section_companions": [
@@ -19867,6 +19955,56 @@
       "file": "dflash-position-fix-result.json",
       "bytes": 10447,
       "sha256": "55f712e1a87de2be045fe97c73fafc54c5dec17c9a1df0c0a58d7a7a1fb4baf3"
+    },
+    {
+      "file": "TOOL-CALL-INVESTIGATION.md",
+      "bytes": 12645,
+      "sha256": "8c1a188a17d7deb9c1fa685ec8e22dd54fb747a79992da27b5732bfb88b4ee96"
+    },
+    {
+      "file": "tool-call-investigation/offline-verification.json",
+      "bytes": 69452,
+      "sha256": "4346c25069cae459d60a8db3154a2d96a8e96e7fbf368c64627b0395fb7bd949"
+    },
+    {
+      "file": "tool-call-investigation/live-verification.json",
+      "bytes": 320693,
+      "sha256": "0d6cef01d75cc83c316fb82046f0b07074209bb91eef2a2eac9387277414f7fc"
+    },
+    {
+      "file": "tool-call-investigation/omp-replay-results.json",
+      "bytes": 1143,
+      "sha256": "7ac8a35d93fe8b508c31228c9f3445dc070b21ab8372a9c735bdc6c0ed1aaeab"
+    },
+    {
+      "file": "tool-call-investigation/deploy-policy-20261011-184452.json",
+      "bytes": 7142,
+      "sha256": "aa4e5ce597478cfb3a0182401cb1544c98b27f7cf12fdd4369529cefa4ab985f"
+    },
+    {
+      "file": "OMP-LOOP-FOLLOWUP.md",
+      "bytes": 10772,
+      "sha256": "16c417f7f3309ea91de1d64a725c5dde22c134f4db41b140a8850b39d87c6b1b"
+    },
+    {
+      "file": "tool-call-investigation/order-verification.json",
+      "bytes": 115849,
+      "sha256": "99705352085f3e65848f1936c48ac39858f82fa29f0b35b49f835d0d0f9add54"
+    },
+    {
+      "file": "tool-call-investigation/offline-verification-after-order.json",
+      "bytes": 69452,
+      "sha256": "57c4a2d7bc818911490350f2b80d83cb66cfcdfe0bc9b06b73899e1be285b4d7"
+    },
+    {
+      "file": "tool-call-investigation/reasoning-replay-results.json",
+      "bytes": 1402,
+      "sha256": "7cabb17eb6a1247712c7398c9417b9494ebedc4b579a45161c6a37ba42c56998"
+    },
+    {
+      "file": "tool-call-investigation/deploy-order-20261011-210756.json",
+      "bytes": 11524,
+      "sha256": "94e5351cbc5b15f61d2346076d88b247794a59517a49c1de1a88b531ea252c87"
     }
   ]
 }

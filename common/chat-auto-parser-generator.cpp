@@ -10,6 +10,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <map>
 
 using json = nlohmann::ordered_json;
 
@@ -126,6 +127,7 @@ common_peg_arena autoparser::build_parser(const generation_params & inputs, cons
         ctx.extracting_reasoning = extract_reasoning && reasoning.mode != reasoning_mode::NONE;
         ctx.content              = &content;
         ctx.reasoning            = &reasoning;
+        ctx.additional_stops     = &additional_stops;
 
         // Build reasoning parser
         ctx.reasoning_parser = reasoning.build_parser(ctx);
@@ -422,22 +424,53 @@ common_peg_parser analyze_tools::build_tool_parser_tag_tagged(parser_build_conte
             }
         }
 
-        // Build required arg sequence in definition order
         common_peg_parser args_seq = p.eps();
-        for (size_t i = 0; i < required_parsers.size(); i++) {
-            if (i > 0) {
-                args_seq = args_seq + p.space();
+        const size_t n_args = required_parsers.size() + optional_parsers.size();
+        // Tagged arguments are named, not positional. Keep the exact set of
+        // unseen arguments so grammar cannot redirect a value to another key.
+        // Bound subset expansion; larger schemas retain their existing order.
+        if (n_args > 0 && n_args <= 8) {
+            std::vector<common_peg_parser> args = required_parsers;
+            args.insert(args.end(), optional_parsers.begin(), optional_parsers.end());
+            const uint32_t required_mask = (1u << required_parsers.size()) - 1;
+            const uint32_t all_mask = (1u << n_args) - 1;
+            std::map<uint32_t, common_peg_parser> states;
+            std::function<common_peg_parser(uint32_t)> remaining = [&](uint32_t mask) {
+                if (mask == 0) {
+                    return p.eps();
+                }
+                auto found = states.find(mask);
+                if (found != states.end()) {
+                    return found->second;
+                }
+                auto choices = p.choice();
+                for (size_t i = 0; i < args.size(); ++i) {
+                    if (mask & (1u << i)) {
+                        choices |= args[i] + p.space() + remaining(mask & ~(1u << i));
+                    }
+                }
+                if ((mask & required_mask) == 0) {
+                    choices = p.optional(choices);
+                }
+                auto state = p.rule("tool-" + name + "-args-" + std::to_string(mask), choices);
+                states.emplace(mask, state);
+                return state;
+            };
+            args_seq = remaining(all_mask);
+        } else {
+            for (size_t i = 0; i < required_parsers.size(); i++) {
+                if (i > 0) {
+                    args_seq = args_seq + p.space();
+                }
+                args_seq = args_seq + required_parsers[i];
             }
-            args_seq = args_seq + required_parsers[i];
-        }
-
-        // Build optional args with flexible ordering
-        if (!optional_parsers.empty()) {
-            common_peg_parser any_opt = p.choice();
-            for (const auto & opt : optional_parsers) {
-                any_opt |= opt;
+            if (!optional_parsers.empty()) {
+                common_peg_parser any_opt = p.choice();
+                for (const auto & opt : optional_parsers) {
+                    any_opt |= opt;
+                }
+                args_seq = args_seq + p.repeat(p.space() + any_opt, 0, -1);
             }
-            args_seq = args_seq + p.repeat(p.space() + any_opt, 0, -1);
         }
 
         if (!arguments.start.empty()) {
@@ -472,12 +505,24 @@ common_peg_parser analyze_tools::build_tool_parser_tag_tagged(parser_build_conte
 
     common_peg_parser tool_calls = p.eps();
 
+    // Native turn markers must remain reachable after a complete tool batch,
+    // including when the model spells a marker using ordinary text tokens.
+    // The server's existing stop handling consumes these exact markers.
+    auto turn_end = p.eps();
+    if (ctx.additional_stops && !ctx.additional_stops->empty() && format.section_start.empty()) {
+        auto markers = p.choice();
+        for (const auto & marker : *ctx.additional_stops) {
+            markers |= p.literal(marker);
+        }
+        turn_end = p.optional(markers);
+    }
+
     if (!format.per_call_start.empty()) {
         auto wrapped_call = format.per_call_start + p.space() + tool_choice + p.space() + format.per_call_end;
         if (inputs.parallel_tool_calls) {
-            tool_calls = p.trigger_rule("tool-call", wrapped_call + p.zero_or_more(p.space() + wrapped_call) + p.space());
+            tool_calls = p.trigger_rule("tool-call", wrapped_call + p.zero_or_more(p.space() + wrapped_call) + p.space() + turn_end);
         } else {
-            tool_calls = p.trigger_rule("tool-call", wrapped_call + p.space());
+            tool_calls = p.trigger_rule("tool-call", wrapped_call + p.space() + turn_end);
         }
         if (!format.section_start.empty()) {
             tool_calls = p.trigger_rule("tool-calls",

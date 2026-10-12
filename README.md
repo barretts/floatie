@@ -4,7 +4,13 @@ A local CPU/GPU inference engine for **Poolside Laguna S 2.1 Q3**, based on [Poo
 
 Floatie keeps expert weights in host RAM, caches selected experts in VRAM, and runs CPU expert work alongside GPU computation. The SSD stores and initially loads model files; the active expert path uses RAM and VRAM. The initial interface is a local API.
 
-This repository contains the complete engine source, retained Floatie changes, portable Windows setup scripts, and recorded development history. Model weights, caches, build products, and supplied third-party research documents are excluded.
+This repository contains the complete engine source, retained Floatie changes, portable Windows setup scripts, recorded development history, and [supplied research documents](research/INDEX.md). Model weights, caches, and build products are excluded.
+
+## Why are we publishing something we don't intend to continue?
+
+We're publishing Floatie as a stepping stone for anyone trying to run Laguna on similar hardware. We don't plan to continue development, but the source and development records give the next person a place to start.
+
+We saved our dead ends and documented what we tried, what worked, what failed, and what remains unresolved. The [attempts and results](performance/ATTEMPTS-AND-RESULTS.md) include rejected experiments and rollback records alongside retained changes. Anyone picking this up can use that history to build on the work and choose what to explore next.
 
 ## Status
 
@@ -18,7 +24,7 @@ The latest saved normal measurement on October 11, 2026 used 8,064 prompt tokens
 
 That request recalled `COBALT-17`, `MAPLE-42`, and `VIOLET-89` in order. It establishes that request's result, not general quality or repeatable throughput.
 
-A subsequent [DFlash speculative-batch position repair](performance/DFLASH-POSITION-FIX.md) was rebuilt on October 11, 2026. It rebuilds trimmed draft windows at their original positions and invalidates request caches after speculative failure. **No inference regression or throughput measurement was run on that rebuild.** The table predates the repair. Current-engine near-full 128k speed is unestablished, and performance work remains paused at the owner's request.
+A subsequent [DFlash speculative-batch position repair](performance/DFLASH-POSITION-FIX.md) was rebuilt on October 11, 2026. It rebuilds trimmed draft windows at their original positions and invalidates request caches after speculative failure. That repair initially had no inference regression or throughput measurement. Later [tool-protocol checks](performance/TOOL-CALL-INVESTIGATION.md) ran on the installed engine; they do not establish near-full 128k performance. The table predates both repairs. Current-engine near-full 128k speed is unestablished, and performance work remains paused at the owner's request.
 
 ## Quick start: Windows
 
@@ -46,7 +52,9 @@ The API is `http://127.0.0.1:1235/v1`, with model alias `laguna-s-2.1-iq3-s`. Ru
 | `Start-Floatie-8k.bat` | 8,192 | 6,144 MiB | Batch/ubatch 8,192, MoE threads 16, DFlash maximum 4, Q8 KV, pinned/adaptive experts, ordinary GPU misses/token 0 |
 | `Start-Floatie-128k.bat` | 131,072 | 3,072 MiB | Same settings |
 
-The 128k profile is a launch configuration, not a measured speed guarantee. Read the [developer guide](docs/floatie/DEVELOPER-GUIDE.md) for setup, source entry points, and a starting point for continuing the work. The packaged checkout has not been independently built or executed during publication.
+Both profiles enable parallel tool calls by default. Requests can set `parallel_tool_calls: false` to request one call. The [OMP follow-up](performance/OMP-LOOP-FOLLOWUP.md) records the named-argument ordering repair and completed protocol checks. The original OMP task's convergence remains unverified.
+
+The 128k profile is a launch configuration, not a measured speed guarantee. Read the [developer guide](docs/floatie/DEVELOPER-GUIDE.md) for setup, source entry points, and a starting point for continuing the work. The installed engine was rebuilt and protocol-tested after publication; the packaged checkout has not been independently built during publication.
 
 ## Retained mechanisms
 
@@ -62,9 +70,11 @@ The 128k profile is a launch configuration, not a measured speed guarantee. Read
 
 Start with [attempts and results](performance/ATTEMPTS-AND-RESULTS.md): retained changes, rejected candidates, failed builds/launches, controls, rollback receipts, and unresolved gaps. The [measurement index](performance/MEASUREMENT-INDEX.md) lists all 98 saved response measurements; the [ledger](performance/attempts-ledger.json) preserves exact fields and hashes.
 
+The [research index](research/INDEX.md) includes the original reports, prompts, PDF and Word documents, and existing text extractions. It links the reports to our local review notes so you can distinguish proposed improvements from measured results.
+
 The historical records include paths from the original `E:\poolside` installation and an earlier `core-engine/` overlay. In this repository, engine source is at the root. Selected historical installed evidence is bundled in `performance/installed-evidence/`; unbundled local paths remain provenance references. Archived candidates are evidence, not active code. See the guide's path map before following an old receipt.
 
-[Source manifest](source-manifest.json) identifies the packaged changed files. The [engine patch](patches/floatie-engine.patch) captures all 26 current engine changes against the pinned Poolside base, including three files absent from the earlier overlay.
+[Source manifest](source-manifest.json) identifies the packaged changed files. The [engine patch](patches/floatie-engine.patch) captures all 30 current engine changes against the pinned Poolside base, including three files absent from the earlier overlay and the later tool-protocol changes.
 
 ## Sources and licenses
 

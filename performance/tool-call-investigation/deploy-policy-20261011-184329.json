@@ -1,0 +1,95 @@
+{
+  "sources_before": [
+    {
+      "relative": "common\\chat-auto-parser.h",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\source\\chat-auto-parser.h",
+      "original_sha256": "6ED6FC74D80509D1801E7B9FF9EA71A112C51B1ACCE45E7B641A0FA2C5C27FC1"
+    },
+    {
+      "relative": "common\\chat-auto-parser-generator.cpp",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\source\\chat-auto-parser-generator.cpp",
+      "original_sha256": "DC24FE0A6E90A9E79649E0FE97B0DF1A43DED9CD7451BC3EF5A9680FDD087559"
+    },
+    {
+      "relative": "tools\\server\\server-task.cpp",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\source\\server-task.cpp",
+      "original_sha256": "6A3A0ECC624F3BBF637DDADA4536B9FA100D66CB89B67C3134FDFB459CF57819"
+    },
+    {
+      "relative": "tools\\server\\server-common.cpp",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\source\\server-common.cpp",
+      "original_sha256": "2A67B239D3484FCE399DFCD380088217CE33B1057D3337DE7D460FDAB95EF211"
+    }
+  ],
+  "restart_started": false,
+  "build_log": "C:\\code\\poolside-strata\\performance\\tool-call-investigation\\deploy-policy-20261011-184329.log",
+  "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329",
+  "build_exit": 2,
+  "stopped_pids": [
+    23048
+  ],
+  "binaries_before": [
+    {
+      "name": "cublas64_12.dll",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\bin\\cublas64_12.dll",
+      "original_sha256": "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142"
+    },
+    {
+      "name": "cublasLt64_12.dll",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\bin\\cublasLt64_12.dll",
+      "original_sha256": "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49"
+    },
+    {
+      "name": "cudart64_12.dll",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\bin\\cudart64_12.dll",
+      "original_sha256": "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746"
+    },
+    {
+      "name": "ggml-base.dll",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\bin\\ggml-base.dll",
+      "original_sha256": "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA"
+    },
+    {
+      "name": "ggml-cpu.dll",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\bin\\ggml-cpu.dll",
+      "original_sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E"
+    },
+    {
+      "name": "ggml-cuda.dll",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\bin\\ggml-cuda.dll",
+      "original_sha256": "EF5651CF66AF3C936EA99289523D6B62F70C44E74FD3328D0154162275B37106"
+    },
+    {
+      "name": "ggml.dll",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\bin\\ggml.dll",
+      "original_sha256": "78CCF7F7F8061768F03756E9C833431D350C75FF3378C241BA8A8EF3E35745A4"
+    },
+    {
+      "name": "llama-common.dll",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\bin\\llama-common.dll",
+      "original_sha256": "37E24B3095FEFB1AE240CFC498B708CE13530727DCEC48B31268D6CBAA7530BC"
+    },
+    {
+      "name": "llama-server-impl.dll",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\bin\\llama-server-impl.dll",
+      "original_sha256": "4EC54A1301CCE562AECC08D5ABCEF305EE3A4F82CCB5B78AD739D2F2E366B28D"
+    },
+    {
+      "name": "llama-server.exe",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\bin\\llama-server.exe",
+      "original_sha256": "5851BE7CF04E54AE3E94FCA890168ACF494D78E49D6EC1B99937CF61B3A94691"
+    },
+    {
+      "name": "llama.dll",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\bin\\llama.dll",
+      "original_sha256": "9702D8C339599ADEF2FBCC4D3911508904248B919C789E967824102F352C225B"
+    },
+    {
+      "name": "mtmd.dll",
+      "backup": "E:\\poolside\\backups\\before-tool-call-policy-20261011-184329\\bin\\mtmd.dll",
+      "original_sha256": "33C0DEABC64B93CD5F600A6570D528A8A751C29AFB6FF3AC06CF85A74E8E29BA"
+    }
+  ],
+  "timestamp": "20261011-184329",
+  "mode": "policy"
+}

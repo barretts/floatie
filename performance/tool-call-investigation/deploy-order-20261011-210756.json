@@ -1,0 +1,190 @@
+﻿{
+    "launch_arguments":  [
+                             "-NoLogo",
+                             "-NoProfile",
+                             "-ExecutionPolicy",
+                             "Bypass",
+                             "-File",
+                             "E:\\poolside\\launch.ps1",
+                             "-ContextSize",
+                             "131072",
+                             "-CacheMiB",
+                             "3072",
+                             "-BatchSize",
+                             "8192",
+                             "-MoeThreads",
+                             "16",
+                             "-DraftMax",
+                             "4",
+                             "-DraftKvType",
+                             "q8_0",
+                             "-GpuMissesPerToken",
+                             "0",
+                             "-PinExperts",
+                             "-AdaptiveCache",
+                             "-Port",
+                             "1235"
+                         ],
+    "restart_started":  true,
+    "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756",
+    "stopped_pids":  [
+                         20408
+                     ],
+    "sources_after":  [
+                          {
+                              "sha256":  "6ED6FC74D80509D1801E7B9FF9EA71A112C51B1ACCE45E7B641A0FA2C5C27FC1",
+                              "relative":  "common\\chat-auto-parser.h"
+                          },
+                          {
+                              "sha256":  "1882FF9758F4B89163C67F8F2E790696AE0CCA3E9BA39D0B0BE393020D394431",
+                              "relative":  "common\\chat-auto-parser-generator.cpp"
+                          },
+                          {
+                              "sha256":  "6A3A0ECC624F3BBF637DDADA4536B9FA100D66CB89B67C3134FDFB459CF57819",
+                              "relative":  "tools\\server\\server-task.cpp"
+                          },
+                          {
+                              "sha256":  "5DA77B74335BE64AA554E82AFCF05B8ECAEC175226EDC53B65F806CFC0F25A3D",
+                              "relative":  "tools\\server\\server-common.cpp"
+                          }
+                      ],
+    "launcher_pid":  13472,
+    "build_exit":  0,
+    "binaries_after":  [
+                           {
+                               "sha256":  "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142",
+                               "name":  "cublas64_12.dll"
+                           },
+                           {
+                               "sha256":  "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49",
+                               "name":  "cublasLt64_12.dll"
+                           },
+                           {
+                               "sha256":  "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746",
+                               "name":  "cudart64_12.dll"
+                           },
+                           {
+                               "sha256":  "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA",
+                               "name":  "ggml-base.dll"
+                           },
+                           {
+                               "sha256":  "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E",
+                               "name":  "ggml-cpu.dll"
+                           },
+                           {
+                               "sha256":  "EF5651CF66AF3C936EA99289523D6B62F70C44E74FD3328D0154162275B37106",
+                               "name":  "ggml-cuda.dll"
+                           },
+                           {
+                               "sha256":  "78CCF7F7F8061768F03756E9C833431D350C75FF3378C241BA8A8EF3E35745A4",
+                               "name":  "ggml.dll"
+                           },
+                           {
+                               "sha256":  "B62540498297BAE7CDCD5450178B3989161ECC0AD3AE09573A628D26A1367F95",
+                               "name":  "llama-common.dll"
+                           },
+                           {
+                               "sha256":  "DD791A797B5C9B729195777CE66004183E3C73C44597F192C33D847F9C6E42D7",
+                               "name":  "llama-server-impl.dll"
+                           },
+                           {
+                               "sha256":  "7C9A27EAC41BB837379C0A1A156F42FBD51258764971686DAC5C5587A2328FC0",
+                               "name":  "llama-server.exe"
+                           },
+                           {
+                               "sha256":  "9702D8C339599ADEF2FBCC4D3911508904248B919C789E967824102F352C225B",
+                               "name":  "llama.dll"
+                           },
+                           {
+                               "sha256":  "33C0DEABC64B93CD5F600A6570D528A8A751C29AFB6FF3AC06CF85A74E8E29BA",
+                               "name":  "mtmd.dll"
+                           }
+                       ],
+    "sources_before":  [
+                           {
+                               "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\source\\chat-auto-parser.h",
+                               "original_sha256":  "6ED6FC74D80509D1801E7B9FF9EA71A112C51B1ACCE45E7B641A0FA2C5C27FC1",
+                               "relative":  "common\\chat-auto-parser.h"
+                           },
+                           {
+                               "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\source\\chat-auto-parser-generator.cpp",
+                               "original_sha256":  "DC24FE0A6E90A9E79649E0FE97B0DF1A43DED9CD7451BC3EF5A9680FDD087559",
+                               "relative":  "common\\chat-auto-parser-generator.cpp"
+                           },
+                           {
+                               "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\source\\server-task.cpp",
+                               "original_sha256":  "6A3A0ECC624F3BBF637DDADA4536B9FA100D66CB89B67C3134FDFB459CF57819",
+                               "relative":  "tools\\server\\server-task.cpp"
+                           },
+                           {
+                               "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\source\\server-common.cpp",
+                               "original_sha256":  "5DA77B74335BE64AA554E82AFCF05B8ECAEC175226EDC53B65F806CFC0F25A3D",
+                               "relative":  "tools\\server\\server-common.cpp"
+                           }
+                       ],
+    "build_log":  "C:\\code\\poolside-strata\\performance\\tool-call-investigation\\deploy-order-20261011-210756.log",
+    "binaries_before":  [
+                            {
+                                "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\bin\\cublas64_12.dll",
+                                "original_sha256":  "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142",
+                                "name":  "cublas64_12.dll"
+                            },
+                            {
+                                "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\bin\\cublasLt64_12.dll",
+                                "original_sha256":  "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49",
+                                "name":  "cublasLt64_12.dll"
+                            },
+                            {
+                                "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\bin\\cudart64_12.dll",
+                                "original_sha256":  "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746",
+                                "name":  "cudart64_12.dll"
+                            },
+                            {
+                                "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\bin\\ggml-base.dll",
+                                "original_sha256":  "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA",
+                                "name":  "ggml-base.dll"
+                            },
+                            {
+                                "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\bin\\ggml-cpu.dll",
+                                "original_sha256":  "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E",
+                                "name":  "ggml-cpu.dll"
+                            },
+                            {
+                                "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\bin\\ggml-cuda.dll",
+                                "original_sha256":  "EF5651CF66AF3C936EA99289523D6B62F70C44E74FD3328D0154162275B37106",
+                                "name":  "ggml-cuda.dll"
+                            },
+                            {
+                                "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\bin\\ggml.dll",
+                                "original_sha256":  "78CCF7F7F8061768F03756E9C833431D350C75FF3378C241BA8A8EF3E35745A4",
+                                "name":  "ggml.dll"
+                            },
+                            {
+                                "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\bin\\llama-common.dll",
+                                "original_sha256":  "37E24B3095FEFB1AE240CFC498B708CE13530727DCEC48B31268D6CBAA7530BC",
+                                "name":  "llama-common.dll"
+                            },
+                            {
+                                "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\bin\\llama-server-impl.dll",
+                                "original_sha256":  "2574FCC04CFB85778C82D4E9C479E18E46C9CC8861D869435911B4BE9AAEF8A8",
+                                "name":  "llama-server-impl.dll"
+                            },
+                            {
+                                "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\bin\\llama-server.exe",
+                                "original_sha256":  "62272A4DACAF9B923607AA74481D50086D1FBD82B901E00A302FAD81F584F93B",
+                                "name":  "llama-server.exe"
+                            },
+                            {
+                                "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\bin\\llama.dll",
+                                "original_sha256":  "9702D8C339599ADEF2FBCC4D3911508904248B919C789E967824102F352C225B",
+                                "name":  "llama.dll"
+                            },
+                            {
+                                "backup":  "E:\\poolside\\backups\\before-tool-call-order-20261011-210756\\bin\\mtmd.dll",
+                                "original_sha256":  "33C0DEABC64B93CD5F600A6570D528A8A751C29AFB6FF3AC06CF85A74E8E29BA",
+                                "name":  "mtmd.dll"
+                            }
+                        ],
+    "mode":  "order",
+    "timestamp":  "20261011-210756"
+}

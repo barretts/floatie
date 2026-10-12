@@ -1,0 +1,4147 @@
+{
+  "count": 1031,
+  "passed": 1031,
+  "checks": [
+    {
+      "name": "baseline rejects valid named-argument permutations",
+      "passed": true
+    },
+    {
+      "name": "baseline permits duplicate optional key",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 0: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 1: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 2: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 3: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 4: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 5: required-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 6: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 7: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 8: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 9: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 10: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 11: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 12: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 13: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 14: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 15: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 16: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 17: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 18: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 19: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 20: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 21: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 22: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 23: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 24: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 25: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 26: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 27: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 28: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation boolean preserved",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 29: optional-permutation stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 30: missing-i grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 31: missing-path grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 32: missing-content grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 33: duplicate-required grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 34: duplicate-optional grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 35: multiple stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end grammar",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end parses",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end call count",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end correct named values",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end stream equals final",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end stable ID",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end stable name",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end contiguous stream indices",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end unique stream IDs",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end exact fragment assembly",
+      "passed": true
+    },
+    {
+      "name": "argument case 36: native-end stream equals final",
+      "passed": true
+    },
+    {
+      "name": "0 properties declaration order accepted",
+      "passed": true
+    },
+    {
+      "name": "0 properties reverse-order scope",
+      "passed": true
+    },
+    {
+      "name": "8 properties declaration order accepted",
+      "passed": true
+    },
+    {
+      "name": "8 properties reverse-order scope",
+      "passed": true
+    },
+    {
+      "name": "9 properties declaration order accepted",
+      "passed": true
+    },
+    {
+      "name": "9 properties reverse-order scope",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-chat expected captures",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-chat-20261011-210947.summary.json call count",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-chat-20261011-210947.summary.json finish",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-chat-20261011-210947.summary.json indices",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-chat-20261011-210947.summary.json unique IDs",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-chat-20261011-210947.summary.json truncation visible",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-default-multiple expected captures",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-default-multiple-nonstream-20261011-211015.summary.json call count",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-default-multiple-nonstream-20261011-211015.summary.json finish",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-default-multiple-nonstream-20261011-211015.summary.json indices",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-default-multiple-nonstream-20261011-211015.summary.json unique IDs",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-default-multiple-nonstream-20261011-211015.summary.json truncation visible",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-default-multiple-nonstream-20261011-211015.summary.json standard flag omitted",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-default-multiple-stream-20261011-211030.summary.json call count",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-default-multiple-stream-20261011-211030.summary.json finish",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-default-multiple-stream-20261011-211030.summary.json indices",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-default-multiple-stream-20261011-211030.summary.json unique IDs",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-default-multiple-stream-20261011-211030.summary.json truncation visible",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-default-multiple-stream-20261011-211030.summary.json standard flag omitted",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-default-multiple matching paired request bodies",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-single expected captures",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-single-nonstream-20261011-211330.summary.json call count",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-single-nonstream-20261011-211330.summary.json finish",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-single-nonstream-20261011-211330.summary.json indices",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-single-nonstream-20261011-211330.summary.json unique IDs",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-single-nonstream-20261011-211330.summary.json truncation visible",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-single-nonstream-20261011-211330.summary.json standard flag omitted",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-single-stream-20261011-211340.summary.json call count",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-single-stream-20261011-211340.summary.json finish",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-single-stream-20261011-211340.summary.json indices",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-single-stream-20261011-211340.summary.json unique IDs",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-single-stream-20261011-211340.summary.json truncation visible",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-single-stream-20261011-211340.summary.json standard flag omitted",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-single matching paired request bodies",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-continuation expected captures",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-continuation-nonstream-20261011-211344.summary.json call count",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-continuation-nonstream-20261011-211344.summary.json finish",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-continuation-nonstream-20261011-211344.summary.json indices",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-continuation-nonstream-20261011-211344.summary.json unique IDs",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-continuation-nonstream-20261011-211344.summary.json truncation visible",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-continuation-stream-20261011-211356.summary.json call count",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-continuation-stream-20261011-211356.summary.json finish",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-continuation-stream-20261011-211356.summary.json indices",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-continuation-stream-20261011-211356.summary.json unique IDs",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-continuation-stream-20261011-211356.summary.json truncation visible",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-continuation matching paired request bodies",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-serial expected captures",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-serial-nonstream-20261011-211357.summary.json call count",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-serial-nonstream-20261011-211357.summary.json finish",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-serial-nonstream-20261011-211357.summary.json indices",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-serial-nonstream-20261011-211357.summary.json unique IDs",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-serial-nonstream-20261011-211357.summary.json truncation visible",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-serial-stream-20261011-211407.summary.json call count",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-serial-stream-20261011-211407.summary.json finish",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-serial-stream-20261011-211407.summary.json indices",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-serial-stream-20261011-211407.summary.json unique IDs",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-serial-stream-20261011-211407.summary.json truncation visible",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-serial matching paired request bodies",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-truncated expected captures",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-truncated-nonstream-20261011-211411.summary.json call count",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-truncated-nonstream-20261011-211411.summary.json finish",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-truncated-nonstream-20261011-211411.summary.json indices",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-truncated-nonstream-20261011-211411.summary.json unique IDs",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-truncated-nonstream-20261011-211411.summary.json truncation visible",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-truncated-stream-20261011-211416.summary.json call count",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-truncated-stream-20261011-211416.summary.json finish",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-truncated-stream-20261011-211416.summary.json indices",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-truncated-stream-20261011-211416.summary.json unique IDs",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-truncated-stream-20261011-211416.summary.json truncation visible",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-truncated matching paired request bodies",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-reminder-reminder expected captures",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-reminder-reminder-nonstream-20261011-211548.summary.json call count",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-reminder-reminder-nonstream-20261011-211548.summary.json finish",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-reminder-reminder-nonstream-20261011-211548.summary.json indices",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-reminder-reminder-nonstream-20261011-211548.summary.json unique IDs",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-reminder-reminder-nonstream-20261011-211548.summary.json truncation visible",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-reminder-reminder-nonstream-20261011-211548.summary.json standard flag omitted",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-reminder-reminder-stream-20261011-211608.summary.json call count",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-reminder-reminder-stream-20261011-211608.summary.json finish",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-reminder-reminder-stream-20261011-211608.summary.json indices",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-reminder-reminder-stream-20261011-211608.summary.json unique IDs",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-reminder-reminder-stream-20261011-211608.summary.json truncation visible",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-reminder-reminder-stream-20261011-211608.summary.json standard flag omitted",
+      "passed": true
+    },
+    {
+      "name": "order-fixed-reminder-reminder matching paired request bodies",
+      "passed": true
+    },
+    {
+      "name": "live native argument order preserved",
+      "passed": true
+    },
+    {
+      "name": "cancellation interrupted active request",
+      "passed": true
+    },
+    {
+      "name": "cancellation released slot",
+      "passed": true
+    },
+    {
+      "name": "installed OMP adapter preserves prior reasoning",
+      "passed": true
+    },
+    {
+      "name": "OMP low sends no effort parameter",
+      "passed": true
+    }
+  ],
+  "argument_probe": "C:\\code\\poolside-strata\\performance\\tool-call-investigation\\argument-order-candidate-20261011-210652.json",
+  "post_fix_chat_captures": [
+    "order-fixed-chat-20261011-210947.summary.json",
+    "order-fixed-default-multiple-nonstream-20261011-211015.summary.json",
+    "order-fixed-default-multiple-stream-20261011-211030.summary.json",
+    "order-fixed-single-nonstream-20261011-211330.summary.json",
+    "order-fixed-single-stream-20261011-211340.summary.json",
+    "order-fixed-continuation-nonstream-20261011-211344.summary.json",
+    "order-fixed-continuation-stream-20261011-211356.summary.json",
+    "order-fixed-serial-nonstream-20261011-211357.summary.json",
+    "order-fixed-serial-stream-20261011-211407.summary.json",
+    "order-fixed-truncated-nonstream-20261011-211411.summary.json",
+    "order-fixed-truncated-stream-20261011-211416.summary.json",
+    "order-fixed-reminder-reminder-nonstream-20261011-211548.summary.json",
+    "order-fixed-reminder-reminder-stream-20261011-211608.summary.json"
+  ],
+  "scope": "Argument ordering, exact parser/serializer fragments, bounded expansion and recorded live protocol responses. Does not establish original benchmark convergence or code correctness."
+}

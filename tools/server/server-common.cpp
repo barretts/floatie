@@ -1041,7 +1041,6 @@ json oaicompat_chat_params_parse(
     inputs.json_schema            = json_schema.is_null() ? "" : json_schema.dump();
     inputs.grammar                = grammar;
     inputs.use_jinja              = opt.use_jinja;
-    inputs.parallel_tool_calls    = json_value(body, "parallel_tool_calls", caps["supports_parallel_tool_calls"]);
     inputs.add_generation_prompt  = json_value(body, "add_generation_prompt", true);
     inputs.continue_final_message = body.contains("continue_final_message") ?
         common_chat_continuation_parse(body.at("continue_final_message")) :
@@ -1075,6 +1074,13 @@ json oaicompat_chat_params_parse(
     for (const auto & item : chat_template_kwargs_object.items()) {
         inputs.chat_template_kwargs[item.key()] = item.value().dump();
     }
+
+    // Keep grammar cardinality consistent with the configured template default.
+    // A standard top-level request flag overrides that serving policy.
+    const auto parallel_kwarg = json_value(inputs.chat_template_kwargs, "parallel_tool_calls", std::string(""));
+    const bool parallel_default = parallel_kwarg.empty() ? caps["supports_parallel_tool_calls"] :
+                                                         json::parse(parallel_kwarg).get<bool>();
+    inputs.parallel_tool_calls = json_value(body, "parallel_tool_calls", parallel_default);
 
     // parse the "enable_thinking" kwarg to override the default value
     auto enable_thinking_kwarg = json_value(inputs.chat_template_kwargs, "enable_thinking", std::string(""));

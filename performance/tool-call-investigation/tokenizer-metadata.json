@@ -1,0 +1,9 @@
+{
+  "tokenizer.ggml.bos_token_id": 2,
+  "tokenizer.ggml.eos_token_id": 2,
+  "tokenizer.ggml.unknown_token_id": 0,
+  "tokenizer.ggml.seperator_token_id": 8,
+  "tokenizer.ggml.padding_token_id": 9,
+  "tokenizer.ggml.mask_token_id": 12,
+  "tokenizer.ggml.eot_token_id": 24
+}

@@ -2,3 +2,8 @@
 /Start-Floatie-*.bat text eol=crlf
 *.gguf -text
 /performance/** -text
+/research/** -text
+/research/**/*.pdf binary
+/research/**/*.docx binary
+/research/INDEX.md text eol=lf
+/research/source-manifest.json text eol=lf

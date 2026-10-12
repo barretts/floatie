@@ -172,3 +172,6 @@ AGENTS.local.md
 
 # Historical evidence logs; live server logs remain excluded above
 !/performance/**/*.log
+
+# New investigation server/compiler logs remain local.
+/performance/tool-call-investigation/*.log

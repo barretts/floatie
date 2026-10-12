@@ -1,0 +1,79 @@
+{
+  "label": "instrument-text-ending-multiple-nonstream",
+  "elapsed_s": 12.064863299950957,
+  "headers": {
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "13994",
+    "Connection": "close"
+  },
+  "stream": false,
+  "finish_reason": "length",
+  "usage": {
+    "completion_tokens": 256,
+    "prompt_tokens": 377,
+    "total_tokens": 633,
+    "prompt_tokens_details": {
+      "cached_tokens": 372
+    }
+  },
+  "calls": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"read fixture.ts lines 147-180\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/fixture.ts\"}"
+      },
+      "id": "CNvFCLHEoJsQQasxUB1OCMVMyFmxEo5I"
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"read other.ts lines 1-4\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/other.ts\"}"
+      },
+      "id": "oKtXt5EnmEgCeJt2nWIBO09m4ZZLaIGk"
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"read other.ts lines 1-4\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/other.ts\"}"
+      },
+      "id": "1XlwKdUA842GPgBHgr7IYLSCXkGWn0z6"
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"read other.ts lines 1-4\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/other.ts\"}"
+      },
+      "id": "rfimLwrJNsUDNmIXrL3LnNk08LqVCpoW"
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{"
+      },
+      "id": "O4CUK5kusajPVfNcVPVBttPCIybeKmsB"
+    }
+  ],
+  "indices": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "invalid_arguments": [
+    {
+      "index": 4,
+      "error": "Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+    }
+  ],
+  "raw_available": true,
+  "raw_tool_markers": 5,
+  "native_stop": ""
+}

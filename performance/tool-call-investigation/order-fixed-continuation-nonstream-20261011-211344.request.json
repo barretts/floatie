@@ -1,0 +1,119 @@
+{
+  "model": "laguna-s-2.1-iq3-s",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a coding assistant. Use the supplied tools. Wait for tool results before depending on them."
+    },
+    {
+      "role": "user",
+      "content": "Read C:/code/poolside-strata/performance/tool-call-investigation/scratch/fixture.ts then report the two lookup keys."
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "prior-read",
+          "type": "function",
+          "function": {
+            "name": "read",
+            "arguments": "{\"i\": \"Inspect lookup\", \"path\": \"C:/code/poolside-strata/performance/tool-call-investigation/scratch/fixture.ts\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "prior-read",
+      "content": "const VALID: Record<string, true> = { ok: true, no_matches: true };"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "description": "read tool",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "i": {
+              "type": "string",
+              "description": "concise intent"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "i"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "edit",
+        "description": "edit tool",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "i": {
+              "type": "string",
+              "description": "concise intent"
+            },
+            "input": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "input",
+            "i"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "write",
+        "description": "write tool",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "i": {
+              "type": "string",
+              "description": "concise intent"
+            },
+            "path": {
+              "type": "string"
+            },
+            "content": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "content",
+            "i"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "max_tokens": 256,
+  "seed": 42,
+  "stream": false,
+  "verbose": true,
+  "return_tokens": true,
+  "stream_options": {},
+  "chat_template_kwargs": {
+    "enable_thinking": false
+  }
+}

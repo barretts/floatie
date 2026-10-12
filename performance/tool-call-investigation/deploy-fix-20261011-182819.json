@@ -1,0 +1,181 @@
+{
+  "restart_started": true,
+  "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819",
+  "build_exit": 0,
+  "timestamp": "20261011-182819",
+  "stopped_pids": [
+    14468
+  ],
+  "sources_after": [
+    {
+      "sha256": "6ED6FC74D80509D1801E7B9FF9EA71A112C51B1ACCE45E7B641A0FA2C5C27FC1",
+      "relative": "common\\chat-auto-parser.h"
+    },
+    {
+      "sha256": "DC24FE0A6E90A9E79649E0FE97B0DF1A43DED9CD7451BC3EF5A9680FDD087559",
+      "relative": "common\\chat-auto-parser-generator.cpp"
+    },
+    {
+      "sha256": "6A3A0ECC624F3BBF637DDADA4536B9FA100D66CB89B67C3134FDFB459CF57819",
+      "relative": "tools\\server\\server-task.cpp"
+    }
+  ],
+  "sources_before": [
+    {
+      "relative": "common\\chat-auto-parser.h",
+      "original_sha256": "A8748DDA4CF7867D4E5DF624274A103DD4404C7356603F881595CBAEE6E71550",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\source\\chat-auto-parser.h"
+    },
+    {
+      "relative": "common\\chat-auto-parser-generator.cpp",
+      "original_sha256": "431EC29F7CD61A7CAD80C9596918EDA04E3E37CA25B7FCB1A6D424FF3C0CAD7B",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\source\\chat-auto-parser-generator.cpp"
+    },
+    {
+      "relative": "tools\\server\\server-task.cpp",
+      "original_sha256": "6A3A0ECC624F3BBF637DDADA4536B9FA100D66CB89B67C3134FDFB459CF57819",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\source\\server-task.cpp"
+    }
+  ],
+  "binaries_after": [
+    {
+      "sha256": "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142",
+      "name": "cublas64_12.dll"
+    },
+    {
+      "sha256": "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49",
+      "name": "cublasLt64_12.dll"
+    },
+    {
+      "sha256": "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746",
+      "name": "cudart64_12.dll"
+    },
+    {
+      "sha256": "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA",
+      "name": "ggml-base.dll"
+    },
+    {
+      "sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E",
+      "name": "ggml-cpu.dll"
+    },
+    {
+      "sha256": "EF5651CF66AF3C936EA99289523D6B62F70C44E74FD3328D0154162275B37106",
+      "name": "ggml-cuda.dll"
+    },
+    {
+      "sha256": "78CCF7F7F8061768F03756E9C833431D350C75FF3378C241BA8A8EF3E35745A4",
+      "name": "ggml.dll"
+    },
+    {
+      "sha256": "37E24B3095FEFB1AE240CFC498B708CE13530727DCEC48B31268D6CBAA7530BC",
+      "name": "llama-common.dll"
+    },
+    {
+      "sha256": "4EC54A1301CCE562AECC08D5ABCEF305EE3A4F82CCB5B78AD739D2F2E366B28D",
+      "name": "llama-server-impl.dll"
+    },
+    {
+      "sha256": "5851BE7CF04E54AE3E94FCA890168ACF494D78E49D6EC1B99937CF61B3A94691",
+      "name": "llama-server.exe"
+    },
+    {
+      "sha256": "9702D8C339599ADEF2FBCC4D3911508904248B919C789E967824102F352C225B",
+      "name": "llama.dll"
+    },
+    {
+      "sha256": "33C0DEABC64B93CD5F600A6570D528A8A751C29AFB6FF3AC06CF85A74E8E29BA",
+      "name": "mtmd.dll"
+    }
+  ],
+  "build_log": "C:\\code\\poolside-strata\\performance\\tool-call-investigation\\deploy-fix-20261011-182819.log",
+  "binaries_before": [
+    {
+      "name": "cublas64_12.dll",
+      "original_sha256": "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\bin\\cublas64_12.dll"
+    },
+    {
+      "name": "cublasLt64_12.dll",
+      "original_sha256": "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\bin\\cublasLt64_12.dll"
+    },
+    {
+      "name": "cudart64_12.dll",
+      "original_sha256": "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\bin\\cudart64_12.dll"
+    },
+    {
+      "name": "ggml-base.dll",
+      "original_sha256": "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\bin\\ggml-base.dll"
+    },
+    {
+      "name": "ggml-cpu.dll",
+      "original_sha256": "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\bin\\ggml-cpu.dll"
+    },
+    {
+      "name": "ggml-cuda.dll",
+      "original_sha256": "EF5651CF66AF3C936EA99289523D6B62F70C44E74FD3328D0154162275B37106",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\bin\\ggml-cuda.dll"
+    },
+    {
+      "name": "ggml.dll",
+      "original_sha256": "78CCF7F7F8061768F03756E9C833431D350C75FF3378C241BA8A8EF3E35745A4",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\bin\\ggml.dll"
+    },
+    {
+      "name": "llama-common.dll",
+      "original_sha256": "EF11E95A8D30FDD405FA82A2E53B262DA989536E0C20F2293001E30289D71B3D",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\bin\\llama-common.dll"
+    },
+    {
+      "name": "llama-server-impl.dll",
+      "original_sha256": "4EC54A1301CCE562AECC08D5ABCEF305EE3A4F82CCB5B78AD739D2F2E366B28D",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\bin\\llama-server-impl.dll"
+    },
+    {
+      "name": "llama-server.exe",
+      "original_sha256": "5851BE7CF04E54AE3E94FCA890168ACF494D78E49D6EC1B99937CF61B3A94691",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\bin\\llama-server.exe"
+    },
+    {
+      "name": "llama.dll",
+      "original_sha256": "9702D8C339599ADEF2FBCC4D3911508904248B919C789E967824102F352C225B",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\bin\\llama.dll"
+    },
+    {
+      "name": "mtmd.dll",
+      "original_sha256": "33C0DEABC64B93CD5F600A6570D528A8A751C29AFB6FF3AC06CF85A74E8E29BA",
+      "backup": "E:\\poolside\\backups\\before-tool-call-fix-20261011-182819\\bin\\mtmd.dll"
+    }
+  ],
+  "launch_arguments": [
+    "-NoLogo",
+    "-NoProfile",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "E:\\poolside\\launch.ps1",
+    "-ContextSize",
+    "131072",
+    "-CacheMiB",
+    "3072",
+    "-BatchSize",
+    "8192",
+    "-MoeThreads",
+    "16",
+    "-DraftMax",
+    "4",
+    "-DraftKvType",
+    "q8_0",
+    "-GpuMissesPerToken",
+    "0",
+    "-PinExperts",
+    "-AdaptiveCache",
+    "-Port",
+    "1235"
+  ],
+  "mode": "fix",
+  "launcher_pid": 21184
+}

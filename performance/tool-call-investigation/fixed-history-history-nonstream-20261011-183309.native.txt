@@ -1,0 +1,78 @@
+I see. There's a rule about using `Record<K, V>` / `Record<K, true>` instead of `Set` / `Map` for small, static string-keyed lookup tables. But my `VALID_OUTCOMES` and `TERMINAL_OUTCOMES` use `Set`. These are static literal lookup tables.
+
+However, I also have `this.records` and `this.tickets` which are `Map` with dynamic keys — those are fine since they're dynamic.
+
+But `VALID_OUTCOMES` and `TERMINAL_OUTCOMES` are small static string-keyed lookup tables. I should convert them to `Record<Outcome, true>` etc.
+
+Wait, but the rule says "Small, static string-keyed lookup tables: `Record<K, V>` / `Record<K, true>`." Let me reconsider. `VALID_OUTCOMES` and `TERMINAL_OUTCOMES` are static string-keyed sets. I should use `Record<Outcome, true>`.
+
+Actually, let me re-read: "Set / Map: dynamic/non-string keys; runtime insertion/deletion; .size, .clear(), stable insertion order, or iterator APIs."
+
+`VALID_OUTCOMES` and `TERMINAL_OUTCOMES` are static. So I should use `Record`.
+
+Let me also reconsider: my `records` and `tickets` Maps are dynamic (runtime insertion/deletion), so they're fine as Map.
+
+Let me convert the static Sets to Records.
+
+For `VALID_OUTCOMES`: `Record<Outcome, true>`.
+For `TERMINAL_OUTCOMES`: I need a Record that maps terminal outcomes to true. Let me make a type for that.
+
+Let me define:
+```typescript
+const VALID_OUTCOMES: Record<Outcome, true> = {
+  ok: true,
+  no_matches: true,
+  transient_error: true,
+  permanent_error: true,
+  cancelled: true,
+};
+
+const TERMINAL_OUTCOMES: Partial<Record<Outcome, true>> = {
+  ok: true,
+  no_matches: true,
+  permanent_error: true,
+};
+```
+
+Then use `outcome in VALID_OUTCOMES` instead of `VALID_OUTCOMES.has(outcome)`. And `TERMINAL_OUTCOMES[outcome]` or `outcome in TERMINAL_OUTCOMES`.
+
+Let me rewrite the relevant parts.
+
+Actually wait, `outcome in VALID_OUTCOMES` — `outcome` is `Outcome` after validation. Let me check the flow:
+
+```typescript
+if (typeof outcome !== "string" || !VALID_OUTCOMES[outcome as Outcome]) {
+  throw new TypeError("invalid outcome");
+}
+```
+
+Then `outcome` is narrowed to `Outcome`? With `VALID_OUTCOMES[outcome as Outcome]` being a truthy check, TypeScript may not narrow `outcome` to `Outcome`. Let me use a different approach. Actually, after the check, I cast. Let me think about how to type this cleanly.
+
+Let me use a helper. Actually, I can do:
+
+```typescript
+const VALID_OUTCOMES: Record<Outcome, true> = { ok: true, no_matches: true, transient_error: true, permanent_error: true, cancelled: true };
+
+function isValidOutcome(value: unknown): value is Outcome {
+  return typeof value === "string" && value in VALID_OUTCOMES;
+}
+```
+
+`value in VALID_OUTCOMES` — since VALID_OUTCOMES is `Record<Outcome, true>`, the keys are Outcome. `value in VALID_OUTCOMES` checks if value is a key. With `value is Outcome` type guard. That's clean.
+
+For terminal:
+```typescript
+const TERMINAL_OUTCOMES: Partial<Record<Outcome, true>> = { ok: true, no_matches: true, permanent_error: true };
+
+// check: TERMINAL_OUTCOMES[outcome] === true
+```
+
+But `outcome` here is `Outcome` (narrowed by the type guard). `TERMINAL_OUTCOMES[outcome]` returns `true | undefined`. So check `TERMINAL_OUTCOMES[outcome] === true`. Actually `outcome in TERMINAL_OUTCOMES` would also work since outcome is Outcome.
+
+Let me rewrite using these.
+
+Now, the `records` Map — it's keyed by string, dynamic. The rule allows Map for dynamic/non-string keys with runtime insertion/deletion. String keys are allowed too for dynamic maps. So `records: Map<string, SignatureRecord>` is fine.
+
+`tickets: Map<string, ...>` — also dynamic. Fine.
+
+Let me also double check: the rule mentions "stable insertion order, or iterator APIs" as reasons to use Set/Map. My Maps use `.get`, `.set`, `.has` — no iterators, no size needed. But

@@ -1,0 +1,106 @@
+{
+  "model": "laguna-s-2.1-iq3-s",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a coding assistant. Use supplied tools. Make the smallest necessary change and continue to verification. i is a short intent label, at most 200 characters; put source code in content."
+    },
+    {
+      "role": "user",
+      "content": "Call write exactly once with arguments in this order: path, content, i. path is C:/code/poolside-strata/performance/tool-call-investigation/scratch/status-table.ts. content is exactly export const READY = true; followed by a newline. i is Create constant. These are three named string arguments; wait for the result."
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "description": "read tool",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "i": {
+              "type": "string",
+              "description": "concise intent"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "i"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "write",
+        "description": "write tool",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "i": {
+              "type": "string",
+              "description": "concise intent"
+            },
+            "path": {
+              "type": "string"
+            },
+            "content": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "content",
+            "i"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "bash",
+        "description": "bash tool",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "i": {
+              "type": "string",
+              "description": "concise intent"
+            },
+            "command": {
+              "type": "string"
+            },
+            "cwd": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "command",
+            "cwd",
+            "i"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "parallel_tool_calls": true,
+  "max_tokens": 768,
+  "seed": 42,
+  "temperature": 0,
+  "stream": false,
+  "verbose": true,
+  "return_tokens": true,
+  "chat_template_kwargs": {
+    "enable_thinking": false
+  },
+  "reasoning_budget_tokens": 256
+}

@@ -1,0 +1,3012 @@
+{
+  "input": "C:\\code\\poolside-strata\\performance\\tool-call-investigation\\parser-candidate-20261011-210314.json",
+  "count": 751,
+  "passed": 751,
+  "checks": [
+    {
+      "name": "single parsed count",
+      "passed": true
+    },
+    {
+      "name": "single has no parser exception",
+      "passed": true
+    },
+    {
+      "name": "single/1/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "single/1/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "single/1 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "single/1 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "single/1 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "single/1 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "single/1 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "single/1 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "single/1 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "single/1 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "single/1 finish reason",
+      "passed": true
+    },
+    {
+      "name": "single/1 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "single/2/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "single/2/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "single/2 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "single/2 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "single/2 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "single/2 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "single/2 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "single/2 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "single/2 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "single/2 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "single/2 finish reason",
+      "passed": true
+    },
+    {
+      "name": "single/2 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "single/7/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "single/7/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "single/7 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "single/7 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "single/7 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "single/7 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "single/7 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "single/7 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "single/7 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "single/7 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "single/7 finish reason",
+      "passed": true
+    },
+    {
+      "name": "single/7 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "single/169/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "single/169/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "single/169 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "single/169 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "single/169 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "single/169 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "single/169 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "single/169 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "single/169 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "single/169 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "single/169 finish reason",
+      "passed": true
+    },
+    {
+      "name": "single/169 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "multiple parsed count",
+      "passed": true
+    },
+    {
+      "name": "multiple has no parser exception",
+      "passed": true
+    },
+    {
+      "name": "multiple/1/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "multiple/1/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "multiple/1/1 stable ID",
+      "passed": true
+    },
+    {
+      "name": "multiple/1/1 stable name",
+      "passed": true
+    },
+    {
+      "name": "multiple/1 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "multiple/1 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "multiple/1 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "multiple/1 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "multiple/1 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "multiple/1 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "multiple/1 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "multiple/1 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "multiple/1 finish reason",
+      "passed": true
+    },
+    {
+      "name": "multiple/1 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "multiple/2/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "multiple/2/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "multiple/2/1 stable ID",
+      "passed": true
+    },
+    {
+      "name": "multiple/2/1 stable name",
+      "passed": true
+    },
+    {
+      "name": "multiple/2 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "multiple/2 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "multiple/2 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "multiple/2 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "multiple/2 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "multiple/2 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "multiple/2 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "multiple/2 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "multiple/2 finish reason",
+      "passed": true
+    },
+    {
+      "name": "multiple/2 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "multiple/7/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "multiple/7/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "multiple/7/1 stable ID",
+      "passed": true
+    },
+    {
+      "name": "multiple/7/1 stable name",
+      "passed": true
+    },
+    {
+      "name": "multiple/7 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "multiple/7 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "multiple/7 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "multiple/7 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "multiple/7 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "multiple/7 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "multiple/7 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "multiple/7 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "multiple/7 finish reason",
+      "passed": true
+    },
+    {
+      "name": "multiple/7 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "multiple/316/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "multiple/316/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "multiple/316/1 stable ID",
+      "passed": true
+    },
+    {
+      "name": "multiple/316/1 stable name",
+      "passed": true
+    },
+    {
+      "name": "multiple/316 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "multiple/316 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "multiple/316 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "multiple/316 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "multiple/316 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "multiple/316 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "multiple/316 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "multiple/316 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "multiple/316 finish reason",
+      "passed": true
+    },
+    {
+      "name": "multiple/316 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "repeated parsed count",
+      "passed": true
+    },
+    {
+      "name": "repeated has no parser exception",
+      "passed": true
+    },
+    {
+      "name": "repeated/1/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "repeated/1/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "repeated/1/1 stable ID",
+      "passed": true
+    },
+    {
+      "name": "repeated/1/1 stable name",
+      "passed": true
+    },
+    {
+      "name": "repeated/1/2 stable ID",
+      "passed": true
+    },
+    {
+      "name": "repeated/1/2 stable name",
+      "passed": true
+    },
+    {
+      "name": "repeated/1 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "repeated/1 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "repeated/1 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "repeated/1 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "repeated/1 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "repeated/1 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "repeated/1 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "repeated/1 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "repeated/1 finish reason",
+      "passed": true
+    },
+    {
+      "name": "repeated/1 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "repeated/2/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "repeated/2/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "repeated/2/1 stable ID",
+      "passed": true
+    },
+    {
+      "name": "repeated/2/1 stable name",
+      "passed": true
+    },
+    {
+      "name": "repeated/2/2 stable ID",
+      "passed": true
+    },
+    {
+      "name": "repeated/2/2 stable name",
+      "passed": true
+    },
+    {
+      "name": "repeated/2 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "repeated/2 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "repeated/2 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "repeated/2 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "repeated/2 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "repeated/2 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "repeated/2 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "repeated/2 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "repeated/2 finish reason",
+      "passed": true
+    },
+    {
+      "name": "repeated/2 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "repeated/7/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "repeated/7/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "repeated/7/1 stable ID",
+      "passed": true
+    },
+    {
+      "name": "repeated/7/1 stable name",
+      "passed": true
+    },
+    {
+      "name": "repeated/7/2 stable ID",
+      "passed": true
+    },
+    {
+      "name": "repeated/7/2 stable name",
+      "passed": true
+    },
+    {
+      "name": "repeated/7 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "repeated/7 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "repeated/7 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "repeated/7 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "repeated/7 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "repeated/7 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "repeated/7 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "repeated/7 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "repeated/7 finish reason",
+      "passed": true
+    },
+    {
+      "name": "repeated/7 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "repeated/507/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "repeated/507/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "repeated/507/1 stable ID",
+      "passed": true
+    },
+    {
+      "name": "repeated/507/1 stable name",
+      "passed": true
+    },
+    {
+      "name": "repeated/507/2 stable ID",
+      "passed": true
+    },
+    {
+      "name": "repeated/507/2 stable name",
+      "passed": true
+    },
+    {
+      "name": "repeated/507 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "repeated/507 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "repeated/507 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "repeated/507 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "repeated/507 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "repeated/507 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "repeated/507 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "repeated/507 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "repeated/507 finish reason",
+      "passed": true
+    },
+    {
+      "name": "repeated/507 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "markup-value parsed count",
+      "passed": true
+    },
+    {
+      "name": "markup-value has no parser exception",
+      "passed": true
+    },
+    {
+      "name": "markup-value/1/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "markup-value/1/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "markup-value/1 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "markup-value/1 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "markup-value/1 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "markup-value/1 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "markup-value/1 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "markup-value/1 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "markup-value/1 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "markup-value/1 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "markup-value/1 finish reason",
+      "passed": true
+    },
+    {
+      "name": "markup-value/1 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "markup-value/2/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "markup-value/2/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "markup-value/2 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "markup-value/2 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "markup-value/2 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "markup-value/2 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "markup-value/2 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "markup-value/2 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "markup-value/2 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "markup-value/2 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "markup-value/2 finish reason",
+      "passed": true
+    },
+    {
+      "name": "markup-value/2 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "markup-value/7/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "markup-value/7/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "markup-value/7 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "markup-value/7 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "markup-value/7 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "markup-value/7 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "markup-value/7 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "markup-value/7 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "markup-value/7 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "markup-value/7 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "markup-value/7 finish reason",
+      "passed": true
+    },
+    {
+      "name": "markup-value/7 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "markup-value/176/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "markup-value/176/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "markup-value/176 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "markup-value/176 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "markup-value/176 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "markup-value/176 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "markup-value/176 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "markup-value/176 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "markup-value/176 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "markup-value/176 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "markup-value/176 finish reason",
+      "passed": true
+    },
+    {
+      "name": "markup-value/176 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "truncated parsed count",
+      "passed": true
+    },
+    {
+      "name": "truncated has no parser exception",
+      "passed": true
+    },
+    {
+      "name": "truncated/1/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "truncated/1/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "truncated/1 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "truncated/1 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "truncated/1 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "truncated/1 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "truncated/1 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "truncated/1 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "truncated/1 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "truncated/1 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "truncated/1 finish reason",
+      "passed": true
+    },
+    {
+      "name": "truncated/1 truncated arguments remain visibly invalid",
+      "passed": true
+    },
+    {
+      "name": "truncated/2/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "truncated/2/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "truncated/2 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "truncated/2 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "truncated/2 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "truncated/2 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "truncated/2 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "truncated/2 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "truncated/2 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "truncated/2 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "truncated/2 finish reason",
+      "passed": true
+    },
+    {
+      "name": "truncated/2 truncated arguments remain visibly invalid",
+      "passed": true
+    },
+    {
+      "name": "truncated/7/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "truncated/7/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "truncated/7 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "truncated/7 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "truncated/7 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "truncated/7 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "truncated/7 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "truncated/7 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "truncated/7 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "truncated/7 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "truncated/7 finish reason",
+      "passed": true
+    },
+    {
+      "name": "truncated/7 truncated arguments remain visibly invalid",
+      "passed": true
+    },
+    {
+      "name": "truncated/74/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "truncated/74/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "truncated/74 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "truncated/74 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "truncated/74 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "truncated/74 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "truncated/74 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "truncated/74 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "truncated/74 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "truncated/74 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "truncated/74 finish reason",
+      "passed": true
+    },
+    {
+      "name": "truncated/74 truncated arguments remain visibly invalid",
+      "passed": true
+    },
+    {
+      "name": "native-end parsed count",
+      "passed": true
+    },
+    {
+      "name": "native-end has no parser exception",
+      "passed": true
+    },
+    {
+      "name": "native-end/1/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "native-end/1/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "native-end/1 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "native-end/1 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "native-end/1 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "native-end/1 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "native-end/1 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "native-end/1 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "native-end/1 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "native-end/1 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "native-end/1 finish reason",
+      "passed": true
+    },
+    {
+      "name": "native-end/1 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "native-end/2/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "native-end/2/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "native-end/2 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "native-end/2 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "native-end/2 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "native-end/2 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "native-end/2 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "native-end/2 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "native-end/2 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "native-end/2 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "native-end/2 finish reason",
+      "passed": true
+    },
+    {
+      "name": "native-end/2 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "native-end/7/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "native-end/7/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "native-end/7 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "native-end/7 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "native-end/7 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "native-end/7 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "native-end/7 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "native-end/7 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "native-end/7 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "native-end/7 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "native-end/7 finish reason",
+      "passed": true
+    },
+    {
+      "name": "native-end/7 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "native-end/181/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "native-end/181/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "native-end/181 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "native-end/181 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "native-end/181 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "native-end/181 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "native-end/181 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "native-end/181 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "native-end/181 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "native-end/181 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "native-end/181 finish reason",
+      "passed": true
+    },
+    {
+      "name": "native-end/181 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture parsed count",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture has no parser exception",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/1 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/1 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/2 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/2 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/3 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/3 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/4 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/4 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/5 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/5 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/6 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/6 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/7 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/7 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/8 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/8 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/9 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/9 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/10 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/10 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/11 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/11 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/12 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/12 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/13 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/13 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/14 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/14 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/15 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/15 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/16 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/16 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/17 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/17 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/18 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/18 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/19 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/19 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/20 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/20 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/21 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/21 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/22 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/22 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/23 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/23 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/24 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/24 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/25 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/25 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/26 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/26 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/27 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/27 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/28 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/28 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/29 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/29 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/30 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/30 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/31 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/31 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/32 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/32 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/33 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/33 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/34 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/34 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/35 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/35 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/36 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/36 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/37 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/37 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/38 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/38 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/39 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/39 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/40 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/40 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/41 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/41 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/42 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/42 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/43 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/43 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/44 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/44 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/45 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/45 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/46 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/46 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/47 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/47 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/48 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/48 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/49 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/49 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/50 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/50 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/51 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/51 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/52 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/52 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/53 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/53 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/54 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/54 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/55 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/55 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/56 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/56 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/57 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/57 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/58 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/58 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/59 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/59 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/60 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/60 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/61 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/61 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/62 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/62 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/63 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/63 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/64 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/64 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/65 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/65 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/66 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/66 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/67 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/67 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/68 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/68 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/69 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/69 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/70 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/70 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/71 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/71 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/72 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/72 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/73 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/73 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/74 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/74 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/75 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/75 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/76 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/76 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/77 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/77 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/78 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/78 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/79 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/79 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/80 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/80 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/81 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/81 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/82 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/82 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/83 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/83 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/84 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/84 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/85 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/85 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/86 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/86 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/87 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/87 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/88 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/88 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/89 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/89 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/90 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/90 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/91 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/91 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/92 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/92 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/93 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/93 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/94 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/94 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/95 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/95 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/96 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/96 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/97 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127/97 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127 finish reason",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/127 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/0 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/0 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/1 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/1 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/2 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/2 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/3 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/3 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/4 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/4 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/5 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/5 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/6 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/6 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/7 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/7 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/8 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/8 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/9 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/9 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/10 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/10 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/11 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/11 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/12 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/12 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/13 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/13 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/14 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/14 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/15 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/15 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/16 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/16 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/17 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/17 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/18 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/18 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/19 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/19 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/20 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/20 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/21 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/21 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/22 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/22 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/23 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/23 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/24 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/24 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/25 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/25 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/26 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/26 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/27 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/27 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/28 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/28 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/29 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/29 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/30 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/30 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/31 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/31 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/32 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/32 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/33 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/33 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/34 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/34 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/35 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/35 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/36 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/36 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/37 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/37 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/38 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/38 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/39 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/39 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/40 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/40 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/41 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/41 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/42 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/42 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/43 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/43 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/44 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/44 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/45 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/45 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/46 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/46 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/47 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/47 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/48 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/48 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/49 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/49 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/50 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/50 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/51 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/51 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/52 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/52 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/53 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/53 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/54 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/54 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/55 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/55 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/56 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/56 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/57 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/57 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/58 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/58 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/59 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/59 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/60 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/60 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/61 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/61 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/62 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/62 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/63 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/63 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/64 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/64 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/65 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/65 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/66 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/66 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/67 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/67 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/68 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/68 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/69 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/69 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/70 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/70 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/71 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/71 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/72 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/72 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/73 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/73 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/74 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/74 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/75 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/75 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/76 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/76 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/77 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/77 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/78 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/78 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/79 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/79 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/80 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/80 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/81 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/81 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/82 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/82 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/83 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/83 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/84 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/84 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/85 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/85 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/86 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/86 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/87 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/87 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/88 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/88 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/89 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/89 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/90 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/90 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/91 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/91 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/92 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/92 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/93 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/93 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/94 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/94 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/95 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/95 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/96 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/96 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/97 stable ID",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562/97 stable name",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562 contiguous indices",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562 unique call IDs",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562 exactly one header per call",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562 stream equals full parse",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562 fragment assembly equals final parse",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562 raw diagnostics equal native input",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562 default streaming has no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562 opt-in diagnostics preserve normal deltas",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562 finish reason",
+      "passed": true
+    },
+    {
+      "name": "98-native-fixture/16562 all complete arguments parse",
+      "passed": true
+    },
+    {
+      "name": "grammar single",
+      "passed": true
+    },
+    {
+      "name": "grammar multiple",
+      "passed": true
+    },
+    {
+      "name": "grammar native-end",
+      "passed": true
+    },
+    {
+      "name": "grammar markup-value",
+      "passed": true
+    },
+    {
+      "name": "grammar multiple-native-end",
+      "passed": true
+    },
+    {
+      "name": "grammar call-after-native-end",
+      "passed": true
+    },
+    {
+      "name": "serial grammar single",
+      "passed": true
+    },
+    {
+      "name": "serial grammar multiple",
+      "passed": true
+    },
+    {
+      "name": "serial grammar native-end",
+      "passed": true
+    },
+    {
+      "name": "thinking grammar permits native termination",
+      "passed": true
+    },
+    {
+      "name": "tool result replay uses native tool response",
+      "passed": true
+    },
+    {
+      "name": "developer reminder replay maps to system",
+      "passed": true
+    },
+    {
+      "name": "continuation begins next assistant thinking",
+      "passed": true
+    }
+  ],
+  "scope": "Controlled native fixtures and real parser/serializer code; no live generation or client cancellation."
+}

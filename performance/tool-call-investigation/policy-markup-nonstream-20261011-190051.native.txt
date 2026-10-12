@@ -1,0 +1,2 @@
+I'll call read once with the exact path string you specified, preserving it as data without any execution or reinterpretation.<tool_call>read<arg_key>i</arg_key><arg_value>Transport test: read with exact path string</arg_value><arg_key>path</arg_key><arg_value></a></arg_key>
+<p>path</arg_value></tool_call>

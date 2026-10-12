@@ -1,0 +1,22 @@
+{
+  "model": "laguna-s-2.1-iq3-s",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Count all integers from 1 through 10000 separated by commas. Do not abbreviate."
+    }
+  ],
+  "tools": [],
+  "parallel_tool_calls": true,
+  "max_tokens": 512,
+  "seed": 42,
+  "stream": true,
+  "verbose": true,
+  "return_tokens": true,
+  "stream_options": {
+    "include_usage": true
+  },
+  "chat_template_kwargs": {
+    "enable_thinking": false
+  }
+}

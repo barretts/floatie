@@ -1,0 +1,4 @@
+The file defines a `VALID` record with two lookup keys:
+
+1. `ok`
+2. `no_matches`

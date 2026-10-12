@@ -1,0 +1,14 @@
+{
+  "captured_at": "2026-10-12T03:04:55.954861+00:00",
+  "server_pid": 3700,
+  "server_path": "E:\\poolside\\build\\bin\\llama-server.exe",
+  "context": 131072,
+  "parallel_tool_calls_default": true,
+  "restart_applied": true,
+  "launcher_sha256": "f438a4d4512798af66e267a7bc4a71916ec9d9cb60baaf84eb51d5b5d3a9e00b",
+  "parser_generator_sha256": "1882ff9758f4b89163c67f8f2e790696ae0cca3e9ba39d0b0be393020d394431",
+  "source_manifest": "C:\\code\\poolside-strata\\publish\\floatie\\source-manifest.json",
+  "benchmark_convergence": "Fresh owner-run session progressed through reminder, targeted edits, check/smoke pass, and a 24,406-byte regression-file write. Larger suite still being corrected; full task not established.",
+  "changed_sampler_defaults": false,
+  "performance_goal_resumed": false
+}

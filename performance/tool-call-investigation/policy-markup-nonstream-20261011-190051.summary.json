@@ -1,0 +1,39 @@
+{
+  "label": "policy-markup-nonstream",
+  "elapsed_s": 9.66174399992451,
+  "headers": {
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "11508",
+    "Connection": "close"
+  },
+  "stream": false,
+  "finish_reason": "tool_calls",
+  "usage": {
+    "completion_tokens": 76,
+    "prompt_tokens": 343,
+    "total_tokens": 419,
+    "prompt_tokens_details": {
+      "cached_tokens": 299
+    }
+  },
+  "calls": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"Transport test: read with exact path string\",\"path\":\"</a></arg_key>\\n<p>path\"}"
+      },
+      "id": "OgP2lMfAvYvXRVM1v3duiX19P798NHhS"
+    }
+  ],
+  "indices": [
+    0
+  ],
+  "invalid_arguments": [],
+  "raw_available": true,
+  "raw_tool_markers": 1,
+  "token_ids_captured": 76,
+  "native_stop": ""
+}

@@ -1,0 +1,1 @@
+data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1791762445,"id":"chatcmpl-z7qWzYyXQls6bdmc1679jXZOLjoFT75d","model":"laguna-s-2.1-iq3-s","system_fingerprint":"b1-06f8ceb","object":"chat.completion.chunk"}

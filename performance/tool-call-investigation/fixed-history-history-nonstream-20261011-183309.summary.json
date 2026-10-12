@@ -1,0 +1,27 @@
+{
+  "label": "fixed-history-history-nonstream",
+  "elapsed_s": 98.36917329998687,
+  "headers": {
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "61220",
+    "Connection": "close"
+  },
+  "stream": false,
+  "finish_reason": "length",
+  "usage": {
+    "completion_tokens": 1024,
+    "prompt_tokens": 8486,
+    "total_tokens": 9510,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  },
+  "calls": [],
+  "indices": [],
+  "invalid_arguments": [],
+  "raw_available": true,
+  "raw_tool_markers": 0,
+  "native_stop": ""
+}

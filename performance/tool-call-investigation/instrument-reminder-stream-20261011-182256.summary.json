@@ -1,0 +1,39 @@
+{
+  "label": "instrument-reminder-stream",
+  "elapsed_s": 7.5761389000108466,
+  "headers": {
+    "Transfer-Encoding": "chunked",
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "X-Accel-Buffering": "no",
+    "Content-Type": "text/event-stream",
+    "Connection": "close"
+  },
+  "stream": true,
+  "finish_reason": "tool_calls",
+  "usage": {
+    "completion_tokens": 131,
+    "prompt_tokens": 514,
+    "total_tokens": 645,
+    "prompt_tokens_details": {
+      "cached_tokens": 513
+    }
+  },
+  "calls": [
+    {
+      "id": "cWXLS2Af2jydvRDBcorF8v1ak9SZ1RTB",
+      "type": "function",
+      "function": {
+        "name": "write",
+        "arguments": "{\"i\":\"Convert Set to Record for static lookup\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/fixture.ts\",\"content\":\"export const VALID: Record<string, true> = {\\n    ok: true,\\n    no_matches: true,\\n};\\n\"}"
+      }
+    }
+  ],
+  "indices": [
+    0
+  ],
+  "invalid_arguments": [],
+  "raw_available": true,
+  "raw_tool_markers": 1,
+  "native_stop": ""
+}

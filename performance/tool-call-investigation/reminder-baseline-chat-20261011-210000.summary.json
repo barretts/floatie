@@ -1,0 +1,39 @@
+{
+  "label": "reminder-baseline-chat",
+  "elapsed_s": 22.26640900003258,
+  "headers": {
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "15580",
+    "Connection": "close"
+  },
+  "stream": false,
+  "finish_reason": "tool_calls",
+  "usage": {
+    "completion_tokens": 181,
+    "prompt_tokens": 727,
+    "total_tokens": 908,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  },
+  "calls": [
+    {
+      "type": "function",
+      "function": {
+        "name": "write",
+        "arguments": "{\"i\":\"Replace static Set with Record\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/status-table.ts\",\"content\":\"export const VALID: Record<string, true> = { ready: true, done: true };\\nexport function accepts(status: string): boolean { return VALID[status] === true; }\\n\"}"
+      },
+      "id": "htcK7jsB9b2r3qQZNFpGc6gKuZiug5kf"
+    }
+  ],
+  "indices": [
+    0
+  ],
+  "invalid_arguments": [],
+  "raw_available": true,
+  "raw_tool_markers": 1,
+  "token_ids_captured": 181,
+  "native_stop": ""
+}

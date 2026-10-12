@@ -1,0 +1,87 @@
+﻿{
+    "recorded_at":  "2026-10-11T19:28:02.2235168-05:00",
+    "health":  "ok",
+    "model":  "laguna-s-2.1-iq3-s",
+    "context":  131072,
+    "processes":  [
+                      {
+                          "Id":  13284,
+                          "Path":  "E:\\poolside\\build\\bin\\llama-server.exe"
+                      }
+                  ],
+    "launcher_sha256":  "399BD767754705570F06DDBA8CDDD1B7ECE7FC199CB607CA68BC9FC0311EA7F3",
+    "engine_sources":  [
+                           {
+                               "path":  "common\\chat-auto-parser.h",
+                               "sha256":  "6ED6FC74D80509D1801E7B9FF9EA71A112C51B1ACCE45E7B641A0FA2C5C27FC1"
+                           },
+                           {
+                               "path":  "common\\chat-auto-parser-generator.cpp",
+                               "sha256":  "DC24FE0A6E90A9E79649E0FE97B0DF1A43DED9CD7451BC3EF5A9680FDD087559"
+                           },
+                           {
+                               "path":  "tools\\server\\server-common.cpp",
+                               "sha256":  "5DA77B74335BE64AA554E82AFCF05B8ECAEC175226EDC53B65F806CFC0F25A3D"
+                           },
+                           {
+                               "path":  "tools\\server\\server-task.cpp",
+                               "sha256":  "6A3A0ECC624F3BBF637DDADA4536B9FA100D66CB89B67C3134FDFB459CF57819"
+                           }
+                       ],
+    "binary_hashes":  [
+                          {
+                              "name":  "cublas64_12.dll",
+                              "sha256":  "E26C6A52B7DF762633978B282D6F172D0085719B116FF1A8CA4C96FF5786E142"
+                          },
+                          {
+                              "name":  "cublasLt64_12.dll",
+                              "sha256":  "0FA3AABF2E90F0BA3D331699B95305EE29FE1CDA0F4D4B64C883E04F01A35B49"
+                          },
+                          {
+                              "name":  "cudart64_12.dll",
+                              "sha256":  "3DF50CF48718712F17B8C77AD72C45A1F43FF94781E302A4BE7F1D7A9B66C746"
+                          },
+                          {
+                              "name":  "ggml-base.dll",
+                              "sha256":  "DCF3CA5980A2DB25D4305DF3E2FA987E4DC79088C1355C6015B8422A125822DA"
+                          },
+                          {
+                              "name":  "ggml-cpu.dll",
+                              "sha256":  "F12D74DF8BB2E6EC3296974DD21BD1117B12E062650D5DD69A024EBBD4FA7D4E"
+                          },
+                          {
+                              "name":  "ggml-cuda.dll",
+                              "sha256":  "EF5651CF66AF3C936EA99289523D6B62F70C44E74FD3328D0154162275B37106"
+                          },
+                          {
+                              "name":  "ggml.dll",
+                              "sha256":  "78CCF7F7F8061768F03756E9C833431D350C75FF3378C241BA8A8EF3E35745A4"
+                          },
+                          {
+                              "name":  "llama-common.dll",
+                              "sha256":  "37E24B3095FEFB1AE240CFC498B708CE13530727DCEC48B31268D6CBAA7530BC"
+                          },
+                          {
+                              "name":  "llama-server-impl.dll",
+                              "sha256":  "2574FCC04CFB85778C82D4E9C479E18E46C9CC8861D869435911B4BE9AAEF8A8"
+                          },
+                          {
+                              "name":  "llama-server.exe",
+                              "sha256":  "62272A4DACAF9B923607AA74481D50086D1FBD82B901E00A302FAD81F584F93B"
+                          },
+                          {
+                              "name":  "llama.dll",
+                              "sha256":  "9702D8C339599ADEF2FBCC4D3911508904248B919C789E967824102F352C225B"
+                          },
+                          {
+                              "name":  "mtmd.dll",
+                              "sha256":  "33C0DEABC64B93CD5F600A6570D528A8A751C29AFB6FF3AC06CF85A74E8E29BA"
+                          }
+                      ],
+    "default_parallel_tool_calls":  false,
+    "explicit_parallel_override_supported":  true,
+    "context_restarted":  true,
+    "additional_restart_required":  false,
+    "omp_version":  "18.9.2",
+    "performance_goal_resumed":  false
+}

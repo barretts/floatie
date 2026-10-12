@@ -1,0 +1,28 @@
+{
+  "label": "policy-continuation-stream",
+  "elapsed_s": 0.9671716999728233,
+  "headers": {
+    "Transfer-Encoding": "chunked",
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "X-Accel-Buffering": "no",
+    "Content-Type": "text/event-stream",
+    "Connection": "close"
+  },
+  "stream": true,
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 14,
+    "prompt_tokens": 419,
+    "total_tokens": 433,
+    "prompt_tokens_details": {
+      "cached_tokens": 414
+    }
+  },
+  "calls": [],
+  "indices": [],
+  "invalid_arguments": [],
+  "raw_available": true,
+  "raw_tool_markers": 0,
+  "native_stop": ""
+}

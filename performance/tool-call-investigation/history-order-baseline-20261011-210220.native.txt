@@ -1,0 +1,255 @@
+I have two rule violations to address:
+1. `ts-set-map`: I used `new Set<Outcome>` for TERMINAL_OUTCOMES. Since it's a static lookup table of known values, I should use `Record<Outcome, true>` or `Record<string, true>`.
+2. `ts-no-tiny-functions`: My `isDenormalized` function is a tiny function (one expression). I should inline it.
+
+Also, I notice I have a structural issue: `canonicalizeArray` is declared twice. Let me rewrite the whole file cleanly, fixing all these issues.
+
+Let me restructure the canonicalization code properly. The issue is that I had a first `canonicalizeArray` declaration, then a second one later. I need to have only one definition.
+
+Let me rewrite the whole file properly.</think>I see two rule violations (`ts-set-map` for the static Set, `ts-no-tiny-functions` for the one-liner `isDenormalized`) and a duplicate function declaration. Let me rewrite the whole file cleanly.<tool_call>write<arg_key>i</arg_key><arg_value>i</arg_key><arg_value>Rewrite tool-loop-guard.ts cleanly with all fixes</arg_value><arg_key>path</arg_key><arg_value>C:/code/poolside-strata/performance/tool-call-investigation/scratch/src/tool-loop-guard.ts</arg_value><arg_key>content</arg_key><arg_value>export const MAX_ADMISSIONS: number = 12;
+export const MAX_TRANSIENT_FAILURES: number = 2;
+export type Outcome = "ok" | "no_matches" | "transient_error" | "permanent_error" | "cancelled";
+export type DenialReason = "turn_closed" | "invalid_call" | "in_flight" | "repeat_terminal" | "retry_exhausted" | "budget_exhausted";
+export type Admission = { allowed: true; ticket: string } | { allowed: false; reason: DenialReason };
+export interface Snapshot {
+  turnId: string | null;
+  revision: number;
+  admissions: number;
+  pending: number;
+  closed: boolean;
+}
+
+type TicketInfo = {
+  generation: number;
+  tool: string;
+  signature: string;
+  revision: number;
+  completed: boolean;
+};
+
+type SignatureEntry = {
+  revision: number;
+  pending: boolean;
+  terminal: boolean;
+  transientFailures: number;
+};
+
+const TERMINAL_OUTCOMES: Record<Outcome, true> = {
+  ok: true,
+  no_matches: true,
+  permanent_error: true,
+  transient_error: false,
+  cancelled: false,
+};
+
+// --- Canonical signature validation/serialization (R07) ---
+
+function isPlainObject(value: unknown): value is object {
+  if (value === null) return false;
+  if (typeof value !== "object") return false;
+  const proto = Object.getPrototypeOf(value);
+  return proto === Object.prototype || proto === null;
+}
+
+// Validates a value against R07 rules and returns a canonical JSON string.
+// Returns null if the value is invalid. Never invokes getters.
+function canonicalize(value: unknown, seen: Set<object>): string | null {
+  if (value === null) return "null";
+  if (typeof value === "boolean") return value ? "true" : "false";
+  if (typeof value === "string") return JSON.stringify(value);
+  if (typeof value === "number") {
+    if (!Number.isFinite(value)) return null;
+    return Object.is(value, -0) ? "0" : String(value);
+  }
+  if (typeof value === "bigint" || typeof value === "symbol" || typeof value === "function") return null;
+
+  if (!isPlainObject(value)) return null;
+
+  if (seen.has(value)) return null;
+  seen.add(value);
+  try {
+    if (Array.isArray(value)) return canonicalizeArray(value, seen);
+    return canonicalizeObject(value, seen);
+  } finally {
+    seen.delete(value);
+  }
+}
+
+function canonicalizeArray(value: unknown[], seen: Set<object>): string | null {
+  const allOwn = Object.getOwnPropertyNames(value);
+  for (const k of allOwn) {
+    if (k !== "length") return null;
+  }
+  let result = "[";
+  for (let i = 0; i < value.length; i++) {
+    if (i > 0) result += ",";
+    const item = canonicalize(value[i], seen);
+    if (item === null) return null;
+    result += item;
+  }
+  result += "]";
+  return result;
+}
+
+function canonicalizeObject(value: object, seen: Set<object>): string | null {
+  const keys = Object.keys(value);
+  const allOwn = Object.getOwnPropertyNames(value);
+  if (allOwn.length !== keys.length) return null;
+  keys.sort();
+  let result = "{";
+  for (let i = 0; i < keys.length; i++) {
+    if (i > 0) result += ",";
+    const key = keys[i];
+    const desc = Object.getOwnPropertyDescriptor(value, key);
+    if (!desc || !("value" in desc)) return null;
+    if (!desc.enumerable) return null;
+    const item = canonicalize(desc.value, seen);
+    if (item === null) return null;
+    result += JSON.stringify(key) + ":" + item;
+  }
+  result += "}";
+  return result;
+}
+
+function buildSignature(tool: string, args: unknown): string | null {
+  const trimmed = tool.trim();
+  if (trimmed.length === 0) return null;
+  const argsSig = canonicalize(args, new Set<object>());
+  if (argsSig === null) return null;
+  return trimmed + "\0" + argsSig;
+}
+
+// --- Guard implementation ---
+
+export class ToolLoopGuard {
+  private turnId: string | null = null;
+  private revision: number = 0;
+  private admissions: number = 0;
+  private pending: number = 0;
+  private closed: boolean = true;
+  private generation: number = 0;
+  private ticketCounter: number = 0;
+  private tickets: Map<string, TicketInfo> = new Map();
+  private signatures: Map<string, SignatureEntry> = new Map();
+
+  constructor() {}
+
+  beginTurn(turnId: string): void {
+    if (typeof turnId !== "string") throw new RangeError("turnId must be a string");
+    const trimmed = turnId.trim();
+    if (trimmed.length === 0) throw new RangeError("turnId must be non-empty");
+    this.generation++;
+    this.turnId = trimmed;
+    this.revision = 0;
+    this.admissions = 0;
+    this.pending = 0;
+    this.closed = false;
+    this.signatures.clear();
+    this.tickets.clear();
+  }
+
+  markWorkspaceChanged(revision: number): void {
+    if (this.closed) throw new Error("markWorkspaceChanged: no active turn");
+    if (!isSafeInteger(revision) || revision < 0) {
+      throw new RangeError("markWorkspaceChanged: revision must be a nonnegative safe integer");
+    }
+    if (revision === this.revision) return;
+    if (revision < this.revision) {
+      throw new RangeError("markWorkspaceChanged: revision must not decrease");
+    }
+    this.revision = revision;
+    // Pending duplicate protection is turn-wide across revisions: leave pending flags as-is.
+    // Terminal/transient history stays keyed to old revision; it cannot poison the new revision.
+    // But signatures already pending at the old revision keep their entry; we do not clear them.
+    // We only need to advance revision so new admissions record the new revision.
+  }
+
+  admit(tool: string, args: unknown): Admission {
+    if (this.closed) return { allowed: false, reason: "turn_closed" };
+
+    const signature = buildSignature(tool, args);
+    if (signature === null) return { allowed: false, reason: "invalid_call" };
+
+    if (this.admissions >= MAX_ADMISSIONS) {
+      return { allowed: false, reason: "budget_exhausted" };
+    }
+
+    let entry = this.signatures.get(signature);
+    if (entry === undefined) {
+      entry = { revision: this.revision, pending: false, terminal: false, transientFailures: 0 };
+      this.signatures.set(signature, entry);
+    }
+
+    // in_flight: signature is pending at any revision within this turn.
+    if (entry.pending) return { allowed: false, reason: "in_flight" };
+
+    // repeat_terminal: terminal history at the admitted revision.
+    if (entry.terminal && entry.revision === this.revision) {
+      return { allowed: false, reason: "repeat_terminal" };
+    }
+
+    // retry_exhausted: transient failures at the admitted revision.
+    if (entry.revision === this.revision && entry.transientFailures >= MAX_TRANSIENT_FAILURES) {
+      return { allowed: false, reason: "retry_exhausted" };
+    }
+
+    // Admit: consume budget, mark pending.
+    this.admissions++;
+    entry.pending = true;
+    this.pending++;
+    entry.revision = this.revision;
+
+    const ticket = String(this.generation) + ":" + String(this.ticketCounter);
+    this.ticketCounter++;
+    this.tickets.set(ticket, {
+      generation: this.generation,
+      tool,
+      signature,
+      revision: this.revision,
+      completed: false,
+    });
+    return { allowed: true, ticket };
+  }
+
+  complete(ticket: string, outcome: Outcome): void {
+    const info = this.tickets.get(ticket);
+    if (info === undefined) return; // unknown ticket, ignore
+    if (info.generation !== this.generation) return; // superseded generation, ignore
+    if (info.completed) return; // already completed, ignore
+    if (!(outcome in TERMINAL_OUTCOMES)) throw new TypeError("complete: invalid outcome");
+
+    info.completed = true;
+    this.pending--;
+    // pending never goes negative because each ticket completes at most once.
+
+    const entry = this.signatures.get(info.signature);
+    if (entry === undefined) return;
+
+    // Update history at the entry's revision (the revision at admission).
+    // Only adjust pending; terminal/transient history belongs to that revision.
+    if (entry.pending) entry.pending = false;
+
+    if (outcome === "cancelled") {
+      // Releases pending but creates no terminal result or transient failure.
+      return;
+    }
+
+    if (TERMINAL_OUTCOMES[outcome]) {
+      entry.terminal = true;
+      entry.revision = info.revision;
+    } else if (outcome === "transient_error") {
+      if (entry.revision === info.revision) entry.transientFailures++;
+    }
+  }
+
+  snapshot(): Snapshot {
+    return {
+      turnId: this.turnId,
+      revision: this.revision,
+      admissions: this.admissions,
+      pending: this.pending,
+      closed: this.closed,
+    };
+  }
+}
+</arg_value></tool_call>

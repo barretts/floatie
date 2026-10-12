@@ -6,7 +6,7 @@ This is a complete Poolside llama.cpp checkout with Floatie's retained changes a
 
 Read the [README](../../README.md), [instructions](../../AGENTS.md), and [attempt history](../../performance/ATTEMPTS-AND-RESULTS.md). The immediate unfinished milestone is 900 tokens/sec prefill and 30 tokens/sec generation at 8k. Near-full 128k performance is also unfinished. The recorded performance task is paused; this package does not resume it.
 
-[Source manifest](../../source-manifest.json) records the current changed engine files and their identities. The [engine patch](../../patches/floatie-engine.patch) captures all 26 changes against the pinned base. The full source is included; the patch is an audit/recovery artifact, not a required installation step.
+[Source manifest](../../source-manifest.json) records the current changed engine files and their identities. The [engine patch](../../patches/floatie-engine.patch) captures all 30 changes against the pinned base. The full source is included; the patch is an audit/recovery artifact, not a required installation step.
 
 ## Build and model preparation
 
@@ -32,7 +32,7 @@ Weights retain their separate licenses and are downloaded locally, not committed
 
 ## Launch and API
 
-Both batch profiles inherit generation defaults from `launch.ps1`: temperature 1.0, top-k 20, top-p 0.95, min-p 0.0, and a 2,048-token thinking budget. The budget ends thinking so generation can continue with an answer or tool call. There is no separate server output cap; the request's output allowance and remaining context still apply. Request parameters can override these defaults, including `reasoning_budget_tokens` or `thinking_budget_tokens`. These defaults were aligned with the installed Strata configuration on October 11, 2026 after a reported all-thinking response exhausted an 8,192-token client output limit. The change has not been checked by inference; the owner will restart and try it. Strata's separate repeated-thinking detector is not implemented in Floatie.
+Both batch profiles inherit generation defaults from `launch.ps1`: temperature 1.0, top-k 20, top-p 0.95, min-p 0.0, and a 2,048-token thinking budget. The budget ends thinking so generation can continue with an answer or tool call. There is no separate server output cap; the request's output allowance and remaining context still apply. Request parameters can override these defaults, including `reasoning_budget_tokens` or `thinking_budget_tokens`. These defaults were aligned with the installed Strata configuration on October 11, 2026 after a reported all-thinking response exhausted an 8,192-token client output limit. Later protocol captures and an owner-run OMP continuation used these defaults; full original-task convergence remains unverified. The OMP model config omits effort parameters, so its `low` UI setting does not select a smaller server budget. Strata's separate repeated-thinking detector is not implemented in Floatie.
 
 `Start-Floatie-8k.bat` sets context 8,192 and startup expert cache 6,144 MiB. `Start-Floatie-128k.bat` sets context 131,072 and startup expert cache 3,072 MiB. Both use batch/ubatch 8,192, MoE threads 16, DFlash maximum 4, Q8 KV, pinned host experts, adaptive caching, and ordinary GPU misses/token 0.
 
@@ -41,6 +41,8 @@ Run one profile at a time. The API is `http://127.0.0.1:1235/v1`; the model alia
 Verify executable path and PID before stopping a server. Never use a broad process-name match, reset the GPU, or stop desktop applications as a routine inference action. A prior incident in which desktop application windows disappeared remains unexplained.
 
 ## Source entry points
+
+The [OMP tool-call investigation](../../performance/TOOL-CALL-INVESTIGATION.md) records the native text turn-marker fix and opt-in raw SSE diagnostics. The [follow-up](../../performance/OMP-LOOP-FOLLOWUP.md) repairs named-argument ordering for schemas with at most eight properties and restores parallel calls by default; larger schemas retain declaration order. Requests can explicitly set `parallel_tool_calls:false`. The historical 98-call raw output remains unavailable and original OMP task convergence remains unverified. Protocol checks do not establish model argument quality or task completion.
 
 | Path | Responsibility |
 |---|---|
@@ -53,6 +55,7 @@ Verify executable path and PID before stopping a server. Never use a broad proce
 | `src/` and backend attention sources | Compact SWA KV, bounded attention, and mask preparation |
 | `tools/repair_draft.py` | Corrected draft GGUF preparation |
 | `performance/` | Requests, measurements, comparisons, deployment/rollback receipts, and candidate archives |
+| `research/INDEX.md` | Supplied reports, original documents, text extractions, and links to local review notes |
 | `performance_probe.py` | Existing measurement helper; use only when execution is authorized |
 
 Inspect source before proposing a feature. Adaptive caches, pinned weights, concurrent CPU/GPU work, two-layer streaming, DFlash, and quantized/compact KV already exist. Active expert work uses RAM and VRAM. Task Manager's shared-GPU-memory number does not establish how these buffers are used.
@@ -69,11 +72,12 @@ Saved records describe the original machine and installation at their timestamps
 | `E:\poolside\build\bin\...` | `build/bin/`, after a local build |
 | Selected historical installed files | `performance/installed-evidence/`, with original provenance |
 | Other E: logs and backups | Original local installation; unbundled |
-| `E:\poolside\research\...` | Supplied external research; local and unbundled |
+| `E:\poolside\research\...` | `research/...`, with original directory structure and bytes preserved |
+| `E:\poolside\Run Laguna 2.1 via Strata.md` | `research/Run Laguna 2.1 via Strata.md` |
 
 Do not silently rewrite historical receipts to describe a new build. Root source is the retained state; archived candidate files and patches under `performance/` are experimental history. Selected installed evidence is bundled with original receipt/hash information and a portability map. Other original absolute paths are provenance references only.
 
-The [measurement index](../../performance/MEASUREMENT-INDEX.md) contains 98 saved response measurements, and the [ledger](../../performance/attempts-ledger.json) inventories 336 pre-documentation evidence records. Later DFlash repair records are additional evidence. This inventory does not claim every original E: log or backup is present. Supplied third-party research documents and their extracted copies are intentionally unbundled.
+The [measurement index](../../performance/MEASUREMENT-INDEX.md) contains 98 saved response measurements, and the [ledger](../../performance/attempts-ledger.json) inventories 336 pre-documentation evidence records. Later DFlash repair records are additional evidence. This inventory does not claim every original E: log or backup is present. The [research index](../../research/INDEX.md) now bundles the supplied documents and existing text extractions; its [source manifest](../../research/source-manifest.json) records their original paths and hashes. Historical research receipts keep their original absolute paths as provenance.
 
 ## Most recent correctness change
 
@@ -81,7 +85,7 @@ The [DFlash repair](../../performance/DFLASH-POSITION-FIX.md) addresses a multi-
 
 The repair clears the affected draft sequence before rebuilding a complete retained standard sliding window at original absolute positions. It checks removal success and preserves the global consecutive-position validator. On a false speculative-processing result, the server clears active requests' target/draft caches, prompt history, serialized state, and checkpoints before release.
 
-The repair was source-reviewed and rebuilt in the original installation. No inference regression, throughput run, or quality comparison followed. General exceptions still use existing handling. The saved normal 770.83 / 15.85 tokens/sec result predates this repair.
+The repair was source-reviewed and rebuilt in the original installation. At that point no inference regression, throughput run, or quality comparison followed. Later tool-protocol verification is documented separately; it does not replace reproduction of the original long-prefill failure or establish near-full 128k speed. General exceptions still use existing handling. The saved normal 770.83 / 15.85 tokens/sec result predates both repairs.
 
 ## Continue the work
 

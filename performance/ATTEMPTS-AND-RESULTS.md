@@ -1,13 +1,13 @@
 # Floatie: attempted improvements and results
 
-Compiled **2026-10-11** from existing local evidence. **Performance work remains paused at the owner's request.** The original compilation was documentation-only; Stage 4 records a later owner-authorized correctness repair.
+Compiled **2026-10-11** from existing local evidence. **Performance work remains paused at the owner's request.** The original compilation was documentation-only; Stage 4 records a later owner-authorized correctness repair. Stage 5 records the subsequently authorized tool-protocol investigation and live verification. Stage 6 repairs named-argument ordering and restores parallel calls by default.
 
 ## Current recorded result
 
 | Workload / state | Prefill tok/s | Generation tok/s | Meaning |
 |---|---:|---:|---|
 | Latest saved normal 8k run: 8,064 prompt / 80 output, context 8,192, no prompt reuse, profiling disabled | **770.83** | **15.85** | [After-R4 production receipt](core8k-after-r4-production-dflash4-q8-cache6144.json); three checkpoint codes correct. |
-| Original near-full run: 130,278 prompt / 52 output, context 131,072 | **320.37** | **1.76** | [Historical native log](installed-evidence/logs/laguna-20261010-175153.log); 0/204 drafts accepted. Owner reported three correct codes; original request/output token IDs missing. |
+| Original near-full run: 130,278 prompt / 52 output, context 131,072 | **320.37** | **1.76** | [Historical native log](/E:/poolside/logs/laguna-20261010-175153.log); 0/204 drafts accepted. Owner reported three correct codes; original request/output token IDs missing. |
 | Owner's target, first at 8k, then near-full 128k | **900** | **30** | Unmet. Current-engine 128k speed has not been established. |
 
 The last saved restoration record is **2026-10-11 14:46:21 -05:00**: original retained sources and binaries restored, normal API healthy at that checkpoint, profiling disabled, **no throughput run after the final restart**. Its old `goal_status=active` predates the later stop and pause. These are recorded observations; this documentation task makes no fresh server-health or speed claim. [Restored-state receipt](research-20261011-packed-routing-active-state.json).
@@ -17,7 +17,7 @@ The last saved restoration record is **2026-10-11 14:46:21 -05:00**: original re
 The inventory covers **336 pre-existing direct JSON evidence files**, including **98 response measurements**, **27 comparison files**, and **51 deployment files**. It also uses the specifically cited installed logs, model manifests, candidate archives and research reconciliations. It does not claim a recursive audit of every file or historical E: log.
 
 - [Measurement index](MEASUREMENT-INDEX.md): every saved response measurement, including slow, cached, unsuccessful and profiling runs; links to all 336 inventoried JSON records.
-- [Evidence ledger](attempts-ledger.json): exact timings, request/output metadata, hashes, and **72 structured entries** across the three stages. Some entries revisit a mechanism or document a diagnostic/research step; 71 does not mean 71 independent controlled experiments.
+- [Evidence ledger](attempts-ledger.json): exact timings, request/output metadata, hashes, and **74 structured entries** through Stage 6. Entries can revisit a mechanism or document a diagnostic/research step; this count is not a count of independent controlled experiments.
 - Detailed stage companions: [early](documentation-drafts/early.json), [middle](documentation-drafts/middle.json), [recent](documentation-drafts/recent.json). Original receipt fields remain authoritative; later evidence resolves earlier pending decisions.
 
 **Disposition terms:** retained means a source/default/checkpoint records adoption; rejected/reverted means the candidate was archived and the retained baseline restored; diagnostic means an observation that directed work; research-only means review without a local performance result; unmeasured/interrupted means no completed inference measurement for that proposed phase. A successful build, API response or healthier subcounter alone is not a speed improvement.
@@ -47,7 +47,7 @@ Keep the pinned Q3 weights and selected expert work intact. Use exact attention 
 
 The same pattern recurred in compact decode slots, section graphs, wider atlases, cache-fit, paired/expanded IQ2, persistent R4 and single-ID metadata: improving padding, dispatch count, cache hits, CPU work or a GPU interval did not establish an overall speed gain. Those candidates and rollback evidence are preserved below.
 
-These paths share cache placement, routing, speculative verification and host/GPU handoff: [hybrid backend](../ggml/src/ggml-cuda/moe-hybrid.cu), [CPU scheduling](../ggml/src/ggml-cpu/moe.cpp), [CPU IQ kernels](../ggml/src/ggml-cpu/moe-iq.cpp), [draft integration](../common/speculative.cpp), and [DFlash model](../src/models/dflash.cpp). Counter windows and asynchronously overlapping intervals need their own coverage; they cannot be added into one serial cost or compared without matching evaluated work.
+These paths share cache placement, routing, speculative verification and host/GPU handoff: [hybrid backend](../core-engine/ggml/src/ggml-cuda/moe-hybrid.cu), [CPU scheduling](../core-engine/ggml/src/ggml-cpu/moe.cpp), [CPU IQ kernels](../core-engine/ggml/src/ggml-cpu/moe-iq.cpp), [draft integration](../core-engine/common/speculative.cpp), and [DFlash model](../core-engine/src/models/dflash.cpp). Counter windows and asynchronously overlapping intervals need their own coverage; they cannot be added into one serial cost or compared without matching evaluated work.
 
 The current RAM/VRAM architecture and adapted grouped kernels were already present in several supplied research proposals. SSD expert lookup is not established in the active local decode path. A zero/nonzero Task Manager shared-GPU-memory counter alone does not identify SSD lookup, VRAM paging or CPU expert execution; recorded shared usage included registered expert RAM. [Historical memory checkpoint](checkpoint-core8k-production-baseline.json).
 
@@ -79,7 +79,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Limits:** Qwen 128k capability and roughly 30-38 tok/s around 50k were owner/session claims. No controlled, same-prompt Qwen/Laguna comparison or direct ro99 execution receipt was found in this family.
 
-**Evidence:** [README.md](../README.md), [README.md](installed-evidence/README.md), [prepared-state.json](installed-evidence/prepared-state.json).
+**Evidence:** [README.md](../README.md), [README.md](/E:/poolside/README.md), [prepared-state.json](/E:/poolside/prepared-state.json).
 
 ### early-architecture-essay: Run Laguna2.1 via Strata research essay
 
@@ -91,7 +91,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Limits:** Its external claims include 18-20 / 60-64 generation tok/s, 7.2-7.8% attention requantization gain, 58 to 23 tok/s with DFlash, and 6.8 ms extra verification cost. These are source claims on other machines. Its 512-cell SWA estimate, all-48-MoE description, vocabulary/FF dimensions, and 1M-context claim must not override actual GGUF metadata or local allocation evidence.
 
-**Evidence:** `E:/poolside/Run Laguna 2.1 via Strata.md` (local reference, not bundled), [model-layout.json](installed-evidence/model-layout.json), [checkpoint-core-streaming.json](checkpoint-core-streaming.json).
+**Evidence:** [Run Laguna 2.1 via Strata.md](<../research/Run Laguna 2.1 via Strata.md>), [model-layout.json](/E:/poolside/model-layout.json), [checkpoint-core-streaming.json](checkpoint-core-streaming.json).
 
 ### early-prepared-hybrid: Initial hybrid engine build and artifact preparation
 
@@ -103,7 +103,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Limits:** The prepared-state receipt explicitly says inference/model initialization had not occurred. This foundation evolved substantially. Initial UI asset downloads failed TLS verification; the compiled API did not require the UI.
 
-**Evidence:** [prepared-state.json](installed-evidence/prepared-state.json), [source-manifest.json](installed-evidence/source-manifest.json), [README.md](installed-evidence/README.md).
+**Evidence:** [prepared-state.json](/E:/poolside/prepared-state.json), [source-manifest.json](/E:/poolside/source-manifest.json), [README.md](/E:/poolside/README.md).
 
 ### early-full-context-run: Initial near-full130278-token run
 
@@ -115,7 +115,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Limits:** The matching log belongs to the Poolside hybrid installation; ro99 execution is not established. The owner's original request/output token IDs were not preserved. This does not prove current-engine 128k speed. The reported comparison with Niko's prefill has no same-prompt control here.
 
-**Evidence:** [laguna-20261010-175153.log](installed-evidence/logs/laguna-20261010-175153.log), [launch-before-tuning-20261010-182545.ps1](installed-evidence/logs/launch-before-tuning-20261010-182545.ps1).
+**Evidence:** [laguna-20261010-175153.log](/E:/poolside/logs/laguna-20261010-175153.log), [launch-before-tuning-20261010-182545.ps1](/E:/poolside/logs/launch-before-tuning-20261010-182545.ps1).
 
 ### early-raw-request-failures: Initial request/launch interruptions
 
@@ -127,7 +127,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Limits:** Later wrapper exit code -1 lines alone do not prove crashes or OOM; many accompanied deliberate server stops. No OOM diagnosis is asserted. These failures are operational evidence, not speed comparisons.
 
-**Evidence:** [laguna-20261010-175153.log](installed-evidence/logs/laguna-20261010-175153.log), [laguna-20261010-182702.log](installed-evidence/logs/laguna-20261010-182702.log), [build-20261010-183317.log](installed-evidence/logs/build-20261010-183317.log).
+**Evidence:** [laguna-20261010-175153.log](/E:/poolside/logs/laguna-20261010-175153.log), [laguna-20261010-182702.log](/E:/poolside/logs/laguna-20261010-182702.log), [build-20261010-183317.log](/E:/poolside/logs/build-20261010-183317.log).
 
 ### early-batch512-thinking: 512-batch initial8k run
 
@@ -143,7 +143,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Limits:** The request hash and thinking mode differ from later explicit-BOS and 8064 comparisons. This run did not deliver a recall answer within the cap.
 
-**Evidence:** [nodraft-cache3072-batch512-8k.json](nodraft-cache3072-batch512-8k.json), [nodraft-short-20261010-182853.stderr.log](installed-evidence/logs/nodraft-short-20261010-182853.stderr.log).
+**Evidence:** [nodraft-cache3072-batch512-8k.json](nodraft-cache3072-batch512-8k.json), [nodraft-short-20261010-182853.stderr.log](/E:/poolside/logs/nodraft-short-20261010-182853.stderr.log).
 
 ### early-batch512-cached-answer: Cached512-batch answer attempt
 
@@ -175,7 +175,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Limits:** The prompt differs from the thinking and explicit-BOS requests. Throughput does not establish valid output or an isolated batch-size benefit.
 
-**Evidence:** [nodraft-cache3072-batch2048-8k-answer.json](nodraft-cache3072-batch2048-8k-answer.json), [nodraft-b2048-20261010-183437.stderr.log](installed-evidence/logs/nodraft-b2048-20261010-183437.stderr.log).
+**Evidence:** [nodraft-cache3072-batch2048-8k-answer.json](nodraft-cache3072-batch2048-8k-answer.json), [nodraft-b2048-20261010-183437.stderr.log](/E:/poolside/logs/nodraft-b2048-20261010-183437.stderr.log).
 
 ### early-dflash-metadata-fix: DFlash GGUF metadata repair
 
@@ -192,7 +192,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Limits:** Metadata repair alone did not repair quantized-KV feature injection. No speedup is claimed; poor acceptance is retained as failure evidence.
 
-**Evidence:** [Laguna-S-2.1-DFlash-Q8_0-swa512.gguf.metadata-repair.json](installed-evidence/models/Laguna-S-2.1-DFlash-Q8_0-swa512.gguf.metadata-repair.json), [fixed-dflash4-cache3072-batch2048-8k-answer.json](fixed-dflash4-cache3072-batch2048-8k-answer.json), [fixed-dflash4-cache3072-batch2048-8k-bos.json](fixed-dflash4-cache3072-batch2048-8k-bos.json).
+**Evidence:** [Laguna-S-2.1-DFlash-Q8_0-swa512.gguf.metadata-repair.json](/E:/poolside/models/Laguna-S-2.1-DFlash-Q8_0-swa512.gguf.metadata-repair.json), [fixed-dflash4-cache3072-batch2048-8k-answer.json](fixed-dflash4-cache3072-batch2048-8k-answer.json), [fixed-dflash4-cache3072-batch2048-8k-bos.json](fixed-dflash4-cache3072-batch2048-8k-bos.json).
 
 ### early-pinning-cache5120: Pinned expert RAM and5120MiB cache
 
@@ -208,7 +208,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Limits:** BOS, cache, pinning, and prior code differed together. The benefit of pinning is not isolated. 5120 MiB is a historical budget, not the latest decode budget.
 
-**Evidence:** [nodraft-cache5120-pinned-batch2048-8k-bos.json](nodraft-cache5120-pinned-batch2048-8k-bos.json), [pinned-cache5120-20261010-184227.stderr.log](installed-evidence/logs/pinned-cache5120-20261010-184227.stderr.log).
+**Evidence:** [nodraft-cache5120-pinned-batch2048-8k-bos.json](nodraft-cache5120-pinned-batch2048-8k-bos.json), [pinned-cache5120-20261010-184227.stderr.log](/E:/poolside/logs/pinned-cache5120-20261010-184227.stderr.log).
 
 ### early-adaptive-cache: Initial adaptive cache admission
 
@@ -225,7 +225,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Limits:** This initial admission regression does not establish a regression in the current budgeted policy. Output tokens and expert work differ.
 
-**Evidence:** [adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json](adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json), [adaptive-cache5120-20261010-184440.stderr.log](installed-evidence/logs/adaptive-cache5120-20261010-184440.stderr.log).
+**Evidence:** [adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json](adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json), [adaptive-cache5120-20261010-184440.stderr.log](/E:/poolside/logs/adaptive-cache5120-20261010-184440.stderr.log).
 
 ### early-overlap: Initial compute/upload overlap
 
@@ -259,7 +259,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Limits:** Single sequential runs; CPU/GPU intervals overlap and must not be summed.
 
-**Evidence:** [submitted-adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json](submitted-adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json), [submitted-cache5120-20261010-185327.stderr.log](installed-evidence/logs/submitted-cache5120-20261010-185327.stderr.log).
+**Evidence:** [submitted-adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json](submitted-adaptive-nodraft-cache5120-pinned-batch2048-8k-bos.json), [submitted-cache5120-20261010-185327.stderr.log](/E:/poolside/logs/submitted-cache5120-20261010-185327.stderr.log).
 
 ### early-core-streaming: Bounded core streaming and grouped AVX2
 
@@ -278,7 +278,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Evidence:** [core-streaming-deployment.json](core-streaming-deployment.json), [checkpoint-core-streaming.json](checkpoint-core-streaming.json), [core8k-nodraft-cache8192-pinned-batch8192.json](core8k-nodraft-cache8192-pinned-batch8192.json), [core8k-nodraft-cache8192-strata-stopped-repeat.json](core8k-nodraft-cache8192-strata-stopped-repeat.json).
 
-**Direct log evidence:** [core8k-nodraft-20261010-225936.stderr.log](installed-evidence/logs/core8k-nodraft-20261010-225936.stderr.log).
+**Direct log evidence:** [core8k-nodraft-20261010-225936.stderr.log](/E:/poolside/logs/core8k-nodraft-20261010-225936.stderr.log).
 
 ### early-dflash-working-batch: DFlash512working batch plus corrected injection
 
@@ -296,7 +296,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Evidence:** [dflash-working-batch-deployment.json](dflash-working-batch-deployment.json), [core8k-dflash4-launch.json](core8k-dflash4-launch.json), [core8k-dflash4-q8-cache6144-pinned-batch8192.json](core8k-dflash4-q8-cache6144-pinned-batch8192.json), [checkpoint-core-streaming.json](checkpoint-core-streaming.json).
 
-**Direct log evidence:** [core8k-dflash4-q8-20261010-230719.stderr.log](installed-evidence/logs/core8k-dflash4-q8-20261010-230719.stderr.log).
+**Direct log evidence:** [core8k-dflash4-q8-20261010-230719.stderr.log](/E:/poolside/logs/core8k-dflash4-q8-20261010-230719.stderr.log).
 
 ### early-decode-upload-budget: Throttle decode cache refresh
 
@@ -314,7 +314,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Evidence:** [decode-upload-budget-deployment.json](decode-upload-budget-deployment.json), [core8k-budgeted-dflash4-launch.json](core8k-budgeted-dflash4-launch.json), [core8k-budgeted-dflash4-q8-cache6144-nsys.json](core8k-budgeted-dflash4-q8-cache6144-nsys.json).
 
-**Direct log evidence:** [core8k-budgeted-native-20261010-231807.profiler.log](installed-evidence/logs/core8k-budgeted-native-20261010-231807.profiler.log).
+**Direct log evidence:** [core8k-budgeted-native-20261010-231807.profiler.log](/E:/poolside/logs/core8k-budgeted-native-20261010-231807.profiler.log).
 
 ### early-recency-submit: Prefill recency and Windows stream submit
 
@@ -380,7 +380,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Evidence:** [phase-memory-deployment.json](phase-memory-deployment.json), [phase-memory-launch.json](phase-memory-launch.json), [core8k-phase-memory-dflash4-q8-cache6144.json](core8k-phase-memory-dflash4-q8-cache6144.json).
 
-**Direct log evidence:** [core8k-phase-memory-20261011-001937.stderr.log](installed-evidence/logs/core8k-phase-memory-20261011-001937.stderr.log).
+**Direct log evidence:** [core8k-phase-memory-20261011-001937.stderr.log](/E:/poolside/logs/core8k-phase-memory-20261011-001937.stderr.log).
 
 ### early-compact-expert-tiles: Bound MMQ grids to actual expert groups
 
@@ -480,7 +480,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Evidence:** [dflash-window-injection-deployment.json](dflash-window-injection-deployment.json), [dflash-window-injection-production-launch.json](dflash-window-injection-production-launch.json), [core8k-dflash-window-injection-production-dflash4-q8-cache6144.json](core8k-dflash-window-injection-production-dflash4-q8-cache6144.json).
 
-**Direct log evidence:** [core8k-dflash-window-injection-production-20261011-032952.stderr.log](installed-evidence/logs/core8k-dflash-window-injection-production-20261011-032952.stderr.log).
+**Direct log evidence:** [core8k-dflash-window-injection-production-20261011-032952.stderr.log](/E:/poolside/logs/core8k-dflash-window-injection-production-20261011-032952.stderr.log).
 
 ### early-dflash-window-chunks: Preserve original draft injection chunk alignment
 
@@ -706,7 +706,9 @@ Profiled same-binary/request on **783.263569 / 15.628889**, off **785.517871 / 1
 
 ### 12. Supplied research and pinned kernel sources
 
-This was research reconciliation, not another measured optimization. The original `E:\poolside\research\laguna-research-20261011` reports and added parent-folder documents were inspected. [Original reconciliation](research-20261011-local-reconciliation.json), [added-source reconciliation](research-20261011-added-sources-reconciliation.json), and `research-20261011/added-document-extraction.json` (reference not bundled) preserve document hashes/content evidence. The added DOCX is a shorter version of the optimization Markdown; both PDF versions have identical extracted text despite different file hashes, all six pages were rendered/read, and the added HTML is byte-identical to the dated HTML report. These copies are not independent algorithm evidence.
+The original supplied documents and existing text extractions are now bundled in the [research index](../research/INDEX.md), with source hashes and links to these review records.
+
+This was research reconciliation, not another measured optimization. The original `E:\poolside\research\laguna-research-20261011` reports and added parent-folder documents were inspected. [Original reconciliation](research-20261011-local-reconciliation.json), [added-source reconciliation](research-20261011-added-sources-reconciliation.json), and [document extraction](research-20261011/added-document-extraction.json) preserve document hashes/content evidence. The added DOCX is a shorter version of the optimization Markdown; both PDF versions have identical extracted text despite different file hashes, all six pages were rendered/read, and the added HTML is byte-identical to the dated HTML report. These copies are not independent algorithm evidence.
 
 Reports proposed several mechanisms **already implemented**: per-layer frequency-decay adaptive caching, pinned 41.91 GiB expert RAM, physical-core worker affinity, grouped 2–4-token IQ2/IQ3/IQ4 computation, upload/CPU overlap, compact SWA KV, quantized KV and DFlash Hadamard injection. DFlash is supported for verification batches, not restricted to single-token decode. Q6 grouped fallback remains the established standard per-pair dot path. Corrected Q8 draft GPU weights are about 1,130 MiB, DraftMax4 and batch/ubatch8192, unlike report BF16/width15/ubatch512 premises.
 
@@ -720,7 +722,7 @@ Pinned [IK source receipt](research-20261011/ik-source-audit/source-receipt.json
 
 No new optimization, source edit, deployment, build, or benchmark was completed in this last audit before the owner stopped work. The proposed next measurement was to separate allocation, initialization, resident D2D copying, new-capacity H2D copying, and synchronization costs during prefill→decode cache growth.
 
-Existing [resize_cache source](../ggml/src/ggml-cuda/moe-hybrid.cu) already retains residents: it ranks existing resident experts by heat, reserves replacement buffers, copies each surviving resident **device to device**, synchronizes, swaps buffers, restores slot mappings, and promotes into remaining capacity. It does **not** re-upload all existing residents from RAM.
+Existing [resize_cache source](../core-engine/ggml/src/ggml-cuda/moe-hybrid.cu) already retains residents: it ranks existing resident experts by heat, reserves replacement buffers, copies each surviving resident **device to device**, synchronizes, swaps buffers, restores slot mappings, and promotes into remaining capacity. It does **not** re-upload all existing residents from RAM.
 
 [Last saved state](research-20261011-packed-routing-active-state.json) records source-accounting correction: **4,789.4765625 MiB retained D2D**, **3,137.109375 MiB new-capacity H2D**. These exact figures are saved accounting conclusions, not freshly isolated component timings. The existing [single-ID-off launch](single-id-off-launch.json) identifies raw log `E:\poolside\logs\single-id-off-20261011-143959.stderr.log`: at log time `0.32.822.610`, 8,192 MiB phase budget, **3,137.11 MiB** hot uploads and **899.78 ms** transition; its 5,120 MiB prefill transition was 268.38 ms with zero hot uploads. The [readiness launch](prefill-readiness-timeline-launch.json) raw log similarly recorded 899.15 ms growth and 267.55 ms initial transition. These aggregate times do not isolate allocation versus copying/synchronization.
 
@@ -816,3 +818,12 @@ By explicit owner request, the two source paths were repaired and the installed 
 ## Resume boundary
 
 Performance work is paused. The last interrupted cache-transition audit produced no new implementation or benchmark. This record authorizes no automatic continuation. The outstanding objective remains 900/30 at 8k, then current-engine near-full 128k and full required local API behavior; UI is deferred.
+
+
+## Stage 5: OMP tool batches and native turn termination
+
+The later owner-authorized [tool-call investigation](TOOL-CALL-INVESTIGATION.md) captured raw/native token data and SSE, compared streaming/non-streaming requests, and verified the installed OMP adapter. The retained profile defaults to one tool call per response, preserves explicit parallel batches, permits the native text turn marker, and provides opt-in raw SSE diagnostics. Native turn support alone did not stop the stress loop; that unsuccessful standalone result and the retained default are documented. The final installed build passed the scoped protocol checks and is running. The original 98-call raw output was not logged, so its exact raw-to-parsed correspondence remains unproved. No performance benchmark or benchmark grader was run; the 900/30 goal remains paused.
+
+## Stage 6: named-argument ordering and restored parallel calls
+
+The owner reported a cross-response rewrite loop after the single-call mitigation. That mitigation did not prevent the loop. The [OMP follow-up](OMP-LOOP-FOLLOWUP.md) records a confirmed grammar defect: valid tagged argument permutations were rejected, while duplicate optional arguments could be accepted. The repaired bounded grammar accepted 32/32 valid sequences and rejected 5/5 invalid cases, with 1,031 evidence assertions and 751 existing parser checks. Thirteen post-fix HTTP captures covered parallel defaults, serial opt-out, exact values, continuation, truncation, production-thinking reminders and cancellation/recovery. Parallel calls are enabled by default again. Original OMP task convergence remains unverified; performance work stays paused.

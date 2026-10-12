@@ -1,0 +1,134 @@
+﻿{
+    "captured_at":  "2026-10-12T05:06:27.7819401+00:00",
+    "scope":  "User-supplied research originals and existing text extractions, copied without changing source bytes. Historical paths remain provenance references.",
+    "supplied_document_count":  15,
+    "text_extraction_count":  3,
+    "files":  [
+                  {
+                      "path":  "Laguna_S_2.1_Optimization_Report.docx",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\research\\Laguna_S_2.1_Optimization_Report.docx",
+                      "bytes":  11921,
+                      "sha256":  "bb12f66af8475ff50779d77660c96cd390d869f4568cf3e835257584c6d3cbac"
+                  },
+                  {
+                      "path":  "Laguna_S_2.1_Optimization_Report.md",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\research\\Laguna_S_2.1_Optimization_Report.md",
+                      "bytes":  9633,
+                      "sha256":  "e888e10839c63acd839a59ca77f36080cb1262d333f3b314b36d88815af98901"
+                  },
+                  {
+                      "path":  "Laguna_S_2.1_Speed_Research.html",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\research\\Laguna_S_2.1_Speed_Research.html",
+                      "bytes":  43471,
+                      "sha256":  "0f2e1f7b3747674ad77270ab29a020550805b352c22a86b893887b7ac318d39f"
+                  },
+                  {
+                      "path":  "Laguna_S21_Performance_Research.pdf",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\research\\Laguna_S21_Performance_Research.pdf",
+                      "bytes":  47337,
+                      "sha256":  "82230388c7ade21925ffb538882de1b3d9dece8e2c8acbb52ae74dec44c2aa3b"
+                  },
+                  {
+                      "path":  "Laguna_S21_Research_Package/Laguna_S21_Performance_Research.md",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\research\\Laguna_S21_Research_Package\\Laguna_S21_Performance_Research.md",
+                      "bytes":  16516,
+                      "sha256":  "bd1dd451e9bb88d1bfa8c3a43e301b6eb63d96b11fbe2651e022ad7c0b0fd04a"
+                  },
+                  {
+                      "path":  "Laguna_S21_Research_Package/Laguna_S21_Performance_Research.pdf",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\research\\Laguna_S21_Research_Package\\Laguna_S21_Performance_Research.pdf",
+                      "bytes":  22386,
+                      "sha256":  "94704e951031b49fada05d9a2d0f6253bc6b0493e37b3aef0215e0b605f76575"
+                  },
+                  {
+                      "path":  "laguna-research-20261011/128k-scaling-report.md",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\research\\laguna-research-20261011\\128k-scaling-report.md",
+                      "bytes":  12806,
+                      "sha256":  "79ed73f9a372056fa2a63ed0ea014e912a4b22cc7b14e3faa99bfaf5e9dbed49"
+                  },
+                  {
+                      "path":  "laguna-research-20261011/arch-comparison-report.md",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\research\\laguna-research-20261011\\arch-comparison-report.md",
+                      "bytes":  20200,
+                      "sha256":  "69caa81f4bcdb9cfa4298e9b30ddc3506fdb4dd18e7bcb90fb7f51d66397f403"
+                  },
+                  {
+                      "path":  "laguna-research-20261011/cpu-experts-gpu-uploads-report.md",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\research\\laguna-research-20261011\\cpu-experts-gpu-uploads-report.md",
+                      "bytes":  28640,
+                      "sha256":  "f1be9b2d0fd6a09fad1d8100dc76ce3ca5a8f7ed669980cfbe16992e429e1eb2"
+                  },
+                  {
+                      "path":  "laguna-research-20261011/laguna-s-2-1-speed-research.html",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\research\\laguna-research-20261011\\laguna-s-2-1-speed-research.html",
+                      "bytes":  43471,
+                      "sha256":  "0f2e1f7b3747674ad77270ab29a020550805b352c22a86b893887b7ac318d39f"
+                  },
+                  {
+                      "path":  "laguna-research-20261011/prompts.md",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\research\\laguna-research-20261011\\prompts.md",
+                      "bytes":  10213,
+                      "sha256":  "42a36a38b3b9e7566eb43fbef49bc0729ee8778b960313d654e28ffef593cdc4"
+                  },
+                  {
+                      "path":  "laguna-research-20261011/README.md",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\research\\laguna-research-20261011\\README.md",
+                      "bytes":  2441,
+                      "sha256":  "fc918d194d38d71284843f5ec4da0be1374454df2218e7e42c4414aead0c219f"
+                  },
+                  {
+                      "path":  "laguna-research-20261011/synthesis.md",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\research\\laguna-research-20261011\\synthesis.md",
+                      "bytes":  4931,
+                      "sha256":  "15e9547d22dd60554b00afccc73532f8b399acf97854bc017286f47c0465685a"
+                  },
+                  {
+                      "path":  "README.md",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\research\\README.md",
+                      "bytes":  2790,
+                      "sha256":  "d8f7a77dab8b574bce681cb4505dbcd2e42fce01b32e312d2b8c45c50a020a5b"
+                  },
+                  {
+                      "path":  "Run Laguna 2.1 via Strata.md",
+                      "kind":  "supplied_document",
+                      "original_path":  "E:\\poolside\\Run Laguna 2.1 via Strata.md",
+                      "bytes":  43974,
+                      "sha256":  "ade039862d4352f00c97236f35636106d4bc063837012d17a460409b52abe957"
+                  },
+                  {
+                      "path":  "extracted/Laguna_S21_Performance_Research.parent.txt",
+                      "kind":  "existing_text_extraction",
+                      "original_path":  "C:\\code\\poolside-strata\\tmp\\pdfs\\parent.txt",
+                      "bytes":  19829,
+                      "sha256":  "7f4a2ae9b7a7058bdd260e9845edc052cca04435d995424c99a624b5fede896f"
+                  },
+                  {
+                      "path":  "extracted/Laguna_S21_Performance_Research.package.txt",
+                      "kind":  "existing_text_extraction",
+                      "original_path":  "C:\\code\\poolside-strata\\tmp\\pdfs\\package.txt",
+                      "bytes":  19829,
+                      "sha256":  "7f4a2ae9b7a7058bdd260e9845edc052cca04435d995424c99a624b5fede896f"
+                  },
+                  {
+                      "path":  "extracted/Laguna_S_2.1_Optimization_Report.docx.txt",
+                      "kind":  "existing_text_extraction",
+                      "original_path":  "C:\\code\\poolside-strata\\tmp\\pdfs\\word.txt",
+                      "bytes":  4172,
+                      "sha256":  "df98a5eebfdc552555a6c8108a0bb82c4fb8520b4c551b9cfde0ba71ec24268c"
+                  }
+              ]
+}

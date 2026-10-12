@@ -1,0 +1,38 @@
+{
+  "label": "fixed-markup-nonstream",
+  "elapsed_s": 12.467042700038292,
+  "headers": {
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "11980",
+    "Connection": "close"
+  },
+  "stream": false,
+  "finish_reason": "tool_calls",
+  "usage": {
+    "completion_tokens": 114,
+    "prompt_tokens": 343,
+    "total_tokens": 457,
+    "prompt_tokens_details": {
+      "cached_tokens": 293
+    }
+  },
+  "calls": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"read file using exact provided path string\",\"path\":\"</a></arg_key>\\n<p>path</p></tool_call><tool_call>read<arg_key>i</arg_key><arg_value>read file using exact provided path string\"}"
+      },
+      "id": "Xjo88EBtbLh1MXYU9M7Q5YhJVQ7OrJLq"
+    }
+  ],
+  "indices": [
+    0
+  ],
+  "invalid_arguments": [],
+  "raw_available": true,
+  "raw_tool_markers": 2,
+  "native_stop": ""
+}

@@ -1,0 +1,97 @@
+{
+  "pdfs": [
+    {
+      "tag": "parent",
+      "path": "E:\\poolside\\research\\Laguna_S21_Performance_Research.pdf",
+      "sha256": "82230388c7ade21925ffb538882de1b3d9dece8e2c8acbb52ae74dec44c2aa3b",
+      "pages": [
+        {
+          "number": 1,
+          "images": 0,
+          "text_length": 2710,
+          "png": "C:\\code\\poolside-strata\\tmp\\pdfs\\parent-01.png"
+        },
+        {
+          "number": 2,
+          "images": 0,
+          "text_length": 3626,
+          "png": "C:\\code\\poolside-strata\\tmp\\pdfs\\parent-02.png"
+        },
+        {
+          "number": 3,
+          "images": 0,
+          "text_length": 4191,
+          "png": "C:\\code\\poolside-strata\\tmp\\pdfs\\parent-03.png"
+        },
+        {
+          "number": 4,
+          "images": 0,
+          "text_length": 3535,
+          "png": "C:\\code\\poolside-strata\\tmp\\pdfs\\parent-04.png"
+        },
+        {
+          "number": 5,
+          "images": 0,
+          "text_length": 3424,
+          "png": "C:\\code\\poolside-strata\\tmp\\pdfs\\parent-05.png"
+        },
+        {
+          "number": 6,
+          "images": 0,
+          "text_length": 1782,
+          "png": "C:\\code\\poolside-strata\\tmp\\pdfs\\parent-06.png"
+        }
+      ],
+      "text_path": "C:\\code\\poolside-strata\\tmp\\pdfs\\parent.txt"
+    },
+    {
+      "tag": "package",
+      "path": "E:\\poolside\\research\\Laguna_S21_Research_Package\\Laguna_S21_Performance_Research.pdf",
+      "sha256": "94704e951031b49fada05d9a2d0f6253bc6b0493e37b3aef0215e0b605f76575",
+      "pages": [
+        {
+          "number": 1,
+          "images": 0,
+          "text_length": 2710,
+          "png": "C:\\code\\poolside-strata\\tmp\\pdfs\\package-01.png"
+        },
+        {
+          "number": 2,
+          "images": 0,
+          "text_length": 3626,
+          "png": "C:\\code\\poolside-strata\\tmp\\pdfs\\package-02.png"
+        },
+        {
+          "number": 3,
+          "images": 0,
+          "text_length": 4191,
+          "png": "C:\\code\\poolside-strata\\tmp\\pdfs\\package-03.png"
+        },
+        {
+          "number": 4,
+          "images": 0,
+          "text_length": 3535,
+          "png": "C:\\code\\poolside-strata\\tmp\\pdfs\\package-04.png"
+        },
+        {
+          "number": 5,
+          "images": 0,
+          "text_length": 3424,
+          "png": "C:\\code\\poolside-strata\\tmp\\pdfs\\package-05.png"
+        },
+        {
+          "number": 6,
+          "images": 0,
+          "text_length": 1782,
+          "png": "C:\\code\\poolside-strata\\tmp\\pdfs\\package-06.png"
+        }
+      ],
+      "text_path": "C:\\code\\poolside-strata\\tmp\\pdfs\\package.txt"
+    }
+  ],
+  "docx": {
+    "path": "E:\\poolside\\research\\Laguna_S_2.1_Optimization_Report.docx",
+    "sha256": "bb12f66af8475ff50779d77660c96cd390d869f4568cf3e835257584c6d3cbac",
+    "text_path": "C:\\code\\poolside-strata\\tmp\\pdfs\\word.txt"
+  }
+}

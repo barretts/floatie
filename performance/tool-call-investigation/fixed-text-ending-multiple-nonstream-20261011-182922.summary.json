@@ -1,0 +1,70 @@
+{
+  "label": "fixed-text-ending-multiple-nonstream",
+  "elapsed_s": 23.288716900045983,
+  "headers": {
+    "Server": "llama.cpp",
+    "Access-Control-Allow-Origin": "",
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "13887",
+    "Connection": "close"
+  },
+  "stream": false,
+  "finish_reason": "length",
+  "usage": {
+    "completion_tokens": 256,
+    "prompt_tokens": 377,
+    "total_tokens": 633,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  },
+  "calls": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"Read fixture.ts lines 147-180\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/fixture.ts:147-180\"}"
+      },
+      "id": "axjmXS2O4pmYooIu1vK1PhN8VlkIOj4S"
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"Read other.ts lines 1-4\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/other.ts:1-4\"}"
+      },
+      "id": "1eWzQspTUVmjZkFiHMsZmQhOuxRRhaAI"
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"Read other.ts full content (first 4 lines)\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/scratch/other.ts\"}"
+      },
+      "id": "4SYSBgkhQJItwTonIhhXiFlKqt7Z6FUG"
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "arguments": "{\"i\":\"Read fixture.ts lines 147-180\",\"path\":\"C:/code/poolside-strata/performance/tool-call-investigation/s"
+      },
+      "id": "8IjNsRsFQ5eWewBZYzwoDBo2cs1xX97g"
+    }
+  ],
+  "indices": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "invalid_arguments": [
+    {
+      "index": 3,
+      "error": "Unterminated string starting at: line 1 column 45 (char 44)"
+    }
+  ],
+  "raw_available": true,
+  "raw_tool_markers": 4,
+  "native_stop": ""
+}

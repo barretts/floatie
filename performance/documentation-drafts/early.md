@@ -28,7 +28,7 @@ The regular receipts request 80 output tokens: greedy temperature 0, seed 42, to
 
 **Limits:** Its external claims include 18-20 / 60-64 generation tok/s, 7.2-7.8% attention requantization gain, 58 to 23 tok/s with DFlash, and 6.8 ms extra verification cost. These are source claims on other machines. Its 512-cell SWA estimate, all-48-MoE description, vocabulary/FF dimensions, and 1M-context claim must not override actual GGUF metadata or local allocation evidence.
 
-**Evidence:** `E:/poolside/Run Laguna 2.1 via Strata.md` (local reference, not bundled), [model-layout.json](../installed-evidence/model-layout.json), [checkpoint-core-streaming.json](../checkpoint-core-streaming.json).
+**Evidence:** [Run Laguna 2.1 via Strata.md](<../../research/Run Laguna 2.1 via Strata.md>), [model-layout.json](../installed-evidence/model-layout.json), [checkpoint-core-streaming.json](../checkpoint-core-streaming.json).
 
 ## early-prepared-hybrid: Initial hybrid engine build and artifact preparation
 
